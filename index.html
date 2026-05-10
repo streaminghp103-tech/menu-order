@@ -32,6 +32,15 @@
             flex-direction: column;
         }
         #layar-hitam.tampil .konten-putih, #layar-bantuan.tampil .konten-putih { transform: translateY(0); }
+        
+        /* Animasi loading gambar */
+        .img-loading { background: #f3f4f6; position: relative; overflow: hidden; }
+        .img-loading::after {
+            content: ""; position: absolute; inset: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: loading 1.5s infinite;
+        }
+        @keyframes loading { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
     </style>
 </head>
 <body class="bg-gray-100 pb-40 font-sans text-gray-900 w-full">
@@ -46,12 +55,11 @@
         </button>
     </div>
 
-    <div class="p-4 bg-white mb-2">
+    <div class="p-4 bg-white mb-2 shadow-sm">
         <h2 class="text-[11px] font-black uppercase text-gray-400 mb-3 tracking-widest flex items-center gap-2">
-            <span class="text-lg">🔥</span> Paling Banyak Dipesan
+            <span class="text-lg">🔥</span> Rekomendasi
         </h2>
-        <div id="container-best-seller" class="flex gap-4 overflow-x-auto no-scrollbar pb-2">
-            </div>
+        <div id="container-best-seller" class="flex gap-4 overflow-x-auto no-scrollbar pb-2"></div>
     </div>
 
     <div class="sticky top-0 bg-white shadow-sm z-40 overflow-x-auto no-scrollbar flex whitespace-nowrap px-4 py-3 gap-2" id="tabs-kategori"></div>
@@ -69,19 +77,13 @@
 
     <div id="layar-bantuan" onclick="tutupBantuan()">
         <div class="konten-putih" onclick="event.stopPropagation()">
-            <h2 class="font-black text-xl text-gray-800 mb-4">Butuh Bantuan?</h2>
+            <h2 class="font-black text-xl text-gray-800 mb-4">Layanan Room</h2>
             <div class="grid grid-cols-1 gap-3 mb-6">
                 <button onclick="kirimBantuan('Minta Bill / Tagihan')" class="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl text-left flex justify-between items-center active:bg-orange-50">
-                    <span class="font-bold text-gray-700">Minta Bill / Tagihan</span>
-                    <span>🧾</span>
+                    <span class="font-bold text-gray-700">Minta Bill / Tagihan</span><span>🧾</span>
                 </button>
                 <button onclick="kirimBantuan('Panggil Staff ke Room')" class="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl text-left flex justify-between items-center active:bg-orange-50">
-                    <span class="font-bold text-gray-700">Panggil Staff ke Room</span>
-                    <span>🙋‍♂️</span>
-                </button>
-                <button onclick="kirimBantuan('Mic / Audio Bermasalah')" class="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl text-left flex justify-between items-center active:bg-orange-50">
-                    <span class="font-bold text-gray-700">Masalah Audio/Mic</span>
-                    <span>🎤</span>
+                    <span class="font-bold text-gray-700">Panggil Staff</span><span>🙋‍♂️</span>
                 </button>
             </div>
             <button onclick="tutupBantuan()" class="w-full py-4 text-gray-400 font-bold text-sm">Tutup</button>
@@ -103,7 +105,7 @@
                     <span class="font-bold text-gray-500 text-sm">Total Bayar</span>
                     <span id="harga-akhir" class="font-black text-xl text-orange-600"></span>
                 </div>
-                <button type="button" onclick="jalankanKirimWA()" class="w-full bg-green-600 text-white py-4 rounded-2xl font-black text-sm active:scale-95 transition-all">KONFIRMASI PESANAN (WA)</button>
+                <button type="button" onclick="jalankanKirimWA()" class="w-full bg-green-600 text-white py-4 rounded-2xl font-black text-sm active:scale-95 transition-all">KONFIRMASI (WA)</button>
             </div>
         </div>
     </div>
@@ -138,50 +140,59 @@
                         const nama = k[0]?.replace(/"/g, '').trim();
                         const harga = parseInt(k[1]?.replace(/[^0-9]/g, '')) || 0;
                         const kategori = k[2]?.replace(/"/g, '').trim().toUpperCase() || "LAINNYA";
+                        // Kolom D (index 3) adalah link foto
+                        const foto = k[3]?.replace(/"/g, '').trim() || "";
                         if (nama && harga > 0) {
-                            databaseMenu.push({ nama, harga, kategori });
+                            databaseMenu.push({ nama, harga, kategori, foto });
                             setKategori.add(kategori);
                         }
                     }
                 });
 
-                // Render Tabs
-                let htmlKat = "";
-                Array.from(setKategori).forEach(kt => {
-                    const cls = kt === katAktif ? "active-tab" : "bg-white text-gray-400 border border-gray-100 rounded-full";
-                    htmlKat += `<button onclick="gantiKat('${kt}')" class="px-5 py-2 text-[10px] font-bold uppercase ${cls}">${kt}</button>`;
-                });
-                document.getElementById('tabs-kategori').innerHTML = htmlKat;
-
-                // Render Best Seller (Ambil 4 item pertama sebagai contoh)
-                let htmlBest = "";
-                databaseMenu.slice(0, 5).forEach(m => {
-                    htmlBest += `
-                    <div onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="min-w-[140px] bg-gray-50 p-3 rounded-2xl border border-gray-100 active:scale-95 transition-all">
-                        <p class="font-bold text-gray-800 text-[11px] leading-tight mb-1 h-8 overflow-hidden">${m.nama}</p>
-                        <p class="text-orange-600 font-black text-[10px]">Rp ${m.harga.toLocaleString('id-ID')}</p>
-                    </div>`;
-                });
-                document.getElementById('container-best-seller').innerHTML = htmlBest;
-
+                renderTabs(setKategori);
+                renderBestSeller();
                 renderMenu();
             } catch (e) { console.error(e); }
         }
 
-        function gantiKat(k) { katAktif = k; ambilData(); }
+        function renderTabs(setKategori) {
+            let htmlKat = "";
+            Array.from(setKategori).forEach(kt => {
+                const cls = kt === katAktif ? "active-tab shadow-md" : "bg-white text-gray-400 border border-gray-100 rounded-full";
+                htmlKat += `<button onclick="gantiKat('${kt}')" class="px-5 py-2 text-[10px] font-bold uppercase ${cls}">${kt}</button>`;
+            });
+            document.getElementById('tabs-kategori').innerHTML = htmlKat;
+        }
+
+        function renderBestSeller() {
+            let htmlBest = "";
+            databaseMenu.slice(0, 5).forEach(m => {
+                const imgTag = m.foto ? `<img src="${m.foto}" class="w-full h-20 object-cover rounded-xl mb-2">` : `<div class="w-full h-20 bg-orange-50 rounded-xl mb-2 flex items-center justify-center text-2xl">🍽️</div>`;
+                htmlBest += `
+                <div onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="min-w-[140px] bg-gray-50 p-2 rounded-2xl border border-gray-100 active:scale-95 transition-all">
+                    ${imgTag}
+                    <p class="font-bold text-gray-800 text-[10px] leading-tight mb-1 truncate">${m.nama}</p>
+                    <p class="text-orange-600 font-black text-[10px]">Rp ${m.harga.toLocaleString('id-ID')}</p>
+                </div>`;
+            });
+            document.getElementById('container-best-seller').innerHTML = htmlBest;
+        }
 
         function renderMenu() {
             let html = "";
             const filtered = katAktif === "SEMUA" ? databaseMenu : databaseMenu.filter(m => m.kategori === katAktif);
             filtered.forEach(m => {
                 const q = dataKeranjang[m.nama]?.qty || 0;
+                const imgTag = m.foto ? `<img src="${m.foto}" class="w-16 h-16 object-cover rounded-xl shadow-sm">` : `<div class="w-16 h-16 bg-gray-50 rounded-xl flex items-center justify-center text-xl shadow-inner border border-gray-100">🍴</div>`;
+                
                 html += `
-                <div class="bg-white p-4 rounded-2xl shadow-sm flex justify-between items-center border border-gray-50">
-                    <div class="min-w-0 flex-1 pr-3">
+                <div class="bg-white p-3 rounded-2xl shadow-sm flex items-center border border-gray-50">
+                    <div class="flex-shrink-0 mr-4">${imgTag}</div>
+                    <div class="min-w-0 flex-1">
                         <h3 class="font-bold text-gray-800 text-sm truncate">${m.nama}</h3>
-                        <p class="text-orange-600 text-[11px] font-black mt-1">Rp ${m.harga.toLocaleString('id-ID')}</p>
+                        <p class="text-orange-600 text-[11px] font-black mt-0.5">Rp ${m.harga.toLocaleString('id-ID')}</p>
                     </div>
-                    <div class="flex items-center gap-2 bg-gray-50 p-1 rounded-xl">
+                    <div class="flex items-center gap-2 bg-gray-50 p-1 rounded-xl ml-2">
                         ${q > 0 ? `<button onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', -1)" class="w-8 h-8 rounded-lg bg-white text-orange-500 font-bold shadow-sm">-</button>
                         <span class="font-bold text-xs w-4 text-center">${q}</span>` : ''}
                         <button onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="bg-orange-500 text-white w-8 h-8 rounded-lg font-bold shadow-md shadow-orange-100">+</button>
@@ -191,6 +202,7 @@
             document.getElementById('container-menu').innerHTML = html;
         }
 
+        function gantiKat(k) { katAktif = k; ambilData(); }
         function ubahQty(nama, d) {
             if (!dataKeranjang[nama]) {
                 const item = databaseMenu.find(x => x.nama === nama);
@@ -209,7 +221,7 @@
             const el = document.getElementById('bar-keranjang');
             if (tQty > 0) {
                 el.classList.remove('hidden');
-                document.getElementById('ringkasan-singkat').innerHTML = `<p class="font-black text-sm">${tQty} Menu</p><p class="text-[10px] text-orange-400 font-bold">Rp ${tPrice.toLocaleString('id-ID')}</p>`;
+                document.getElementById('ringkasan-singkat').innerHTML = `<p class="font-black text-sm">${tQty} Menu</p><p class="text-[10px] text-orange-400 font-bold uppercase">Rp ${tPrice.toLocaleString('id-ID')}</p>`;
             } else { el.classList.add('hidden'); }
         }
 
@@ -226,7 +238,7 @@
                         <p class="text-[10px] text-gray-400 font-bold mt-1">${i.qty}x @Rp ${i.harga.toLocaleString('id-ID')}</p></div>
                         <span class="font-black text-gray-800 text-[13px]">Rp ${s.toLocaleString('id-ID')}</span>
                     </div>
-                    <input type="text" onchange="updateCatatanItem('${i.nama.replace(/'/g, "\\'")}', this.value)" value="${i.catatan || ''}" placeholder="Catatan..." class="w-full bg-gray-50 border border-gray-100 rounded-xl py-2 px-3 text-[11px] outline-none focus:border-orange-400 italic">
+                    <input type="text" onchange="updateCatatanItem('${i.nama.replace(/'/g, "\\'")}', this.value)" value="${i.catatan || ''}" placeholder="Catatan khusus..." class="w-full bg-gray-50 border border-gray-100 rounded-xl py-2 px-3 text-[11px] outline-none italic">
                 </div>`;
             });
             document.getElementById('list-checkout').innerHTML = h;
@@ -237,12 +249,11 @@
         function updateCatatanItem(nama, val) { if (dataKeranjang[nama]) dataKeranjang[nama].catatan = val; }
         function resetKeranjang() { if (confirm("Kosongkan semua pesanan?")) { dataKeranjang = {}; hilangkanPopup(); renderMenu(); updateBar(); } }
         function hilangkanPopup() { document.getElementById('layar-hitam').classList.remove('tampil'); }
-        
-        // Fitur Bantuan
         function bukaBantuan() { document.getElementById('layar-bantuan').classList.add('tampil'); }
         function tutupBantuan() { document.getElementById('layar-bantuan').classList.remove('tampil'); }
+
         function kirimBantuan(jenis) {
-            const msg = `Halo Happy Puppy Samarinda,%0A%0ASaya tamu dari *ROOM ${roomNumber}*%0A*MINTA BANTUAN:* ${jenis}.%0A%0AMohon bantuannya ya, terima kasih.`;
+            const msg = `Halo Happy Puppy Samarinda,%0A%0ASaya tamu dari *ROOM ${roomNumber}*%0A*MINTA BANTUAN:* ${jenis}.`;
             window.open(`https://wa.me/${WA_NUMBER}?text=${msg}`, '_blank');
             tutupBantuan();
         }
