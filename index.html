@@ -6,7 +6,7 @@
     <title>Menu Happy Puppy Samarinda</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { overflow-x: hidden; touch-action: pan-y; }
+        body { overflow-x: hidden; touch-action: pan-y; scroll-behavior: smooth; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .active-tab { 
             background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
@@ -49,7 +49,7 @@
 </head>
 <body class="bg-slate-50 pb-40 font-sans text-slate-900 w-full">
 
-    <div class="bg-slate-900 relative w-full overflow-hidden p-6 pt-8 rounded-b-[40px] shadow-lg">
+    <div id="top-header" class="bg-slate-900 relative w-full overflow-hidden p-6 pt-8 rounded-b-[40px] shadow-lg">
         <img src="https://images.unsplash.com/photo-1514525253344-76337eb979cd?w=800" class="absolute inset-0 w-full h-full object-cover opacity-30">
         <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent"></div>
         
@@ -64,7 +64,8 @@
         <div class="relative z-10">
             <div class="bg-white/10 border border-white/20 backdrop-blur-md rounded-2xl flex items-center px-4 py-1 focus-within:bg-white focus-within:shadow-2xl transition-all group">
                 <span class="text-orange-400 mr-2">🔍</span>
-                <input type="text" id="input-cari" oninput="filterMenu()" placeholder="Cari menu favorit kamu..." class="w-full py-3 bg-transparent text-sm outline-none font-medium text-white focus:text-slate-800 placeholder:text-white/50 focus:placeholder:text-slate-400 italic">
+                <input type="text" id="input-cari" oninput="cekInputCari()" placeholder="Cari menu favorit kamu..." class="w-full py-3 bg-transparent text-sm outline-none font-medium text-white focus:text-slate-800 placeholder:text-white/50 focus:placeholder:text-slate-400 italic">
+                <button id="btn-reset-cari" onclick="resetCari()" class="hidden text-slate-400 hover:text-slate-600 p-2 text-lg font-bold">✕</button>
             </div>
 
             <div id="widget-pesanan-saya" class="mt-4 hidden animate-in fade-in slide-in-from-top-4 duration-500">
@@ -102,13 +103,13 @@
         </button>
     </div>
 
-    <div id="notif-sukses" onclick="tutupNotif()">
+    <div id="notif-sukses" onclick="tutupNotifSelesai()">
         <div class="konten-putih items-center text-center pb-12" onclick="event.stopPropagation()">
-            <button onclick="tutupNotif()" class="absolute top-5 right-6 text-slate-300 text-2xl font-bold p-2">✕</button>
+            <button onclick="tutupNotifSelesai()" class="absolute top-5 right-6 text-slate-300 text-2xl font-bold p-2">✕</button>
             <div class="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-4xl mb-6 mt-4 shadow-inner">✓</div>
             <h2 class="text-2xl font-black text-slate-800 uppercase italic mb-2">Pesanan Terkirim!</h2>
             <p class="text-slate-500 text-sm px-6 leading-relaxed mb-8 font-medium">Harap tunggu sebentar, staf kami sedang menyiapkan pesanan untuk <span class="font-black text-orange-500">Room <span class="no-room">--</span></span>.</p>
-            <button onclick="tutupNotif()" class="w-full bg-slate-900 text-white py-5 rounded-2xl font-black text-sm uppercase tracking-widest shadow-xl">Siap, Terima Kasih!</button>
+            <button onclick="tutupNotifSelesai()" class="w-full bg-slate-900 text-white py-5 rounded-2xl font-black text-sm uppercase tracking-widest shadow-xl">Siap, Terima Kasih!</button>
         </div>
     </div>
 
@@ -208,10 +209,26 @@
             } catch (e) { console.error(e); }
         }
 
-        function filterMenu() {
-            queryCari = document.getElementById('input-cari').value.toLowerCase();
-            document.getElementById('section-best-seller').style.display = queryCari.length > 0 ? 'none' : 'block';
+        function cekInputCari() {
+            const input = document.getElementById('input-cari');
+            const btnReset = document.getElementById('btn-reset-cari');
+            queryCari = input.value.toLowerCase();
+            
+            if (queryCari.length > 0) {
+                btnReset.classList.remove('hidden');
+                document.getElementById('section-best-seller').style.display = 'none';
+            } else {
+                btnReset.classList.add('hidden');
+                document.getElementById('section-best-seller').style.display = 'block';
+            }
             renderMenu();
+        }
+
+        function resetCari() {
+            const input = document.getElementById('input-cari');
+            input.value = "";
+            cekInputCari();
+            input.focus();
         }
 
         function renderTabs() {
@@ -390,7 +407,11 @@
             }
         }
 
-        function tutupNotif() { document.getElementById('notif-sukses').classList.remove('tampil'); }
+        function tutupNotifSelesai() { 
+            document.getElementById('notif-sukses').classList.remove('tampil'); 
+            // Kembali ke bagian header paling atas
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
 
         deteksiRoom(); ambilData();
     </script>
