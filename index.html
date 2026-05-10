@@ -6,21 +6,21 @@
     <title>Menu Happy Puppy Samarinda</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Mengunci agar tidak bisa geser kanan-kiri yang tidak perlu */
-        body {
-            overflow-x: hidden;
-            touch-action: pan-y;
-        }
+        body { overflow-x: hidden; touch-action: pan-y; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .active-tab { background-color: #f97316; color: white; border-radius: 9999px; }
-        .animate-pop { animation: pop 0.2s ease-out; }
-        @keyframes pop {
-            0% { transform: scale(0.9); }
-            100% { transform: scale(1); }
+        
+        /* Animasi Muncul Halus dari Bawah */
+        .fade-up {
+            animation: fadeUp 0.4s ease-out forwards;
+        }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translate(-50%, 20px); }
+            to { opacity: 1; transform: translate(-50%, 0); }
         }
     </style>
 </head>
-<body class="bg-gray-50 pb-32 font-sans text-gray-900 w-full">
+<body class="bg-gray-50 pb-36 font-sans text-gray-900 w-full">
 
     <div class="h-40 bg-slate-900 relative w-full overflow-hidden">
         <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800" class="w-full h-full object-cover opacity-40">
@@ -34,16 +34,16 @@
 
     <div class="p-4 w-full max-w-full">
         <div id="container-menu" class="space-y-3">
-            <div class="text-center py-20 text-gray-400">
-                <div class="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-orange-500 mb-2"></div>
-                <p class="text-xs">Sinkronisasi Menu...</p>
-            </div>
+            <p class="text-center py-20 text-gray-400 text-xs">Menyusun menu...</p>
         </div>
     </div>
 
-    <div id="btn-keranjang" class="fixed bottom-5 left-1/2 -translate-x-1/2 w-[90%] max-w-md bg-zinc-900 text-white p-3 rounded-2xl shadow-2xl flex justify-between items-center hidden z-50 transition-all duration-300 animate-pop">
-        <div id="info-pesanan" class="pl-2"></div>
-        <button onclick="kirimWhatsApp()" class="bg-green-500 active:scale-95 transition-all px-5 py-2 rounded-xl font-bold text-xs shadow-lg">PESAN WA</button>
+    <div id="btn-keranjang" class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-md bg-zinc-900/95 backdrop-blur-sm text-white p-4 rounded-2xl shadow-2xl flex justify-between items-center hidden z-50 fade-up">
+        <div id="info-pesanan">
+            </div>
+        <button onclick="kirimWhatsApp()" class="bg-green-500 active:scale-95 transition-all px-6 py-2 rounded-xl font-bold text-xs shadow-lg">
+            PESAN SEKARANG
+        </button>
     </div>
 
     <script>
@@ -66,10 +66,9 @@
                 baris.forEach(txt => {
                     let kolom = txt.split(",");
                     if (kolom.length >= 2) {
-                        const nama = kolom[0] ? kolom[0].replace(/"/g, '').trim() : "";
-                        const hargaRaw = kolom[1] ? kolom[1].replace(/[^0-9]/g, '') : "0";
-                        const harga = parseInt(hargaRaw) || 0;
-                        const kategori = kolom[2] ? kolom[2].replace(/"/g, '').trim().toUpperCase() : "LAINNYA";
+                        const nama = kolom[0]?.replace(/"/g, '').trim() || "";
+                        const harga = parseInt(kolom[1]?.replace(/[^0-9]/g, '')) || 0;
+                        const kategori = kolom[2]?.replace(/"/g, '').trim().toUpperCase() || "LAINNYA";
 
                         if (nama && harga > 0) {
                             semuaMenu.push({ nama, harga, kategori });
@@ -82,7 +81,7 @@
                 renderTabs();
                 tampilkanMenu();
             } catch (error) {
-                document.getElementById('container-menu').innerHTML = "<p class='text-center text-red-500 text-xs py-10 font-bold'>Gagal memuat. Periksa sinyal.</p>";
+                document.getElementById('container-menu').innerHTML = "<p class='text-center text-red-500 py-10'>Gagal sinkronisasi data.</p>";
             }
         }
 
@@ -107,9 +106,8 @@
 
             menuDifilter.forEach(m => {
                 const qty = keranjang[m.nama]?.qty || 0;
-                
                 html += `
-                <div class="bg-white p-3 rounded-2xl shadow-sm flex justify-between items-center border border-gray-100 w-full overflow-hidden">
+                <div class="bg-white p-3 rounded-2xl shadow-sm flex justify-between items-center border border-gray-100">
                     <div class="flex items-center gap-3 min-w-0 flex-1">
                         <div class="w-10 h-10 bg-orange-50 rounded-lg flex-shrink-0 flex items-center justify-center text-orange-500 font-black text-[10px]">HP</div>
                         <div class="min-w-0">
@@ -117,13 +115,12 @@
                             <p class="text-orange-600 text-[10px] font-black mt-1">Rp ${m.harga.toLocaleString('id-ID')}</p>
                         </div>
                     </div>
-                    
-                    <div class="flex items-center gap-2 bg-gray-50 p-1 rounded-xl border border-gray-100 flex-shrink-0 ml-2">
+                    <div class="flex items-center gap-2 bg-gray-50 p-1 rounded-xl border border-gray-100 flex-shrink-0">
                         ${qty > 0 ? `
-                            <button onclick="updateQty('${m.nama.replace(/'/g, "\\'")}', -1)" class="w-7 h-7 rounded-lg bg-white shadow-sm text-orange-500 font-bold flex items-center justify-center active:scale-75 transition-transform">-</button>
+                            <button onclick="updateQty('${m.nama.replace(/'/g, "\\'")}', -1)" class="w-7 h-7 rounded-lg bg-white shadow-sm text-orange-500 font-bold flex items-center justify-center">-</button>
                             <span class="font-bold text-xs w-4 text-center text-gray-800">${qty}</span>
                         ` : ''}
-                        <button onclick="updateQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="bg-orange-500 text-white w-7 h-7 rounded-lg font-bold flex items-center justify-center shadow-md shadow-orange-100 active:scale-75 transition-transform">+</button>
+                        <button onclick="updateQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="bg-orange-500 text-white w-7 h-7 rounded-lg font-bold flex items-center justify-center shadow-md shadow-orange-100">+</button>
                     </div>
                 </div>`;
             });
@@ -145,13 +142,13 @@
             const items = Object.values(keranjang);
             const totalQty = items.reduce((acc, curr) => acc + curr.qty, 0);
             const totalPrice = items.reduce((acc, curr) => acc + (curr.harga * curr.qty), 0);
-
             const btn = document.getElementById('btn-keranjang');
+            
             if (totalQty > 0) {
                 btn.classList.remove('hidden');
                 document.getElementById('info-pesanan').innerHTML = `
-                    <p class="font-bold text-xs">${totalQty} Menu</p>
-                    <p class="text-[9px] text-orange-400 font-bold uppercase">Total: Rp ${totalPrice.toLocaleString('id-ID')}</p>
+                    <p class="font-bold text-xs">${totalQty} Pesanan</p>
+                    <p class="text-[9px] text-orange-400 font-bold uppercase tracking-tighter text-nowrap">Rp ${totalPrice.toLocaleString('id-ID')}</p>
                 `;
             } else {
                 btn.classList.add('hidden');
@@ -163,7 +160,7 @@
             const items = Object.values(keranjang);
             const daftar = items.map(i => `• ${i.nama} (${i.qty}x)`).join('%0A');
             const totalPrice = items.reduce((acc, curr) => acc + (curr.harga * curr.qty), 0);
-            const teks = `Halo Happy Puppy Samarinda,%0A%0ASaya ingin memesan:%0A${daftar}%0A%0A*Total: Rp ${totalPrice.toLocaleString('id-ID')}*`;
+            const teks = `Halo Happy Puppy Samarinda,%0A%0ASaya pesan:%0A${daftar}%0A%0A*Total: Rp ${totalPrice.toLocaleString('id-ID')}*`;
             window.open(`https://wa.me/${noWA}?text=${teks}`, '_blank');
         }
 
