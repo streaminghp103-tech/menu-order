@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .no-scrollbar::-webkit-scrollbar { display: none; }
-        .active-tab { border-bottom: 4px solid #f97316; color: #f97316; }
+        .active-tab { background-color: #f97316; color: white; border-radius: 9999px; }
     </style>
 </head>
 <body class="bg-gray-50 pb-32 font-sans text-gray-900">
@@ -20,12 +20,12 @@
         </div>
     </div>
 
-    <div class="sticky top-0 bg-white shadow-sm z-40 overflow-x-auto no-scrollbar flex whitespace-nowrap px-4 border-b border-gray-100" id="tabs-kategori">
+    <div class="sticky top-0 bg-white shadow-sm z-40 overflow-x-auto no-scrollbar flex whitespace-nowrap px-4 py-3 gap-2 border-b border-gray-100" id="tabs-kategori">
         </div>
 
     <div class="p-5">
         <div id="container-menu" class="space-y-4">
-            <p class="text-center py-20 text-gray-400 animate-pulse">Memuat menu pilihan...</p>
+            <p class="text-center py-20 text-gray-400">Memuat menu...</p>
         </div>
     </div>
 
@@ -45,18 +45,22 @@
             try {
                 const response = await fetch(URL_SHEETS);
                 const csvText = await response.text();
+                // Membagi baris dan membersihkan karakter aneh
                 const baris = csvText.split(/\r?\n/).slice(1);
                 
                 semuaMenu = [];
                 let daftarKategori = new Set(["SEMUA"]);
 
                 baris.forEach(txt => {
-                    let kolom = txt.split(/[;,]/);
+                    // Gunakan pemisah koma saja agar pasti
+                    let kolom = txt.split(",");
+                    
                     if (kolom.length >= 2) {
-                        const nama = kolom[0]?.trim().replace(/"/g, '') || "";
-                        const hargaRaw = kolom[1]?.replace(/[^0-9]/g, '') || "0";
-                        const harga = parseInt(hargaRaw);
-                        const kategori = kolom[2]?.trim().toUpperCase().replace(/"/g, '') || "LAINNYA";
+                        // Kolom 0 = Nama, Kolom 1 = Harga, Kolom 2 = Kategori
+                        const nama = kolom[0] ? kolom[0].replace(/"/g, '').trim() : "";
+                        const hargaRaw = kolom[1] ? kolom[1].replace(/[^0-9]/g, '') : "0";
+                        const harga = parseInt(hargaRaw) || 0;
+                        const kategori = kolom[2] ? kolom[2].replace(/"/g, '').trim().toUpperCase() : "LAINNYA";
 
                         if (nama && harga > 0) {
                             semuaMenu.push({ nama, harga, kategori });
@@ -68,22 +72,23 @@
                 renderTabs(Array.from(daftarKategori));
                 tampilkanMenu();
             } catch (error) {
-                document.getElementById('container-menu').innerHTML = "<p class='text-center text-red-500'>Gagal memuat data.</p>";
+                document.getElementById('container-menu').innerHTML = "<p class='text-center text-red-500'>Koneksi error. Refresh halaman.</p>";
             }
         }
 
         function renderTabs(kategoris) {
             let html = "";
             kategoris.forEach(kat => {
-                const activeClass = kat === kategoriAktif ? "active-tab font-bold" : "text-gray-400";
-                html += `<button onclick="filterKategori('${kat}')" class="px-5 py-4 text-xs uppercase tracking-wider transition-all ${activeClass}">${kat}</button>`;
+                const activeClass = kat === kategoriAktif ? "active-tab" : "text-gray-500 bg-gray-100 rounded-full";
+                html += `<button onclick="filterKategori('${kat}')" class="px-4 py-2 text-[10px] font-bold uppercase transition-all ${activeClass}">${kat}</button>`;
             });
             document.getElementById('tabs-kategori').innerHTML = html;
         }
 
         function filterKategori(kat) {
             kategoriAktif = kat;
-            muatMenu(); // Refresh tampilan
+            renderTabs(Array.from(new Set(["SEMUA", ...semuaMenu.map(m => m.kategori)])));
+            tampilkanMenu();
         }
 
         function tampilkanMenu() {
@@ -94,19 +99,19 @@
 
             menuDifilter.forEach(m => {
                 html += `
-                <div class="bg-white p-4 rounded-2xl shadow-sm flex justify-between items-center border border-gray-100 animate-fadeIn">
+                <div class="bg-white p-4 rounded-2xl shadow-sm flex justify-between items-center border border-gray-100">
                     <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center text-orange-500 font-black italic text-[10px]">HP</div>
+                        <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center text-orange-500 font-black text-[10px]">HP</div>
                         <div>
-                            <h3 class="font-bold text-gray-800 text-sm">${m.nama}</h3>
-                            <p class="text-orange-600 text-xs font-black mt-0.5 uppercase tracking-tighter">Rp ${m.harga.toLocaleString('id-ID')}</p>
+                            <h3 class="font-bold text-gray-800 text-sm leading-tight">${m.nama}</h3>
+                            <p class="text-orange-600 text-xs font-bold mt-1">Rp ${m.harga.toLocaleString('id-ID')}</p>
                         </div>
                     </div>
                     <button onclick="tambahKeKeranjang('${m.nama.replace(/'/g, "\\'")}', ${m.harga})" 
-                        class="bg-orange-500 text-white w-10 h-10 rounded-xl font-bold shadow-md flex items-center justify-center text-xl active:scale-90 transition-all">+</button>
+                        class="bg-orange-500 text-white w-9 h-9 rounded-xl font-bold flex items-center justify-center text-xl active:scale-90">+</button>
                 </div>`;
             });
-            document.getElementById('container-menu').innerHTML = html || "<p class='text-center py-10 text-gray-400'>Menu belum tersedia di kategori ini.</p>";
+            document.getElementById('container-menu').innerHTML = html || "<p class='text-center text-gray-400'>Menu kosong.</p>";
         }
 
         function tambahKeKeranjang(nama, harga) {
@@ -114,8 +119,8 @@
             document.getElementById('btn-keranjang').classList.remove('hidden');
             const total = keranjang.reduce((a, b) => a + b.harga, 0);
             document.getElementById('info-pesanan').innerHTML = `
-                <p class="font-black text-sm">${keranjang.length} Pesanan</p>
-                <p class="text-[10px] text-orange-400 font-bold uppercase">Total: Rp ${total.toLocaleString('id-ID')}</p>
+                <p class="font-bold text-sm">${keranjang.length} Item</p>
+                <p class="text-[10px] text-orange-400 font-bold">Total: Rp ${total.toLocaleString('id-ID')}</p>
             `;
         }
 
