@@ -14,8 +14,8 @@
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(5px);
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(4px);
             z-index: 9999;
             align-items: flex-end;
         }
@@ -24,20 +24,22 @@
             background: white;
             width: 100%;
             border-radius: 24px 24px 0 0;
-            padding: 24px;
+            padding: 20px;
             transform: translateY(100%);
             transition: transform 0.3s ease-out;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
         }
         #layar-hitam.tampil .konten-putih { transform: translateY(0); }
     </style>
 </head>
 <body class="bg-gray-100 pb-40 font-sans text-gray-900 w-full">
 
-    <div class="h-40 bg-slate-900 relative w-full overflow-hidden">
+    <div class="h-32 bg-slate-900 relative w-full overflow-hidden">
         <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800" class="w-full h-full object-cover opacity-30">
-        <div class="absolute bottom-5 left-5 text-white">
-            <h1 class="text-xl font-bold text-orange-400 uppercase leading-tight">Happy Puppy <br>Samarinda</h1>
-            <p class="text-[9px] opacity-70 tracking-widest uppercase">Digital Ordering System</p>
+        <div class="absolute bottom-4 left-5 text-white">
+            <h1 class="text-lg font-bold text-orange-400 uppercase leading-tight">Happy Puppy <br>Samarinda</h1>
         </div>
     </div>
 
@@ -47,31 +49,33 @@
         <div id="container-menu" class="space-y-3"></div>
     </div>
 
-    <div id="bar-keranjang" class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-md bg-zinc-900 text-white p-4 rounded-2xl shadow-2xl flex justify-between items-center hidden z-50">
+    <div id="bar-keranjang" class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[92%] max-w-md bg-zinc-900 text-white p-4 rounded-2xl shadow-2xl flex justify-between items-center hidden z-50">
         <div id="ringkasan-singkat"></div>
-        <button type="button" onclick="munculkanPopup(event)" class="bg-orange-500 px-6 py-2 rounded-xl font-bold text-xs uppercase shadow-lg active:scale-90">
+        <button type="button" onclick="munculkanPopup(event)" class="bg-orange-500 px-5 py-2 rounded-xl font-bold text-[11px] uppercase shadow-lg active:scale-90 transition-all">
             Lihat Pesanan
         </button>
     </div>
 
     <div id="layar-hitam" onclick="hilangkanPopup()">
         <div class="konten-putih" onclick="event.stopPropagation()">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="font-black text-xl">Detail Pesanan</h2>
-                <button onclick="hilangkanPopup()" class="text-gray-400 text-2xl">✕</button>
+            <div class="flex justify-between items-center mb-5 flex-shrink-0">
+                <h2 class="font-black text-lg">Detail Order</h2>
+                <button onclick="hilangkanPopup()" class="text-gray-400 text-2xl p-2">✕</button>
             </div>
             
-            <div id="list-checkout" class="space-y-6 mb-6 max-h-80 overflow-y-auto border-b pb-6 pr-1">
+            <div id="list-checkout" class="space-y-5 overflow-y-auto mb-4 pr-1 flex-1">
                 </div>
 
-            <div class="flex justify-between items-center mb-8">
-                <span class="font-bold text-gray-500">Total Akhir</span>
-                <span id="harga-akhir" class="font-black text-2xl text-orange-600"></span>
-            </div>
+            <div class="border-t pt-4 flex-shrink-0">
+                <div class="flex justify-between items-center mb-5 px-1">
+                    <span class="font-bold text-gray-500 text-sm">Total Akhir</span>
+                    <span id="harga-akhir" class="font-black text-xl text-orange-600"></span>
+                </div>
 
-            <button type="button" onclick="jalankanKirimWA()" class="w-full bg-green-500 text-white py-4 rounded-2xl font-black text-sm shadow-xl active:scale-95 transition-all">
-                KIRIM PESANAN KE WA
-            </button>
+                <button type="button" onclick="jalankanKirimWA()" class="w-full bg-green-500 text-white py-4 rounded-2xl font-black text-sm shadow-xl active:scale-95 transition-all flex justify-center items-center gap-2">
+                    KIRIM PESANAN KE WA
+                </button>
+            </div>
         </div>
     </div>
 
@@ -105,7 +109,7 @@
 
                 let htmlKat = "";
                 Array.from(setKategori).forEach(kt => {
-                    const cls = kt === katAktif ? "active-tab" : "bg-white text-gray-500 border border-gray-100 rounded-full";
+                    const cls = kt === katAktif ? "active-tab" : "bg-white text-gray-400 border border-gray-100 rounded-full";
                     htmlKat += `<button onclick="gantiKat('${kt}')" class="px-5 py-2 text-[10px] font-bold uppercase ${cls}">${kt}</button>`;
                 });
                 document.getElementById('tabs-kategori').innerHTML = htmlKat;
@@ -124,10 +128,10 @@
                 <div class="bg-white p-4 rounded-2xl shadow-sm flex justify-between items-center border border-gray-50">
                     <div class="min-w-0 flex-1 pr-3">
                         <h3 class="font-bold text-gray-800 text-sm truncate">${m.nama}</h3>
-                        <p class="text-orange-600 text-[11px] font-black mt-1 uppercase tracking-tight">Rp ${m.harga.toLocaleString('id-ID')}</p>
+                        <p class="text-orange-600 text-[11px] font-black mt-1">Rp ${m.harga.toLocaleString('id-ID')}</p>
                     </div>
                     <div class="flex items-center gap-2 bg-gray-50 p-1 rounded-xl">
-                        ${q > 0 ? `<button onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', -1)" class="w-8 h-8 rounded-lg bg-white shadow-sm text-orange-500 font-bold">-</button>
+                        ${q > 0 ? `<button onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', -1)" class="w-8 h-8 rounded-lg bg-white text-orange-500 font-bold shadow-sm">-</button>
                         <span class="font-bold text-xs w-4 text-center">${q}</span>` : ''}
                         <button onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="bg-orange-500 text-white w-8 h-8 rounded-lg font-bold shadow-md shadow-orange-100">+</button>
                     </div>
@@ -154,7 +158,7 @@
             const el = document.getElementById('bar-keranjang');
             if (tQty > 0) {
                 el.classList.remove('hidden');
-                document.getElementById('ringkasan-singkat').innerHTML = `<p class="font-black text-sm">${tQty} Item</p><p class="text-[10px] text-orange-400 font-bold uppercase tracking-widest">Total: Rp ${tPrice.toLocaleString('id-ID')}</p>`;
+                document.getElementById('ringkasan-singkat').innerHTML = `<p class="font-black text-sm">${tQty} Item</p><p class="text-[10px] text-orange-400 font-bold">Rp ${tPrice.toLocaleString('id-ID')}</p>`;
             } else { el.classList.add('hidden'); }
         }
 
@@ -162,22 +166,22 @@
             e.preventDefault();
             const arr = Object.values(dataKeranjang);
             let h = ""; let t = 0;
-            arr.forEach((i, index) => {
+            arr.forEach((i) => {
                 const s = i.harga * i.qty; t += s;
                 h += `
-                <div class="space-y-2 border-b border-gray-100 pb-4">
+                <div class="space-y-2 border-b border-gray-100 pb-3">
                     <div class="flex justify-between items-start">
                         <div class="flex-1 pr-4">
-                            <p class="font-bold text-gray-800 text-sm leading-tight">${i.nama}</p>
-                            <p class="text-[10px] text-gray-400 font-bold uppercase mt-1">${i.qty} x Rp ${i.harga.toLocaleString('id-ID')}</p>
+                            <p class="font-bold text-gray-800 text-[13px] leading-tight">${i.nama}</p>
+                            <p class="text-[10px] text-gray-400 font-bold uppercase mt-1">${i.qty}x @Rp ${i.harga.toLocaleString('id-ID')}</p>
                         </div>
-                        <span class="font-black text-gray-800 text-sm">Rp ${s.toLocaleString('id-ID')}</span>
+                        <span class="font-black text-gray-800 text-[13px]">Rp ${s.toLocaleString('id-ID')}</span>
                     </div>
                     <input type="text" 
-                        oninput="updateCatatanItem('${i.nama.replace(/'/g, "\\'")}', this.value)"
+                        onchange="updateCatatanItem('${i.nama.replace(/'/g, "\\'")}', this.value)"
                         value="${i.catatan || ''}"
-                        placeholder="Tambahkan catatan untuk menu ini..." 
-                        class="w-full bg-gray-50 border border-gray-200 rounded-lg py-2 px-3 text-[11px] outline-none focus:border-orange-400 italic">
+                        placeholder="Catatan: Pedas, es pisah, dll..." 
+                        class="w-full bg-gray-50 border border-gray-100 rounded-xl py-2 px-3 text-[11px] outline-none focus:border-orange-400 italic text-gray-600">
                 </div>`;
             });
             document.getElementById('list-checkout').innerHTML = h;
@@ -201,13 +205,13 @@
             const wa = "6285348773757";
             
             const txtOrder = arr.map(i => {
-                let text = `• ${i.nama} (${i.qty}x)`;
-                if (i.catatan) text += `%0A  _Catatan: ${i.catatan}_`;
-                return text;
+                let line = `• ${i.nama} (${i.qty}x)`;
+                if (i.catatan) line += `%0A  _Catatan: ${i.catatan}_`;
+                return line;
             }).join('%0A');
             
             const t = arr.reduce((a, b) => a + (b.harga * b.qty), 0);
-            const msg = `Halo Happy Puppy Samarinda,%0A%0ASaya mau pesan:%0A${txtOrder}%0A%0A*Total Akhir: Rp ${t.toLocaleString('id-ID')}*`;
+            const msg = `Halo Happy Puppy Samarinda,%0A%0ASaya mau pesan:%0A${txtOrder}%0A%0A*Total: Rp ${t.toLocaleString('id-ID')}*`;
             window.open(`https://wa.me/${wa}?text=${msg}`, '_blank');
         }
 
