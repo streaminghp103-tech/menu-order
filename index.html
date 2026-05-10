@@ -40,6 +40,7 @@
         <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800" class="w-full h-full object-cover opacity-30">
         <div class="absolute bottom-4 left-5 text-white">
             <h1 class="text-lg font-bold text-orange-400 uppercase leading-tight">Happy Puppy <br>Samarinda</h1>
+            <div id="badge-room" class="mt-1 inline-block bg-orange-500 text-[10px] px-2 py-0.5 rounded font-black hidden">ROOM: <span id="label-room"></span></div>
         </div>
     </div>
 
@@ -59,8 +60,11 @@
     <div id="layar-hitam" onclick="hilangkanPopup()">
         <div class="konten-putih" onclick="event.stopPropagation()">
             <div class="flex justify-between items-center mb-5 flex-shrink-0">
-                <h2 class="font-black text-lg text-gray-800">Detail Order</h2>
-                <button onclick="resetKeranjang()" class="text-red-500 text-[10px] font-bold uppercase border border-red-100 px-3 py-1 rounded-lg active:bg-red-50">Hapus Semua</button>
+                <div>
+                    <h2 class="font-black text-lg text-gray-800 leading-none">Detail Order</h2>
+                    <p id="sub-room" class="text-[10px] text-orange-500 font-bold mt-1 uppercase"></p>
+                </div>
+                <button onclick="resetKeranjang()" class="text-red-500 text-[10px] font-bold uppercase border border-red-100 px-3 py-1 rounded-lg">Reset</button>
             </div>
             
             <div id="list-checkout" class="space-y-5 overflow-y-auto mb-4 pr-1 flex-1"></div>
@@ -84,6 +88,18 @@
         let databaseMenu = [];
         let dataKeranjang = {}; 
         let katAktif = "SEMUA";
+        let roomNumber = "";
+
+        // Fungsi Deteksi Room dari Link
+        function deteksiRoom() {
+            const params = new URLSearchParams(window.location.search);
+            roomNumber = params.get('room');
+            if (roomNumber) {
+                document.getElementById('badge-room').classList.remove('hidden');
+                document.getElementById('label-room').innerText = roomNumber;
+                document.getElementById('sub-room').innerText = "Pesanan Room " + roomNumber;
+            }
+        }
 
         async function ambilData() {
             try {
@@ -127,12 +143,12 @@
                 <div class="bg-white p-4 rounded-2xl shadow-sm flex justify-between items-center border border-gray-50">
                     <div class="min-w-0 flex-1 pr-3">
                         <h3 class="font-bold text-gray-800 text-sm truncate">${m.nama}</h3>
-                        <p class="text-orange-600 text-[11px] font-black mt-1">Rp ${m.harga.toLocaleString('id-ID')}</p>
+                        <p class="text-orange-600 text-[11px] font-black mt-1 uppercase">Rp ${m.harga.toLocaleString('id-ID')}</p>
                     </div>
                     <div class="flex items-center gap-2 bg-gray-50 p-1 rounded-xl">
                         ${q > 0 ? `<button onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', -1)" class="w-8 h-8 rounded-lg bg-white text-orange-500 font-bold">-</button>
-                        <span class="font-bold text-xs w-4 text-center">${q}</span>` : ''}
-                        <button onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="bg-orange-500 text-white w-8 h-8 rounded-lg font-bold">+</button>
+                        <span class="font-bold text-xs w-4 text-center font-bold">${q}</span>` : ''}
+                        <button onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="bg-orange-500 text-white w-8 h-8 rounded-lg font-bold shadow-md shadow-orange-100">+</button>
                     </div>
                 </div>`;
             });
@@ -180,11 +196,12 @@
                         onchange="updateCatatanItem('${i.nama.replace(/'/g, "\\'")}', this.value)"
                         value="${i.catatan || ''}"
                         placeholder="Catatan: Dingin, pedas, dll..." 
-                        class="w-full bg-gray-50 border border-gray-100 rounded-xl py-2 px-3 text-[11px] outline-none focus:border-orange-400 italic text-gray-500">
+                        class="w-full bg-gray-50 border border-gray-200 rounded-xl py-2 px-3 text-[11px] outline-none focus:border-orange-400 italic text-gray-500">
                 </div>`;
             });
             document.getElementById('list-checkout').innerHTML = h;
             document.getElementById('harga-akhir').innerText = `Rp ${t.toLocaleString('id-ID')}`;
+            document.getElementById('layar-hitam').classList.add('tahal');
             document.getElementById('layar-hitam').classList.add('tampil');
         }
 
@@ -192,7 +209,6 @@
             if (dataKeranjang[nama]) dataKeranjang[nama].catatan = val;
         }
 
-        // FUNGSI RESET SEMUA PESANAN
         function resetKeranjang() {
             if (confirm("Kosongkan semua pesanan?")) {
                 dataKeranjang = {};
@@ -210,16 +226,27 @@
             const arr = Object.values(dataKeranjang);
             if (arr.length === 0) return;
             const wa = "6285348773757";
+            
+            // Header Pesanan dengan Room
+            let headerMsg = "Halo Happy Puppy Samarinda,%0A";
+            if (roomNumber) {
+                headerMsg += `*SAYA DARI ROOM ${roomNumber}*%0A%0A`;
+            } else {
+                headerMsg += "Saya ingin memesan:%0A%0A";
+            }
+
             const txtOrder = arr.map(i => {
                 let line = `• ${i.nama} (${i.qty}x)`;
                 if (i.catatan) line += `%0A  _Catatan: ${i.catatan}_`;
                 return line;
             }).join('%0A');
+            
             const t = arr.reduce((a, b) => a + (b.harga * b.qty), 0);
-            const msg = `Halo Happy Puppy Samarinda,%0A%0ASaya mau pesan:%0A${txtOrder}%0A%0A*Total: Rp ${t.toLocaleString('id-ID')}*`;
+            const msg = `${headerMsg}${txtOrder}%0A%0A*Total Akhir: Rp ${t.toLocaleString('id-ID')}*`;
             window.open(`https://wa.me/${wa}?text=${msg}`, '_blank');
         }
 
+        deteksiRoom();
         ambilData();
     </script>
 </body>
