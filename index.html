@@ -41,21 +41,22 @@
                 
                 let html = "";
                 baris.forEach(brs => {
-                    const kolom = brs.split(",");
-                    if(kolom.length >= 2) {
-                        const nama = kolom[0].trim();
-                        const harga = kolom[1].trim();
-                        html += `
-                        <div class="bg-white p-3 rounded-xl shadow-sm flex justify-between items-center border border-gray-100">
-                            <div class="flex items-center gap-3">
-                                <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center text-xs text-gray-400">IMG</div>
-                                <div>
-                                    <h3 class="font-bold text-sm">${nama}</h3>
-                                    <p class="text-orange-500 text-xs font-bold">Rp ${parseInt(harga).toLocaleString('id-ID')}</p>
-                                </div>
-                            </div>
-                            <button onclick="tambah('${nama}', ${harga})" class="bg-orange-100 text-orange-600 w-8 h-8 rounded-full font-bold shadow-sm">+</button>
-                        </div>`;
+                    const nama = kolom[0] ? kolom[0].trim() : "Menu";
+// Kode di bawah ini akan membersihkan karakter non-angka agar tidak NaN
+const hargaMentah = kolom[1] ? kolom[1].replace(/[^0-9]/g, '') : "0";
+const hargaFix = parseInt(hargaMentah) || 0;
+
+html += `
+<div class="bg-white p-3 rounded-xl shadow-sm flex justify-between items-center border border-gray-100">
+    <div class="flex items-center gap-3">
+        <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center text-xs text-gray-400 font-bold uppercase">HP</div>
+        <div>
+            <h3 class="font-bold text-sm text-gray-800">${nama}</h3>
+            <p class="text-orange-500 text-xs font-bold">Rp ${hargaFix.toLocaleString('id-ID')}</p>
+        </div>
+    </div>
+    <button onclick="tambah('${nama}', ${hargaFix})" class="bg-orange-500 text-white w-8 h-8 rounded-full font-bold shadow-sm">+</button>
+</div>`;
                     }
                 });
                 document.getElementById('container-menu').innerHTML = html;
