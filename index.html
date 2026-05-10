@@ -393,7 +393,7 @@
             const t = arr.reduce((a, b) => a + (b.harga * b.qty), 0);
             let msg = `*PESANAN BARU - ROOM ${roomNumber}*%0A---------------------------%0A`;
             arr.forEach(i => { msg += `• *${i.nama}* (${i.qty}x)%0A`; if(i.catatan) msg += `  _Catatan: ${i.catatan}_%0A`; });
-            msg += `---------------------------%0A*TOTAL ESTIMASI: Rp ${t.toLocaleString('id-ID')}*%0A%0AMohon segera diproses, terima kasih!`;
+            msg += `---------------------------%0A*TOTAL: Rp ${t.toLocaleString('id-ID')}*%0A%0AMohon segera diproses, terima kasih!`;
             window.open(`https://wa.me/${WA_NUMBER}?text=${msg}`, '_blank');
             
             arr.forEach(item => {
