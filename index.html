@@ -8,106 +8,114 @@
     <style>
         body { overflow-x: hidden; touch-action: pan-y; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
-        .active-tab { background-color: #f97316; color: white; border-radius: 9999px; }
+        /* Tab Aktif lebih menyala */
+        .active-tab { 
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+            color: white; 
+            border-radius: 9999px;
+            box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
+        }
         
         #layar-hitam, #layar-bantuan {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(4px);
-            z-index: 9999;
-            align-items: flex-end;
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,0.85); backdrop-filter: blur(8px);
+            z-index: 9999; align-items: flex-end;
         }
         #layar-hitam.tampil, #layar-bantuan.tampil { display: flex; }
         .konten-putih {
-            background: white;
-            width: 100%;
-            border-radius: 24px 24px 0 0;
-            padding: 20px;
-            transform: translateY(100%);
-            transition: transform 0.3s ease-out;
-            max-height: 90vh;
-            display: flex;
-            flex-direction: column;
+            background: white; width: 100%; border-radius: 32px 32px 0 0;
+            padding: 24px; transform: translateY(100%);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+            max-height: 90vh; display: flex; flex-direction: column;
         }
         #layar-hitam.tampil .konten-putih, #layar-bantuan.tampil .konten-putih { transform: translateY(0); }
         
-        .img-loading { background: #f3f4f6; position: relative; overflow: hidden; }
-        .img-loading::after {
-            content: ""; position: absolute; inset: 0;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-            animation: loading 1.5s infinite;
+        /* Animasi berdenyut untuk tombol Pesan */
+        @keyframes pulse-orange {
+            0% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(249, 115, 22, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0); }
         }
-        @keyframes loading { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+        .animate-order { animation: pulse-orange 2s infinite; }
+
+        /* Badge Promo */
+        .badge-hot {
+            position: absolute; top: 6px; left: 6px;
+            background: #ef4444; color: white; font-size: 8px;
+            font-weight: 900; padding: 2px 8px; border-radius: 6px;
+            z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
     </style>
 </head>
-<body class="bg-gray-100 pb-40 font-sans text-gray-900 w-full">
+<body class="bg-slate-50 pb-40 font-sans text-slate-900 w-full">
 
-    <div class="h-40 bg-slate-900 relative w-full overflow-hidden">
-        <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800" class="w-full h-full object-cover opacity-30">
-        <div class="absolute bottom-4 left-5 text-white">
-            <h1 class="text-lg font-bold text-orange-400 uppercase leading-tight italic">Happy Puppy <br>Samarinda</h1>
-            <div id="info-room-header" class="mt-2 inline-block bg-white/10 border border-white/20 px-3 py-1 rounded text-[10px] font-bold uppercase backdrop-blur-md">Room: --</div>
+    <div class="h-44 bg-slate-900 relative w-full overflow-hidden">
+        <img src="https://images.unsplash.com/photo-1514525253344-76337eb979cd?w=800" class="w-full h-full object-cover opacity-40">
+        <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent"></div>
+        <div class="absolute bottom-6 left-6 text-white">
+            <p class="text-[10px] font-black text-orange-400 uppercase tracking-widest mb-1">Welcome to</p>
+            <h1 class="text-2xl font-black uppercase leading-none italic">Happy Puppy<br><span class="text-orange-500 underline decoration-white/20">Samarinda</span></h1>
+            <div id="info-room-header" class="mt-3 inline-block bg-white/10 border border-white/20 px-3 py-1 rounded-full text-[10px] font-bold uppercase backdrop-blur-md">📍 Room: --</div>
         </div>
-        <button onclick="bukaBantuan()" class="absolute top-4 right-4 bg-white/10 border border-white/20 text-white px-3 py-1.5 rounded-full text-[10px] font-bold uppercase backdrop-blur-md active:bg-orange-500">
-            🆘 Bantuan
-        </button>
+        <button onclick="bukaBantuan()" class="absolute top-6 right-6 bg-white/10 border border-white/20 text-white px-4 py-2 rounded-full text-[10px] font-black uppercase backdrop-blur-md active:scale-90 transition-all">🆘 Bantuan</button>
     </div>
 
-    <div class="p-4 bg-white mb-2 shadow-sm">
-        <h2 class="text-[11px] font-black uppercase text-gray-400 mb-3 tracking-widest flex items-center gap-2">
-            <span class="text-lg">🔥</span> Rekomendasi
+    <div class="p-5 bg-white mb-3 shadow-sm rounded-b-[32px]">
+        <h2 class="text-[11px] font-black uppercase text-slate-400 mb-4 tracking-[0.2em] flex items-center gap-2">
+            <span class="w-2 h-2 bg-red-500 rounded-full animate-ping"></span> Menu Paling Laris
         </h2>
         <div id="container-best-seller" class="flex gap-4 overflow-x-auto no-scrollbar pb-2"></div>
     </div>
 
-    <div class="sticky top-0 bg-white shadow-sm z-40 overflow-x-auto no-scrollbar flex whitespace-nowrap px-4 py-3 gap-2" id="tabs-kategori"></div>
+    <div class="sticky top-0 bg-white/80 backdrop-blur-lg shadow-sm z-40 overflow-x-auto no-scrollbar flex whitespace-nowrap px-5 py-4 gap-3" id="tabs-kategori"></div>
 
-    <div class="p-4 w-full">
-        <div id="container-menu" class="space-y-3"></div>
+    <div class="p-5 w-full">
+        <div id="container-menu" class="space-y-4"></div>
     </div>
 
-    <div id="bar-keranjang" class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[92%] max-w-md bg-zinc-900 text-white p-4 rounded-2xl shadow-2xl flex justify-between items-center hidden z-50">
+    <div id="bar-keranjang" class="fixed bottom-8 left-1/2 -translate-x-1/2 w-[90%] max-w-md bg-slate-900 text-white p-5 rounded-[24px] shadow-2xl flex justify-between items-center hidden z-50 border border-white/10">
         <div id="ringkasan-singkat"></div>
-        <button type="button" onclick="munculkanPopup(event)" class="bg-orange-500 px-5 py-2 rounded-xl font-bold text-[11px] uppercase shadow-lg active:scale-90">
+        <button type="button" onclick="munculkanPopup(event)" class="bg-orange-500 px-6 py-3 rounded-xl font-black text-[11px] uppercase shadow-lg shadow-orange-500/40 animate-order active:scale-95 transition-all">
             Lihat Pesanan
         </button>
     </div>
 
     <div id="layar-bantuan" onclick="tutupBantuan()">
         <div class="konten-putih" onclick="event.stopPropagation()">
-            <h2 class="font-black text-xl text-gray-800 mb-4 uppercase italic">Layanan Room</h2>
-            <div class="grid grid-cols-1 gap-3 mb-6">
-                <button onclick="kirimBantuan('Minta Bill / Tagihan')" class="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl text-left flex justify-between items-center active:bg-orange-50">
-                    <span class="font-bold text-gray-700">Minta Bill / Tagihan</span><span>🧾</span>
+            <div class="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mb-6"></div>
+            <h2 class="font-black text-xl text-slate-800 mb-6 uppercase italic text-center">Butuh Bantuan?</h2>
+            <div class="grid grid-cols-1 gap-4 mb-8">
+                <button onclick="kirimBantuan('Minta Bill')" class="w-full p-5 bg-slate-50 border border-slate-100 rounded-2xl text-left flex justify-between items-center active:bg-orange-50 transition-all">
+                    <span class="font-black text-slate-700 uppercase italic">Minta Bill / Tagihan</span><span class="text-2xl">🧾</span>
                 </button>
-                <button onclick="kirimBantuan('Panggil Staff ke Room')" class="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl text-left flex justify-between items-center active:bg-orange-50">
-                    <span class="font-bold text-gray-700">Panggil Staff</span><span>🙋‍♂️</span>
+                <button onclick="kirimBantuan('Panggil Pelayan')" class="w-full p-5 bg-slate-50 border border-slate-100 rounded-2xl text-left flex justify-between items-center active:bg-orange-50 transition-all">
+                    <span class="font-black text-slate-700 uppercase italic">Panggil Staff</span><span class="text-2xl">🙋‍♂️</span>
                 </button>
             </div>
-            <button onclick="tutupBantuan()" class="w-full py-4 text-gray-400 font-bold text-sm uppercase tracking-widest">Tutup</button>
+            <button onclick="tutupBantuan()" class="w-full py-4 text-slate-400 font-bold text-[10px] uppercase tracking-widest">Tutup</button>
         </div>
     </div>
 
     <div id="layar-hitam" onclick="hilangkanPopup()">
         <div class="konten-putih" onclick="event.stopPropagation()">
-            <div class="flex justify-between items-start mb-5 flex-shrink-0">
+            <div class="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mb-6"></div>
+            <div class="flex justify-between items-start mb-6">
                 <div>
-                    <h2 class="font-black text-xl text-gray-800 leading-none uppercase italic">Cek Pesanan</h2>
-                    <div id="info-room-popup" class="mt-2 inline-block bg-orange-500 text-white px-3 py-1 rounded text-[11px] font-black uppercase">ROOM: --</div>
+                    <h2 class="font-black text-2xl text-slate-800 leading-none uppercase italic">Pesanan Kamu</h2>
+                    <div id="info-room-popup" class="mt-2 inline-block bg-orange-600 text-white px-3 py-1 rounded-lg text-[10px] font-black uppercase">ROOM: --</div>
                 </div>
-                <button onclick="resetKeranjang()" class="text-red-500 text-[10px] font-bold uppercase border border-red-100 px-3 py-1 rounded-lg italic">Reset</button>
+                <button onclick="resetKeranjang()" class="text-red-500 text-[10px] font-black uppercase bg-red-50 px-4 py-2 rounded-xl transition-all">Reset</button>
             </div>
-            <div id="list-checkout" class="space-y-5 overflow-y-auto mb-4 pr-1 flex-1"></div>
             
-            <div class="border-t pt-4 flex-shrink-0">
-                <div class="flex justify-between items-center mb-5 px-1">
-                    <span class="font-bold text-gray-500 text-sm uppercase">Total Bayar</span>
-                    <span id="harga-akhir" class="font-black text-xl text-orange-600 italic"></span>
+            <div id="list-checkout" class="space-y-4 overflow-y-auto mb-6 pr-1 flex-1 no-scrollbar"></div>
+            
+            <div class="border-t border-slate-100 pt-6">
+                <div class="flex justify-between items-center mb-6 px-1">
+                    <span class="font-black text-slate-400 text-xs uppercase tracking-[0.2em]">Total Estimasi</span>
+                    <span id="harga-akhir" class="font-black text-2xl text-orange-600 italic"></span>
                 </div>
-                <button type="button" onclick="jalankanKirimWA()" class="w-full bg-green-600 text-white py-4 rounded-2xl font-black text-sm active:scale-95 transition-all uppercase flex items-center justify-center gap-2">
-                    <span>KONFIRMASI KE WHATSAPP</span> 🚀
+                <button type="button" onclick="jalankanKirimWA()" class="w-full bg-green-600 text-white py-5 rounded-2xl font-black text-sm active:scale-95 transition-all uppercase flex items-center justify-center gap-3 shadow-xl shadow-green-600/20">
+                    <span>KIRIM KE WHATSAPP</span> 🚀
                 </button>
             </div>
         </div>
@@ -126,8 +134,7 @@
             const params = new URLSearchParams(window.location.search);
             const r = params.get('room');
             if (r) roomNumber = r.toUpperCase();
-            // Update tampilan di semua tempat
-            document.getElementById('info-room-header').innerText = "Room: " + roomNumber;
+            document.getElementById('info-room-header').innerText = "📍 Room: " + roomNumber;
             document.getElementById('info-room-popup').innerText = "ROOM: " + roomNumber;
         }
 
@@ -162,21 +169,22 @@
         function renderTabs(setKategori) {
             let htmlKat = "";
             Array.from(setKategori).forEach(kt => {
-                const cls = kt === katAktif ? "active-tab shadow-md" : "bg-white text-gray-400 border border-gray-100 rounded-full";
-                htmlKat += `<button onclick="gantiKat('${kt}')" class="px-5 py-2 text-[10px] font-bold uppercase ${cls}">${kt}</button>`;
+                const cls = kt === katAktif ? "active-tab" : "bg-slate-100 text-slate-400 font-bold rounded-full border border-transparent";
+                htmlKat += `<button onclick="gantiKat('${kt}')" class="px-6 py-3 text-[10px] uppercase tracking-widest transition-all ${cls}">${kt}</button>`;
             });
             document.getElementById('tabs-kategori').innerHTML = htmlKat;
         }
 
         function renderBestSeller() {
             let htmlBest = "";
-            databaseMenu.slice(0, 5).forEach(m => {
-                const imgTag = m.foto ? `<img src="${m.foto}" class="w-full h-20 object-cover rounded-xl mb-2 shadow-sm">` : `<div class="w-full h-20 bg-orange-50 rounded-xl mb-2 flex items-center justify-center text-2xl">🍽️</div>`;
+            databaseMenu.slice(0, 6).forEach(m => {
+                const imgTag = m.foto ? `<img src="${m.foto}" class="w-full h-24 object-cover rounded-2xl mb-3 shadow-md">` : `<div class="w-full h-24 bg-orange-50 rounded-2xl mb-3 flex items-center justify-center text-2xl">🍲</div>`;
                 htmlBest += `
-                <div onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="min-w-[140px] bg-gray-50 p-2 rounded-2xl border border-gray-100 active:scale-95 transition-all">
+                <div onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="min-w-[150px] bg-white p-2 rounded-[24px] border border-slate-100 relative shadow-sm active:scale-95 transition-all">
+                    <span class="badge-hot">HOT</span>
                     ${imgTag}
-                    <p class="font-bold text-gray-800 text-[10px] leading-tight mb-1 truncate uppercase italic">${m.nama}</p>
-                    <p class="text-orange-600 font-black text-[10px]">Rp ${m.harga.toLocaleString('id-ID')}</p>
+                    <p class="font-black text-slate-800 text-[11px] leading-tight mb-1 truncate uppercase italic px-1">${m.nama}</p>
+                    <p class="text-orange-600 font-black text-[12px] px-1 underline decoration-orange-200">Rp ${m.harga.toLocaleString('id-ID')}</p>
                 </div>`;
             });
             document.getElementById('container-best-seller').innerHTML = htmlBest;
@@ -187,19 +195,22 @@
             const filtered = katAktif === "SEMUA" ? databaseMenu : databaseMenu.filter(m => m.kategori === katAktif);
             filtered.forEach(m => {
                 const q = dataKeranjang[m.nama]?.qty || 0;
-                const imgTag = m.foto ? `<img src="${m.foto}" class="w-16 h-16 object-cover rounded-xl shadow-sm">` : `<div class="w-16 h-16 bg-gray-50 rounded-xl flex items-center justify-center text-xl shadow-inner border border-gray-100">🍴</div>`;
+                const activeCard = q > 0 ? 'border-orange-500 bg-orange-50/30' : 'border-slate-100 bg-white';
+                const imgTag = m.foto ? `<img src="${m.foto}" class="w-20 h-20 object-cover rounded-2xl shadow-sm">` : `<div class="w-20 h-20 bg-slate-50 rounded-2xl flex items-center justify-center text-xl">🍱</div>`;
                 
                 html += `
-                <div class="bg-white p-3 rounded-2xl shadow-sm flex items-center border border-gray-50">
-                    <div class="flex-shrink-0 mr-4">${imgTag}</div>
-                    <div class="min-w-0 flex-1">
-                        <h3 class="font-bold text-gray-800 text-sm truncate uppercase italic">${m.nama}</h3>
-                        <p class="text-orange-600 text-[11px] font-black mt-0.5 underline">Rp ${m.harga.toLocaleString('id-ID')}</p>
+                <div class="p-3 rounded-[28px] shadow-sm flex items-center border transition-all ${activeCard}">
+                    <div class="flex-shrink-0 mr-4 relative">
+                        ${imgTag}
                     </div>
-                    <div class="flex items-center gap-2 bg-gray-50 p-1 rounded-xl ml-2">
-                        ${q > 0 ? `<button onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', -1)" class="w-8 h-8 rounded-lg bg-white text-orange-500 font-bold shadow-sm active:bg-orange-50">-</button>
-                        <span class="font-bold text-xs w-4 text-center">${q}</span>` : ''}
-                        <button onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="bg-orange-500 text-white w-8 h-8 rounded-lg font-bold shadow-md shadow-orange-100 active:scale-90">+</button>
+                    <div class="min-w-0 flex-1">
+                        <h3 class="font-black text-slate-800 text-[14px] truncate uppercase italic leading-none">${m.nama}</h3>
+                        <p class="text-orange-600 text-[13px] font-black mt-2 italic underline decoration-orange-200">Rp ${m.harga.toLocaleString('id-ID')}</p>
+                    </div>
+                    <div class="flex items-center gap-2 bg-slate-100 p-1.5 rounded-2xl ml-2 border border-slate-200">
+                        ${q > 0 ? `<button onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', -1)" class="w-9 h-9 rounded-xl bg-white text-orange-500 font-black shadow-sm active:bg-orange-50">-</button>
+                        <span class="font-black text-sm w-5 text-center text-slate-700">${q}</span>` : ''}
+                        <button onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="bg-orange-500 text-white w-9 h-9 rounded-xl font-black shadow-lg shadow-orange-500/20 active:scale-90">+</button>
                     </div>
                 </div>`;
             });
@@ -216,6 +227,7 @@
             dataKeranjang[nama].qty += d;
             if (dataKeranjang[nama].qty <= 0) delete dataKeranjang[nama];
             renderMenu();
+            renderBestSeller();
             updateBar();
         }
 
@@ -226,11 +238,10 @@
             const el = document.getElementById('bar-keranjang');
             if (tQty > 0) {
                 el.classList.remove('hidden');
-                document.getElementById('ringkasan-singkat').innerHTML = `<p class="font-black text-sm italic">${tQty} Item Terpilih</p><p class="text-[10px] text-orange-400 font-bold uppercase tracking-wide">Estimasi Rp ${tPrice.toLocaleString('id-ID')}</p>`;
+                document.getElementById('ringkasan-singkat').innerHTML = `<p class="font-black text-lg italic leading-none">${tQty} Menu</p><p class="text-[10px] text-orange-400 font-black uppercase tracking-widest mt-1">Estimasi Rp ${tPrice.toLocaleString('id-ID')}</p>`;
             } else { el.classList.add('hidden'); }
         }
 
-        // KEMBALI: Fungsi memunculkan popup dengan input catatan per item
         function munculkanPopup(e) {
             e.preventDefault();
             const arr = Object.values(dataKeranjang);
@@ -238,24 +249,24 @@
             arr.forEach((i) => {
                 const s = i.harga * i.qty; t += s;
                 h += `
-                <div class="space-y-2 border-b border-gray-100 pb-3">
+                <div class="bg-slate-50 p-4 rounded-[24px] border border-slate-100 flex flex-col gap-3">
                     <div class="flex justify-between items-start">
                         <div class="flex-1 pr-4">
-                            <p class="font-bold text-gray-800 text-[13px] leading-tight uppercase italic">${i.nama}</p>
-                            <p class="text-[10px] text-gray-400 font-bold mt-1 uppercase">${i.qty}x @ Rp ${i.harga.toLocaleString('id-ID')}</p>
+                            <p class="font-black text-slate-800 text-[14px] uppercase italic leading-none">${i.nama}</p>
+                            <p class="text-[10px] text-slate-400 font-black mt-1 uppercase tracking-tight">${i.qty}x @ Rp ${i.harga.toLocaleString('id-ID')}</p>
                         </div>
-                        <span class="font-black text-gray-800 text-[13px]">Rp ${s.toLocaleString('id-ID')}</span>
+                        <span class="font-black text-slate-800 text-[14px]">Rp ${s.toLocaleString('id-ID')}</span>
                     </div>
-                    <input type="text" onchange="updateCatatanItem('${i.nama.replace(/'/g, "\\'")}', this.value)" value="${i.catatan || ''}" placeholder="Contoh: Es sedikit / pedas..." class="w-full bg-gray-50 border border-gray-200 rounded-xl py-2 px-3 text-[11px] outline-none italic focus:border-orange-300">
+                    <input type="text" onchange="updateCatatanItem('${i.nama.replace(/'/g, "\\'")}', this.value)" value="${i.catatan || ''}" placeholder="Catatan khusus (misal: pedas, es dikit)..." class="w-full bg-white border border-slate-200 rounded-xl py-3 px-4 text-[11px] outline-none italic focus:border-orange-500 shadow-sm transition-all">
                 </div>`;
             });
-            document.getElementById('list-checkout').innerHTML = h || `<p class="text-center py-10 text-gray-300 font-bold uppercase text-[10px]">Keranjang Kosong</p>`;
+            document.getElementById('list-checkout').innerHTML = h || `<p class="text-center py-10 text-slate-300 font-black uppercase text-[10px] italic">Kamu belum pilih apa-apa nih...</p>`;
             document.getElementById('harga-akhir').innerText = `Rp ${t.toLocaleString('id-ID')}`;
             document.getElementById('layar-hitam').classList.add('tampil');
         }
 
         function updateCatatanItem(nama, val) { if (dataKeranjang[nama]) dataKeranjang[nama].catatan = val; }
-        function resetKeranjang() { if (confirm("Kosongkan semua pesanan?")) { dataKeranjang = {}; hilangkanPopup(); renderMenu(); updateBar(); } }
+        function resetKeranjang() { if (confirm("Kosongkan semua pesanan?")) { dataKeranjang = {}; hilangkanPopup(); renderMenu(); renderBestSeller(); updateBar(); } }
         function hilangkanPopup() { document.getElementById('layar-hitam').classList.remove('tampil'); }
         function bukaBantuan() { document.getElementById('layar-bantuan').classList.add('tampil'); }
         function tutupBantuan() { document.getElementById('layar-bantuan').classList.remove('tampil'); }
@@ -273,9 +284,9 @@
             let msg = `Halo Happy Puppy Samarinda,%0A%0ASaya dari *ROOM ${roomNumber}* ingin memesan:%0A%0A`;
             arr.forEach(i => {
                 msg += `- *${i.nama}* (${i.qty}x)%0A`;
-                if (i.catatan) msg += `  _(Catatan: ${i.catatan})_%0A`; // Catatan masuk ke pesan WA
+                if (i.catatan) msg += `  _(Catatan: ${i.catatan})_%0A`;
             });
-            msg += `%0A*Total Bayar: Rp ${t.toLocaleString('id-ID')}*%0A%0AMohon segera diproses ya, terima kasih.`;
+            msg += `%0A*TOTAL ESTIMASI: Rp ${t.toLocaleString('id-ID')}*%0A%0AMohon diproses, terima kasih! 🎤🍹`;
             window.open(`https://wa.me/${WA_NUMBER}?text=${msg}`, '_blank');
         }
 
