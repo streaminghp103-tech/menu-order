@@ -176,7 +176,7 @@
 
         // --- PROTEKSI SESI (2 JAM) ---
         function proteksiSesi() {
-            const DURASI_SESI = 2 * 60 * 60 * 1000; // 2 Jam
+            const DURASI_SESI = 2 * 60 * 60 * 1000; 
             const waktuSekarang = new Date().getTime();
             const tagSesi = 'sesi_mulai_hp_' + roomNumber;
             const sesiMulai = localStorage.getItem(tagSesi);
@@ -192,11 +192,8 @@
                             <div class="bg-white p-8 rounded-[40px] shadow-2xl max-w-sm">
                                 <div class="text-6xl mb-6">⏰</div>
                                 <h1 class="font-black text-2xl text-slate-800 uppercase italic mb-3">Sesi Berakhir</h1>
-                                <p class="text-slate-500 text-sm leading-relaxed mb-8">Akses menu digital untuk <b>Room ${roomNumber}</b> telah habis (Batas 2 Jam).</p>
-                                <div class="bg-slate-50 p-4 rounded-2xl border border-dashed border-slate-300">
-                                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Solusi:</p>
-                                    <p class="text-xs text-slate-600 mt-1 font-medium italic">Silakan tutup tab browser ini dan scan ulang QR Code di dalam room jika Anda masih berkunjung.</p>
-                                </div>
+                                <p class="text-slate-500 text-sm leading-relaxed mb-8">Akses menu untuk <b>Room ${roomNumber}</b> telah habis (Batas 2 Jam).</p>
+                                <p class="text-xs text-slate-400 font-medium italic">Scan ulang QR Code di dalam room jika masih berkunjung.</p>
                             </div>
                         </div>
                     `;
@@ -274,13 +271,21 @@
         function renderBestSeller() {
             let htmlBest = "";
             databaseMenu.slice(0, 6).forEach(m => {
+                const q = dataKeranjang[m.nama]?.qty || 0;
                 const imgTag = m.foto ? `<img src="${m.foto}" class="w-full h-24 object-cover rounded-2xl mb-3 shadow-md">` : `<div class="w-full h-24 bg-orange-50 rounded-2xl mb-3 flex items-center justify-center text-2xl">🍲</div>`;
                 htmlBest += `
-                <div onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="min-w-[150px] bg-slate-50 p-2 rounded-[24px] border border-slate-100 relative active:scale-95 transition-all">
+                <div class="min-w-[150px] bg-slate-50 p-2 rounded-[24px] border border-slate-100 relative active:scale-95 transition-all">
                     <span class="badge-hot">HOT</span>
                     ${imgTag}
                     <p class="font-black text-slate-800 text-[11px] leading-tight mb-1 truncate uppercase italic px-1">${m.nama}</p>
-                    <p class="text-orange-600 font-black text-[12px] px-1 italic">Rp ${m.harga.toLocaleString('id-ID')}</p>
+                    <p class="text-orange-600 font-black text-[12px] px-1 italic mb-2">Rp ${m.harga.toLocaleString('id-ID')}</p>
+                    <div class="flex items-center justify-center bg-white rounded-xl border border-slate-200 p-1 mx-1">
+                        ${q > 0 ? `
+                            <button onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', -1)" class="text-red-500 w-6 h-6 flex items-center justify-center font-bold text-lg">-</button>
+                            <span class="px-2 font-black text-[10px] text-slate-700">${q}</span>
+                        ` : ''}
+                        <button onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="text-orange-500 w-6 h-6 flex items-center justify-center font-bold text-lg">+</button>
+                    </div>
                 </div>`;
             });
             document.getElementById('container-best-seller').innerHTML = htmlBest;
@@ -341,11 +346,8 @@
             if(e) e.preventDefault();
             const arr = Object.values(dataKeranjang);
             let h = ""; let t = 0;
-            let jumlahMinuman = 0; let jumlahMakanan = 0;
             arr.forEach((i) => {
                 const s = i.harga * i.qty; t += s;
-                const kat = i.kategori.toUpperCase();
-                if(kat.includes("DRINK") || kat.includes("MINUMAN")) jumlahMinuman += i.qty; else jumlahMakanan += i.qty;
                 h += `
                 <div class="bg-slate-50 p-4 rounded-[24px] border border-slate-100 flex flex-col gap-3">
                     <div class="flex justify-between items-start pr-1">
@@ -362,10 +364,7 @@
                     <input type="text" onchange="updateCatatanItem('${i.nama.replace(/'/g, "\\'")}', this.value)" value="${i.catatan || ''}" placeholder="Catatan khusus..." class="w-full bg-white border border-slate-200 rounded-xl py-3 px-4 text-[11px] italic focus:border-orange-500 outline-none">
                 </div>`;
             });
-            let targetKategori = (jumlahMinuman > jumlahMakanan) ? ["SNACK", "FOOD", "MAKANAN"] : ["DRINK", "MINUMAN"];
-            let saran = databaseMenu.filter(m => !dataKeranjang[m.nama] && targetKategori.some(kat => m.kategori.toUpperCase().includes(kat))).sort(() => 0.5 - Math.random()).slice(0, 2);
-            let crossSellHtml = saran.length > 0 ? `<div class="mt-8 mb-4"><p class="text-[10px] font-black text-orange-500 uppercase tracking-widest mb-3">Rekomendasi Tambahan:</p><div class="grid grid-cols-2 gap-3">${saran.map(s => `<div onclick="ubahQty('${s.nama.replace(/'/g, "\\'")}', 1); munculkanPopup()" class="bg-orange-50 border border-orange-100 p-3 rounded-2xl text-center active:scale-95"><p class="font-black text-slate-700 text-[9px] uppercase italic">${s.nama}</p><button class="mt-2 bg-white text-orange-500 text-[8px] font-black px-2 py-1 rounded-lg border border-orange-200 uppercase">+ Tambah</button></div>`).join('')}</div></div>` : "";
-            document.getElementById('list-checkout').innerHTML = (h || `<p class="text-center py-10 text-slate-300 font-black uppercase text-[10px] italic">Kosong...</p>`) + crossSellHtml;
+            document.getElementById('list-checkout').innerHTML = h || `<p class="text-center py-10 text-slate-300 font-black uppercase text-[10px] italic">Kosong...</p>`;
             document.getElementById('harga-akhir').innerText = `Rp ${t.toLocaleString('id-ID')}`;
             document.getElementById('layar-hitam').classList.add('tampil');
         }
@@ -385,25 +384,18 @@
             const arr = Object.values(dataKeranjang);
             if (arr.length === 0) return;
             const t = arr.reduce((a, b) => a + (b.harga * b.qty), 0);
-            
-            let msg = `*PESANAN BARU - ROOM ${roomNumber}*%0A`;
-            msg += `---------------------------%0A`;
+            let msg = `*PESANAN BARU - ROOM ${roomNumber}*%0A---------------------------%0A`;
             arr.forEach(i => { 
                 msg += `• *${i.nama}* (${i.qty}x)%0A`; 
                 if(i.catatan) msg += `  _Catatan: ${i.catatan}_%0A`; 
             });
-            msg += `---------------------------%0A`;
-            msg += `*TOTAL ESTIMASI: Rp ${t.toLocaleString('id-ID')}*%0A%0AMohon segera diproses, terima kasih!`;
-            
+            msg += `---------------------------%0A*TOTAL ESTIMASI: Rp ${t.toLocaleString('id-ID')}*%0A%0AMohon segera diproses, terima kasih!`;
             window.open(`https://wa.me/${WA_NUMBER}?text=${msg}`, '_blank');
             
             arr.forEach(item => {
                 const index = riwayatPesananLokal.findIndex(r => r.nama === item.nama);
-                if (index > -1) {
-                    riwayatPesananLokal[index].qty += item.qty;
-                } else {
-                    riwayatPesananLokal.push({ nama: item.nama, qty: item.qty });
-                }
+                if (index > -1) riwayatPesananLokal[index].qty += item.qty;
+                else riwayatPesananLokal.push({ nama: item.nama, qty: item.qty });
             });
 
             setTimeout(() => {
@@ -424,12 +416,7 @@
                 badge.innerText = riwayatPesananLokal.length;
                 let html = "";
                 riwayatPesananLokal.forEach(r => {
-                    html += `
-                    <div class="bg-white/90 px-3 py-2 rounded-xl flex items-center gap-2 flex-shrink-0 shadow-sm">
-                        <span class="text-[10px] font-black text-orange-600">${r.qty}x</span>
-                        <span class="text-[9px] font-bold text-slate-800 uppercase italic truncate max-w-[80px]">${r.nama}</span>
-                        <span class="text-green-500 text-[10px]">✓</span>
-                    </div>`;
+                    html += `<div class="bg-white/90 px-3 py-2 rounded-xl flex items-center gap-2 flex-shrink-0 shadow-sm"><span class="text-[10px] font-black text-orange-600">${r.qty}x</span><span class="text-[9px] font-bold text-slate-800 uppercase italic truncate max-w-[80px]">${r.nama}</span><span class="text-green-500 text-[10px]">✓</span></div>`;
                 });
                 container.innerHTML = html;
             }
@@ -440,7 +427,6 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // --- INISIALISASI ---
         deteksiRoom(); 
         if(proteksiSesi()) {
             ambilData();
