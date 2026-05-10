@@ -10,7 +10,7 @@
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .active-tab { background-color: #f97316; color: white; border-radius: 9999px; }
         
-        #layar-hitam {
+        #layar-hitam, #layar-bantuan {
             display: none;
             position: fixed;
             inset: 0;
@@ -19,7 +19,7 @@
             z-index: 9999;
             align-items: flex-end;
         }
-        #layar-hitam.tampil { display: flex; }
+        #layar-hitam.tampil, #layar-bantuan.tampil { display: flex; }
         .konten-putih {
             background: white;
             width: 100%;
@@ -31,16 +31,27 @@
             display: flex;
             flex-direction: column;
         }
-        #layar-hitam.tampil .konten-putih { transform: translateY(0); }
+        #layar-hitam.tampil .konten-putih, #layar-bantuan.tampil .konten-putih { transform: translateY(0); }
     </style>
 </head>
 <body class="bg-gray-100 pb-40 font-sans text-gray-900 w-full">
 
-    <div class="h-32 bg-slate-900 relative w-full overflow-hidden">
+    <div class="h-36 bg-slate-900 relative w-full overflow-hidden">
         <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800" class="w-full h-full object-cover opacity-30">
         <div class="absolute bottom-4 left-5 text-white">
             <h1 class="text-lg font-bold text-orange-400 uppercase leading-tight italic">Happy Puppy <br>Samarinda</h1>
         </div>
+        <button onclick="bukaBantuan()" class="absolute top-4 right-4 bg-white/10 border border-white/20 text-white px-3 py-1.5 rounded-full text-[10px] font-bold uppercase backdrop-blur-md active:bg-orange-500">
+            🆘 Bantuan
+        </button>
+    </div>
+
+    <div class="p-4 bg-white mb-2">
+        <h2 class="text-[11px] font-black uppercase text-gray-400 mb-3 tracking-widest flex items-center gap-2">
+            <span class="text-lg">🔥</span> Paling Banyak Dipesan
+        </h2>
+        <div id="container-best-seller" class="flex gap-4 overflow-x-auto no-scrollbar pb-2">
+            </div>
     </div>
 
     <div class="sticky top-0 bg-white shadow-sm z-40 overflow-x-auto no-scrollbar flex whitespace-nowrap px-4 py-3 gap-2" id="tabs-kategori"></div>
@@ -49,11 +60,32 @@
         <div id="container-menu" class="space-y-3"></div>
     </div>
 
-    <div id="bar-keranjang" class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[92%] max-w-md bg-zinc-900 text-white p-4 rounded-2xl shadow-2xl flex justify-between items-center hidden z-50 border border-white/10">
+    <div id="bar-keranjang" class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[92%] max-w-md bg-zinc-900 text-white p-4 rounded-2xl shadow-2xl flex justify-between items-center hidden z-50">
         <div id="ringkasan-singkat"></div>
         <button type="button" onclick="munculkanPopup(event)" class="bg-orange-500 px-5 py-2 rounded-xl font-bold text-[11px] uppercase shadow-lg active:scale-90">
             Lihat Pesanan
         </button>
+    </div>
+
+    <div id="layar-bantuan" onclick="tutupBantuan()">
+        <div class="konten-putih" onclick="event.stopPropagation()">
+            <h2 class="font-black text-xl text-gray-800 mb-4">Butuh Bantuan?</h2>
+            <div class="grid grid-cols-1 gap-3 mb-6">
+                <button onclick="kirimBantuan('Minta Bill / Tagihan')" class="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl text-left flex justify-between items-center active:bg-orange-50">
+                    <span class="font-bold text-gray-700">Minta Bill / Tagihan</span>
+                    <span>🧾</span>
+                </button>
+                <button onclick="kirimBantuan('Panggil Staff ke Room')" class="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl text-left flex justify-between items-center active:bg-orange-50">
+                    <span class="font-bold text-gray-700">Panggil Staff ke Room</span>
+                    <span>🙋‍♂️</span>
+                </button>
+                <button onclick="kirimBantuan('Mic / Audio Bermasalah')" class="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl text-left flex justify-between items-center active:bg-orange-50">
+                    <span class="font-bold text-gray-700">Masalah Audio/Mic</span>
+                    <span>🎤</span>
+                </button>
+            </div>
+            <button onclick="tutupBantuan()" class="w-full py-4 text-gray-400 font-bold text-sm">Tutup</button>
+        </div>
     </div>
 
     <div id="layar-hitam" onclick="hilangkanPopup()">
@@ -61,30 +93,24 @@
             <div class="flex justify-between items-start mb-5 flex-shrink-0">
                 <div>
                     <h2 class="font-black text-xl text-gray-800 leading-none">Cek Pesanan</h2>
-                    <div id="info-room-popup" class="mt-2 inline-block bg-orange-500 text-white px-3 py-1 rounded text-[11px] font-black uppercase tracking-widest">
-                        ROOM: 101
-                    </div>
+                    <div id="info-room-popup" class="mt-2 inline-block bg-orange-500 text-white px-3 py-1 rounded text-[11px] font-black uppercase">ROOM: 101</div>
                 </div>
                 <button onclick="resetKeranjang()" class="text-red-500 text-[10px] font-bold uppercase border border-red-100 px-3 py-1 rounded-lg">Reset</button>
             </div>
-            
             <div id="list-checkout" class="space-y-5 overflow-y-auto mb-4 pr-1 flex-1"></div>
-
             <div class="border-t pt-4 flex-shrink-0">
                 <div class="flex justify-between items-center mb-5 px-1">
                     <span class="font-bold text-gray-500 text-sm">Total Bayar</span>
                     <span id="harga-akhir" class="font-black text-xl text-orange-600"></span>
                 </div>
-
-                <button type="button" onclick="jalankanKirimWA()" class="w-full bg-green-600 text-white py-4 rounded-2xl font-black text-sm shadow-xl active:scale-95 transition-all">
-                    KONFIRMASI PESANAN (WA)
-                </button>
+                <button type="button" onclick="jalankanKirimWA()" class="w-full bg-green-600 text-white py-4 rounded-2xl font-black text-sm active:scale-95 transition-all">KONFIRMASI PESANAN (WA)</button>
             </div>
         </div>
     </div>
 
     <script>
         const URL_SHEETS = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTDCkc69puC1CIoN5NnY8RggTTjvOFvbxau5FcU94eSnROveTeHS4ERbNptDZ_aGVvFNju6DAHiQvYn/pub?output=csv"; 
+        const WA_NUMBER = "6285348773757";
         
         let databaseMenu = [];
         let dataKeranjang = {}; 
@@ -94,7 +120,7 @@
         function deteksiRoom() {
             const params = new URLSearchParams(window.location.search);
             const r = params.get('room');
-            if (r) { roomNumber = r.toUpperCase(); }
+            if (r) roomNumber = r.toUpperCase();
             document.getElementById('info-room-popup').innerText = "ROOM: " + roomNumber;
         }
 
@@ -105,6 +131,7 @@
                 const baris = text.split(/\r?\n/).slice(1);
                 databaseMenu = [];
                 let setKategori = new Set(["SEMUA"]);
+
                 baris.forEach(r => {
                     let k = r.split(",");
                     if (k.length >= 2) {
@@ -117,12 +144,26 @@
                         }
                     }
                 });
+
+                // Render Tabs
                 let htmlKat = "";
                 Array.from(setKategori).forEach(kt => {
                     const cls = kt === katAktif ? "active-tab" : "bg-white text-gray-400 border border-gray-100 rounded-full";
                     htmlKat += `<button onclick="gantiKat('${kt}')" class="px-5 py-2 text-[10px] font-bold uppercase ${cls}">${kt}</button>`;
                 });
                 document.getElementById('tabs-kategori').innerHTML = htmlKat;
+
+                // Render Best Seller (Ambil 4 item pertama sebagai contoh)
+                let htmlBest = "";
+                databaseMenu.slice(0, 5).forEach(m => {
+                    htmlBest += `
+                    <div onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="min-w-[140px] bg-gray-50 p-3 rounded-2xl border border-gray-100 active:scale-95 transition-all">
+                        <p class="font-bold text-gray-800 text-[11px] leading-tight mb-1 h-8 overflow-hidden">${m.nama}</p>
+                        <p class="text-orange-600 font-black text-[10px]">Rp ${m.harga.toLocaleString('id-ID')}</p>
+                    </div>`;
+                });
+                document.getElementById('container-best-seller').innerHTML = htmlBest;
+
                 renderMenu();
             } catch (e) { console.error(e); }
         }
@@ -141,9 +182,9 @@
                         <p class="text-orange-600 text-[11px] font-black mt-1">Rp ${m.harga.toLocaleString('id-ID')}</p>
                     </div>
                     <div class="flex items-center gap-2 bg-gray-50 p-1 rounded-xl">
-                        ${q > 0 ? `<button onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', -1)" class="w-8 h-8 rounded-lg bg-white text-orange-500 font-bold">-</button>
+                        ${q > 0 ? `<button onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', -1)" class="w-8 h-8 rounded-lg bg-white text-orange-500 font-bold shadow-sm">-</button>
                         <span class="font-bold text-xs w-4 text-center">${q}</span>` : ''}
-                        <button onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="bg-orange-500 text-white w-8 h-8 rounded-lg font-bold">+</button>
+                        <button onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="bg-orange-500 text-white w-8 h-8 rounded-lg font-bold shadow-md shadow-orange-100">+</button>
                     </div>
                 </div>`;
             });
@@ -181,17 +222,11 @@
                 h += `
                 <div class="space-y-2 border-b border-gray-100 pb-3">
                     <div class="flex justify-between items-start">
-                        <div class="flex-1 pr-4">
-                            <p class="font-bold text-gray-800 text-[13px] leading-tight">${i.nama}</p>
-                            <p class="text-[10px] text-gray-400 font-bold mt-1">${i.qty}x @Rp ${i.harga.toLocaleString('id-ID')}</p>
-                        </div>
+                        <div class="flex-1 pr-4"><p class="font-bold text-gray-800 text-[13px] leading-tight">${i.nama}</p>
+                        <p class="text-[10px] text-gray-400 font-bold mt-1">${i.qty}x @Rp ${i.harga.toLocaleString('id-ID')}</p></div>
                         <span class="font-black text-gray-800 text-[13px]">Rp ${s.toLocaleString('id-ID')}</span>
                     </div>
-                    <input type="text" 
-                        onchange="updateCatatanItem('${i.nama.replace(/'/g, "\\'")}', this.value)"
-                        value="${i.catatan || ''}"
-                        placeholder="Tambahkan catatan (opsional)..." 
-                        class="w-full bg-gray-50 border border-gray-100 rounded-xl py-2 px-3 text-[11px] outline-none focus:border-orange-400 italic text-gray-500">
+                    <input type="text" onchange="updateCatatanItem('${i.nama.replace(/'/g, "\\'")}', this.value)" value="${i.catatan || ''}" placeholder="Catatan..." class="w-full bg-gray-50 border border-gray-100 rounded-xl py-2 px-3 text-[11px] outline-none focus:border-orange-400 italic">
                 </div>`;
             });
             document.getElementById('list-checkout').innerHTML = h;
@@ -199,40 +234,30 @@
             document.getElementById('layar-hitam').classList.add('tampil');
         }
 
-        function updateCatatanItem(nama, val) {
-            if (dataKeranjang[nama]) dataKeranjang[nama].catatan = val;
-        }
-
-        function resetKeranjang() {
-            if (confirm("Kosongkan semua pesanan?")) {
-                dataKeranjang = {};
-                hilangkanPopup();
-                renderMenu();
-                updateBar();
-            }
-        }
-
-        function hilangkanPopup() {
-            document.getElementById('layar-hitam').classList.remove('tampil');
+        function updateCatatanItem(nama, val) { if (dataKeranjang[nama]) dataKeranjang[nama].catatan = val; }
+        function resetKeranjang() { if (confirm("Kosongkan semua pesanan?")) { dataKeranjang = {}; hilangkanPopup(); renderMenu(); updateBar(); } }
+        function hilangkanPopup() { document.getElementById('layar-hitam').classList.remove('tampil'); }
+        
+        // Fitur Bantuan
+        function bukaBantuan() { document.getElementById('layar-bantuan').classList.add('tampil'); }
+        function tutupBantuan() { document.getElementById('layar-bantuan').classList.remove('tampil'); }
+        function kirimBantuan(jenis) {
+            const msg = `Halo Happy Puppy Samarinda,%0A%0ASaya tamu dari *ROOM ${roomNumber}*%0A*MINTA BANTUAN:* ${jenis}.%0A%0AMohon bantuannya ya, terima kasih.`;
+            window.open(`https://wa.me/${WA_NUMBER}?text=${msg}`, '_blank');
+            tutupBantuan();
         }
 
         function jalankanKirimWA() {
             const arr = Object.values(dataKeranjang);
             if (arr.length === 0) return;
-            const wa = "6285348773757";
             const t = arr.reduce((a, b) => a + (b.harga * b.qty), 0);
-            
-            // Format Pesan Baru: Lebih Bersih dan To-The-Point
             let msg = `Halo Happy Puppy Samarinda,%0A%0ASaya dari *ROOM ${roomNumber}* ingin memesan:%0A%0A`;
-            
             arr.forEach(i => {
                 msg += `- *${i.nama}* (${i.qty}x)%0A`;
                 if (i.catatan) msg += `  _(Catatan: ${i.catatan})_%0A`;
             });
-
             msg += `%0A*Total Bayar: Rp ${t.toLocaleString('id-ID')}*%0A%0AMohon segera diproses ya, terima kasih.`;
-
-            window.open(`https://wa.me/${wa}?text=${msg}`, '_blank');
+            window.open(`https://wa.me/${WA_NUMBER}?text=${msg}`, '_blank');
         }
 
         deteksiRoom();
