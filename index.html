@@ -188,12 +188,12 @@
                 const selisih = waktuSekarang - parseInt(sesiMulai);
                 if (selisih > DURASI_SESI) {
                     document.body.innerHTML = `
-                        <div class="min-h-screen bg-slate-900 flex items-center justify-center p-8 text-center">
-                            <div class="bg-white p-8 rounded-[40px] shadow-2xl max-w-sm">
+                        <div class="min-h-screen bg-slate-900 flex items-center justify-center p-8 text-center text-white">
+                            <div class="max-w-xs">
                                 <div class="text-6xl mb-6">⏰</div>
-                                <h1 class="font-black text-2xl text-slate-800 uppercase italic mb-3">Sesi Berakhir</h1>
-                                <p class="text-slate-500 text-sm leading-relaxed mb-8">Akses menu untuk <b>Room ${roomNumber}</b> telah habis (Batas 2 Jam).</p>
-                                <p class="text-xs text-slate-400 font-medium italic">Scan ulang QR Code di dalam room jika masih berkunjung.</p>
+                                <h1 class="text-2xl font-black uppercase italic mb-2">Sesi Berakhir</h1>
+                                <p class="text-slate-400 text-sm leading-relaxed mb-8">Akses menu untuk Room ${roomNumber} telah habis (Batas 2 Jam).</p>
+                                <p class="text-[10px] font-bold uppercase tracking-widest text-orange-400 italic">Scan ulang QR di dalam room</p>
                             </div>
                         </div>
                     `;
@@ -268,15 +268,10 @@
             document.getElementById('tabs-kategori').innerHTML = htmlKat;
         }
 
-        // --- UPDATE: AREA KOTAK SEKARANG BISA DIKLIK ---
-        function handleBestSellerClick(e, nama) {
+        // LOGIKA KLIK AREA BEST SELLER
+        function handleBestSellerClick(nama) {
             const q = dataKeranjang[nama]?.qty || 0;
-            // Jika jumlah masih 0, klik di mana saja di kotak akan menambah jadi 1
-            if (q === 0) {
-                ubahQty(nama, 1);
-            }
-            // Jika jumlah > 0, biarkan tamu menggunakan tombol plus/minus spesifik
-            // agar tidak terjadi penambahan tidak sengaja saat scroll.
+            if (q === 0) ubahQty(nama, 1);
         }
 
         function renderBestSeller() {
@@ -285,9 +280,8 @@
                 const q = dataKeranjang[m.nama]?.qty || 0;
                 const imgTag = m.foto ? `<img src="${m.foto}" class="w-full h-24 object-cover rounded-2xl mb-3 shadow-md">` : `<div class="w-full h-24 bg-orange-50 rounded-2xl mb-3 flex items-center justify-center text-2xl">🍲</div>`;
                 
-                // Tambahkan event onclick pada div container utama
                 htmlBest += `
-                <div onclick="handleBestSellerClick(event, '${m.nama.replace(/'/g, "\\'")}')" class="min-w-[150px] bg-slate-50 p-2 rounded-[24px] border border-slate-100 relative active:scale-95 transition-all cursor-pointer">
+                <div onclick="handleBestSellerClick('${m.nama.replace(/'/g, "\\'")}')" class="min-w-[150px] bg-slate-50 p-2 rounded-[24px] border border-slate-100 relative active:scale-95 transition-all cursor-pointer">
                     <span class="badge-hot">HOT</span>
                     ${imgTag}
                     <p class="font-black text-slate-800 text-[11px] leading-tight mb-1 truncate uppercase italic px-1">${m.nama}</p>
@@ -295,10 +289,10 @@
                     
                     <div class="flex items-center justify-center bg-white rounded-xl border border-slate-200 p-1 mx-1" onclick="event.stopPropagation()">
                         ${q > 0 ? `
-                            <button onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', -1)" class="text-red-500 w-6 h-6 flex items-center justify-center font-bold text-lg active:scale-90">-</button>
+                            <button onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', -1)" class="text-red-500 w-6 h-6 flex items-center justify-center font-bold text-lg">-</button>
                             <span class="px-2 font-black text-[10px] text-slate-700">${q}</span>
                         ` : ''}
-                        <button onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="text-orange-500 w-6 h-6 flex items-center justify-center font-bold text-lg active:scale-90">+</button>
+                        <button onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="text-orange-500 w-6 h-6 flex items-center justify-center font-bold text-lg">+</button>
                     </div>
                 </div>`;
             });
@@ -319,14 +313,14 @@
                     <div class="min-w-0 flex-1">
                         <h3 class="font-black text-slate-800 text-[14px] truncate uppercase italic leading-none">${m.nama}</h3>
                         <p class="text-[10px] text-slate-400 mt-1 line-clamp-1 italic font-medium">${m.deskripsi || ''}</p>
-                        <p class="text-orange-600 text-[13px] font-black mt-2 italic underline decoration-orange-200">Rp ${m.harga.toLocaleString('id-ID')}</p>
+                        <p class="text-orange-600 text-[13px] font-black mt-2 italic">Rp ${m.harga.toLocaleString('id-ID')}</p>
                     </div>
-                    <div class="flex items-center bg-slate-100 p-1 rounded-2xl border border-slate-200 ml-2 relative z-10">
+                    <div class="flex items-center bg-slate-100 p-1 rounded-2xl border border-slate-200 ml-2">
                         ${q > 0 ? `
-                            <button onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', -1)" class="bg-white text-red-500 w-8 h-8 rounded-xl shadow-sm flex items-center justify-center font-bold text-lg active:scale-90 transition-all">-</button>
+                            <button onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', -1)" class="bg-white text-red-500 w-8 h-8 rounded-xl shadow-sm flex items-center justify-center font-bold text-lg">-</button>
                             <span class="px-3 font-black text-sm text-slate-700">${q}</span>
                         ` : ''}
-                        <button onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="bg-orange-500 text-white w-8 h-8 rounded-xl shadow-lg flex items-center justify-center font-bold text-lg active:scale-90 transition-all">+</button>
+                        <button onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="bg-orange-500 text-white w-8 h-8 rounded-xl shadow-lg flex items-center justify-center font-bold text-lg">+</button>
                     </div>
                 </div>`;
             });
@@ -368,14 +362,14 @@
                         <p class="font-black text-slate-800 text-[14px] uppercase italic leading-none flex-1 pr-4">${i.nama}</p>
                         <div class="flex flex-col items-end gap-2">
                             <span class="font-black text-slate-800 text-[14px]">Rp ${s.toLocaleString('id-ID')}</span>
-                            <div class="flex items-center gap-3 bg-white border border-slate-200 rounded-lg px-2 py-1 relative z-10">
+                            <div class="flex items-center gap-3 bg-white border border-slate-200 rounded-lg px-2 py-1">
                                 <button onclick="ubahQty('${i.nama.replace(/'/g, "\\'")}', -1); munculkanPopup()" class="text-red-500 font-bold text-xs">-</button>
                                 <span class="text-[10px] font-black">${i.qty}</span>
                                 <button onclick="ubahQty('${i.nama.replace(/'/g, "\\'")}', 1); munculkanPopup()" class="text-green-500 font-bold text-xs">+</button>
                             </div>
                         </div>
                     </div>
-                    <input type="text" onchange="updateCatatanItem('${i.nama.replace(/'/g, "\\'")}', this.value)" value="${i.catatan || ''}" placeholder="Catatan khusus..." class="w-full bg-white border border-slate-200 rounded-xl py-3 px-4 text-[11px] italic focus:border-orange-500 outline-none relative z-10">
+                    <input type="text" onchange="updateCatatanItem('${i.nama.replace(/'/g, "\\'")}', this.value)" value="${i.catatan || ''}" placeholder="Catatan khusus..." class="w-full bg-white border border-slate-200 rounded-xl py-3 px-4 text-[11px] italic focus:border-orange-500 outline-none">
                 </div>`;
             });
             document.getElementById('list-checkout').innerHTML = h || `<p class="text-center py-10 text-slate-300 font-black uppercase text-[10px] italic">Kosong...</p>`;
