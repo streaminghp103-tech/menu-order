@@ -46,32 +46,34 @@
 </head>
 <body class="bg-slate-50 pb-40 font-sans text-slate-900 w-full">
 
-    <div class="h-44 bg-slate-900 relative w-full overflow-hidden">
-        <img src="https://images.unsplash.com/photo-1514525253344-76337eb979cd?w=800" class="w-full h-full object-cover opacity-40">
+    <div class="bg-slate-900 relative w-full overflow-hidden p-6 pt-8 rounded-b-[40px] shadow-lg">
+        <img src="https://images.unsplash.com/photo-1514525253344-76337eb979cd?w=800" class="absolute inset-0 w-full h-full object-cover opacity-30">
         <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent"></div>
-        <div class="absolute bottom-6 left-6 text-white">
-            <p class="text-[10px] font-black text-orange-400 uppercase tracking-widest mb-1">Welcome to</p>
-            <h1 class="text-2xl font-black uppercase leading-none italic">Happy Puppy<br><span class="text-orange-500 underline decoration-white/20">Samarinda</span></h1>
-            <div id="info-room-header" class="mt-3 inline-block bg-white/10 border border-white/20 px-3 py-1 rounded-full text-[10px] font-bold uppercase backdrop-blur-md">📍 Room: --</div>
+        
+        <div class="relative z-10 flex justify-between items-start mb-6">
+            <div class="text-white">
+                <h1 class="text-2xl font-black uppercase italic leading-tight">Happy Puppy<br><span class="text-orange-500">Samarinda</span></h1>
+                <div id="info-room-header" class="mt-2 inline-block bg-white/10 border border-white/20 px-3 py-1 rounded-full text-[9px] font-bold uppercase backdrop-blur-md text-orange-200 tracking-widest">📍 Room: --</div>
+            </div>
+            <button onclick="bukaBantuan()" class="bg-white/10 border border-white/20 text-white p-3 rounded-2xl backdrop-blur-md active:scale-90 transition-all text-xl">🆘</button>
         </div>
-        <button onclick="bukaBantuan()" class="absolute top-6 right-6 bg-white/10 border border-white/20 text-white px-4 py-2 rounded-full text-[10px] font-black uppercase backdrop-blur-md active:scale-90 transition-all">🆘 Bantuan</button>
+
+        <div class="relative z-10">
+            <div class="bg-white/10 border border-white/20 backdrop-blur-md rounded-2xl flex items-center px-4 py-1 focus-within:bg-white focus-within:shadow-2xl transition-all group">
+                <span class="text-orange-400 mr-2 group-focus-within:text-orange-500 transition-all">🔍</span>
+                <input type="text" id="input-cari" oninput="filterMenu()" placeholder="Cari menu favorit kamu..." class="w-full py-3 bg-transparent text-sm outline-none font-medium text-white focus:text-slate-800 placeholder:text-white/50 focus:placeholder:text-slate-400 italic">
+            </div>
+        </div>
     </div>
 
-    <div class="px-5 -mt-6 relative z-30">
-        <div class="bg-white rounded-2xl shadow-xl border border-slate-100 flex items-center px-4 py-1">
-            <span class="text-slate-400 mr-2">🔍</span>
-            <input type="text" id="input-cari" oninput="filterMenu()" placeholder="Cari makanan atau minuman favoritmu..." class="w-full py-3 bg-transparent text-sm outline-none font-medium italic">
-        </div>
-    </div>
-
-    <div class="p-5 bg-white mt-4 mb-3 shadow-sm rounded-[32px]">
+    <div id="section-best-seller" class="p-5 bg-white mb-3 shadow-sm rounded-b-[32px]">
         <h2 class="text-[11px] font-black uppercase text-slate-400 mb-4 tracking-[0.2em] flex items-center gap-2">
             <span class="w-2 h-2 bg-red-500 rounded-full animate-ping"></span> Menu Paling Laris
         </h2>
         <div id="container-best-seller" class="flex gap-4 overflow-x-auto no-scrollbar pb-2"></div>
     </div>
 
-    <div class="sticky top-0 bg-white/80 backdrop-blur-lg shadow-sm z-40 overflow-x-auto no-scrollbar flex whitespace-nowrap px-5 py-4 gap-3" id="tabs-kategori"></div>
+    <div class="sticky top-0 bg-slate-50/80 backdrop-blur-lg z-40 overflow-x-auto no-scrollbar flex whitespace-nowrap px-5 py-4 gap-3" id="tabs-kategori"></div>
 
     <div class="p-5 w-full">
         <div id="container-menu" class="space-y-4"></div>
@@ -87,7 +89,7 @@
     <div id="layar-bantuan" onclick="tutupBantuan()">
         <div class="konten-putih" onclick="event.stopPropagation()">
             <div class="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mb-6"></div>
-            <h2 class="font-black text-xl text-slate-800 mb-6 uppercase italic text-center">Butuh Bantuan?</h2>
+            <h2 class="font-black text-xl text-slate-800 mb-6 uppercase italic text-center">Layanan Room</h2>
             <div class="grid grid-cols-1 gap-4 mb-8">
                 <button onclick="kirimBantuan('Minta Bill')" class="w-full p-5 bg-slate-50 border border-slate-100 rounded-2xl text-left flex justify-between items-center active:bg-orange-50 transition-all">
                     <span class="font-black text-slate-700 uppercase italic">Minta Bill / Tagihan</span><span class="text-2xl">🧾</span>
@@ -96,7 +98,7 @@
                     <span class="font-black text-slate-700 uppercase italic">Panggil Staff</span><span class="text-2xl">🙋‍♂️</span>
                 </button>
             </div>
-            <button onclick="tutupBantuan()" class="w-full py-4 text-slate-400 font-bold text-[10px] uppercase tracking-widest">Tutup</button>
+            <button onclick="tutupBantuan()" class="w-full py-4 text-slate-400 font-bold text-[10px] uppercase tracking-widest text-center">Tutup</button>
         </div>
     </div>
 
@@ -105,10 +107,10 @@
             <div class="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mb-6"></div>
             <div class="flex justify-between items-start mb-6">
                 <div>
-                    <h2 class="font-black text-2xl text-slate-800 leading-none uppercase italic">Pesanan Kamu</h2>
+                    <h2 class="font-black text-2xl text-slate-800 leading-none uppercase italic">Cek Pesanan</h2>
                     <div id="info-room-popup" class="mt-2 inline-block bg-orange-600 text-white px-3 py-1 rounded-lg text-[10px] font-black uppercase">ROOM: --</div>
                 </div>
-                <button onclick="resetKeranjang()" class="text-red-500 text-[10px] font-black uppercase bg-red-50 px-4 py-2 rounded-xl transition-all">Reset</button>
+                <button onclick="resetKeranjang()" class="text-red-500 text-[10px] font-black uppercase bg-red-50 px-4 py-2 rounded-xl transition-all italic">Reset</button>
             </div>
             <div id="list-checkout" class="space-y-4 overflow-y-auto mb-6 pr-1 flex-1 no-scrollbar"></div>
             <div class="border-t border-slate-100 pt-6">
@@ -117,7 +119,7 @@
                     <span id="harga-akhir" class="font-black text-2xl text-orange-600 italic"></span>
                 </div>
                 <button type="button" onclick="jalankanKirimWA()" class="w-full bg-green-600 text-white py-5 rounded-2xl font-black text-sm active:scale-95 transition-all uppercase flex items-center justify-center gap-3 shadow-xl shadow-green-600/20">
-                    <span>KIRIM KE WHATSAPP</span> 🚀
+                    <span>KONFIRMASI VIA WHATSAPP</span> 🚀
                 </button>
             </div>
         </div>
@@ -169,13 +171,22 @@
 
         function filterMenu() {
             queryCari = document.getElementById('input-cari').value.toLowerCase();
+            
+            // SMART HIDE: Sembunyikan Best Seller jika lagi cari
+            const secBest = document.getElementById('section-best-seller');
+            if (queryCari.length > 0) {
+                secBest.style.display = 'none';
+            } else {
+                secBest.style.display = 'block';
+            }
+            
             renderMenu();
         }
 
         function renderTabs(setKategori) {
             let htmlKat = "";
             Array.from(setKategori).forEach(kt => {
-                const cls = kt === katAktif ? "active-tab" : "bg-slate-100 text-slate-400 font-bold rounded-full border border-transparent";
+                const cls = kt === katAktif ? "active-tab" : "bg-white text-slate-400 font-bold rounded-full border border-slate-200";
                 htmlKat += `<button onclick="gantiKat('${kt}')" class="px-6 py-3 text-[10px] uppercase tracking-widest transition-all ${cls}">${kt}</button>`;
             });
             document.getElementById('tabs-kategori').innerHTML = htmlKat;
@@ -186,11 +197,11 @@
             databaseMenu.slice(0, 6).forEach(m => {
                 const imgTag = m.foto ? `<img src="${m.foto}" class="w-full h-24 object-cover rounded-2xl mb-3 shadow-md">` : `<div class="w-full h-24 bg-orange-50 rounded-2xl mb-3 flex items-center justify-center text-2xl">🍲</div>`;
                 htmlBest += `
-                <div onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="min-w-[150px] bg-white p-2 rounded-[24px] border border-slate-100 relative shadow-sm active:scale-95 transition-all">
+                <div onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="min-w-[150px] bg-slate-50 p-2 rounded-[24px] border border-slate-100 relative active:scale-95 transition-all">
                     <span class="badge-hot">HOT</span>
                     ${imgTag}
                     <p class="font-black text-slate-800 text-[11px] leading-tight mb-1 truncate uppercase italic px-1">${m.nama}</p>
-                    <p class="text-orange-600 font-black text-[12px] px-1 underline decoration-orange-200">Rp ${m.harga.toLocaleString('id-ID')}</p>
+                    <p class="text-orange-600 font-black text-[12px] px-1 italic">Rp ${m.harga.toLocaleString('id-ID')}</p>
                 </div>`;
             });
             document.getElementById('container-best-seller').innerHTML = htmlBest;
@@ -198,7 +209,6 @@
 
         function renderMenu() {
             let html = "";
-            // Filter berdasarkan Kategori DAN Pencarian
             const filtered = databaseMenu.filter(m => {
                 const cocokKategori = (katAktif === "SEMUA" || m.kategori === katAktif);
                 const cocokCari = m.nama.toLowerCase().includes(queryCari);
@@ -206,36 +216,32 @@
             });
 
             if (filtered.length === 0) {
-                html = `<div class="py-10 text-center text-slate-400 font-bold text-xs uppercase italic">Menu tidak ditemukan...</div>`;
+                html = `<div class="py-20 text-center text-slate-400 font-bold text-xs uppercase italic tracking-widest">Menu tidak ditemukan...</div>`;
             }
 
             filtered.forEach(m => {
                 const q = dataKeranjang[m.nama]?.qty || 0;
-                const activeCard = q > 0 ? 'border-orange-500 bg-orange-50/30' : 'border-slate-100 bg-white';
-                const imgTag = m.foto ? `<img src="${m.foto}" class="w-20 h-20 object-cover rounded-2xl shadow-sm">` : `<div class="w-20 h-20 bg-slate-50 rounded-2xl flex items-center justify-center text-xl">🍱</div>`;
+                const activeCard = q > 0 ? 'border-orange-500 bg-orange-50/30' : 'border-white bg-white';
+                const imgTag = m.foto ? `<img src="${m.foto}" class="w-20 h-20 object-cover rounded-2xl shadow-sm">` : `<div class="w-20 h-20 bg-slate-100 rounded-2xl flex items-center justify-center text-xl">🍱</div>`;
                 
                 html += `
-                <div class="p-3 rounded-[28px] shadow-sm flex items-center border transition-all ${activeCard}">
+                <div class="p-3 rounded-[28px] shadow-sm flex items-center border-2 transition-all ${activeCard}">
                     <div class="flex-shrink-0 mr-4 relative">${imgTag}</div>
                     <div class="min-w-0 flex-1">
                         <h3 class="font-black text-slate-800 text-[14px] truncate uppercase italic leading-none">${m.nama}</h3>
                         <p class="text-orange-600 text-[13px] font-black mt-2 italic underline decoration-orange-200">Rp ${m.harga.toLocaleString('id-ID')}</p>
                     </div>
-                    <div class="flex items-center gap-2 bg-slate-100 p-1.5 rounded-2xl ml-2 border border-slate-200">
+                    <div class="flex items-center gap-2 bg-slate-50 p-1.5 rounded-2xl ml-2 border border-slate-200">
                         ${q > 0 ? `<button onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', -1)" class="w-9 h-9 rounded-xl bg-white text-orange-500 font-black shadow-sm active:bg-orange-50">-</button>
                         <span class="font-black text-sm w-5 text-center text-slate-700">${q}</span>` : ''}
-                        <button onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="bg-orange-500 text-white w-9 h-9 rounded-xl font-black shadow-lg shadow-orange-500/20 active:scale-90">+</button>
+                        <button onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="bg-orange-500 text-white w-9 h-9 rounded-xl font-black shadow-lg active:scale-90">+</button>
                     </div>
                 </div>`;
             });
             document.getElementById('container-menu').innerHTML = html;
         }
 
-        function gantiKat(k) { 
-            katAktif = k; 
-            renderMenu(); 
-            renderTabs(new Set(databaseMenu.map(x=>x.kategori)).add("SEMUA")); 
-        }
+        function gantiKat(k) { katAktif = k; renderMenu(); renderTabs(new Set(databaseMenu.map(x=>x.kategori)).add("SEMUA")); }
         
         function ubahQty(nama, d) {
             if (!dataKeranjang[nama]) {
@@ -256,7 +262,7 @@
             const el = document.getElementById('bar-keranjang');
             if (tQty > 0) {
                 el.classList.remove('hidden');
-                document.getElementById('ringkasan-singkat').innerHTML = `<p class="font-black text-lg italic leading-none">${tQty} Menu</p><p class="text-[10px] text-orange-400 font-black uppercase tracking-widest mt-1">Estimasi Rp ${tPrice.toLocaleString('id-ID')}</p>`;
+                document.getElementById('ringkasan-singkat').innerHTML = `<p class="font-black text-lg italic leading-none">${tQty} Item</p><p class="text-[9px] text-orange-400 font-black uppercase tracking-widest mt-1">Rp ${tPrice.toLocaleString('id-ID')}</p>`;
             } else { el.classList.add('hidden'); }
         }
 
@@ -271,20 +277,20 @@
                     <div class="flex justify-between items-start">
                         <div class="flex-1 pr-4">
                             <p class="font-black text-slate-800 text-[14px] uppercase italic leading-none">${i.nama}</p>
-                            <p class="text-[10px] text-slate-400 font-black mt-1 uppercase tracking-tight">${i.qty}x @ Rp ${i.harga.toLocaleString('id-ID')}</p>
+                            <p class="text-[10px] text-slate-400 font-black mt-1 tracking-tight">${i.qty}x @ Rp ${i.harga.toLocaleString('id-ID')}</p>
                         </div>
                         <span class="font-black text-slate-800 text-[14px]">Rp ${s.toLocaleString('id-ID')}</span>
                     </div>
-                    <input type="text" onchange="updateCatatanItem('${i.nama.replace(/'/g, "\\'")}', this.value)" value="${i.catatan || ''}" placeholder="Catatan khusus (misal: pedas, es dikit)..." class="w-full bg-white border border-slate-200 rounded-xl py-3 px-4 text-[11px] outline-none italic focus:border-orange-500 shadow-sm transition-all">
+                    <input type="text" onchange="updateCatatanItem('${i.nama.replace(/'/g, "\\'")}', this.value)" value="${i.catatan || ''}" placeholder="Catatan (es dikit, pedas, dll)..." class="w-full bg-white border border-slate-200 rounded-xl py-3 px-4 text-[11px] outline-none italic focus:border-orange-500 shadow-sm transition-all">
                 </div>`;
             });
-            document.getElementById('list-checkout').innerHTML = h || `<p class="text-center py-10 text-slate-300 font-black uppercase text-[10px] italic">Kamu belum pilih apa-apa nih...</p>`;
+            document.getElementById('list-checkout').innerHTML = h || `<p class="text-center py-10 text-slate-300 font-black uppercase text-[10px] italic">Pesanan masih kosong...</p>`;
             document.getElementById('harga-akhir').innerText = `Rp ${t.toLocaleString('id-ID')}`;
             document.getElementById('layar-hitam').classList.add('tampil');
         }
 
         function updateCatatanItem(nama, val) { if (dataKeranjang[nama]) dataKeranjang[nama].catatan = val; }
-        function resetKeranjang() { if (confirm("Kosongkan semua pesanan?")) { dataKeranjang = {}; hilangkanPopup(); renderMenu(); renderBestSeller(); updateBar(); } }
+        function resetKeranjang() { if (confirm("Hapus semua pesanan?")) { dataKeranjang = {}; hilangkanPopup(); renderMenu(); renderBestSeller(); updateBar(); } }
         function hilangkanPopup() { document.getElementById('layar-hitam').classList.remove('tampil'); }
         function bukaBantuan() { document.getElementById('layar-bantuan').classList.add('tampil'); }
         function tutupBantuan() { document.getElementById('layar-bantuan').classList.remove('tampil'); }
@@ -304,7 +310,7 @@
                 msg += `- *${i.nama}* (${i.qty}x)%0A`;
                 if (i.catatan) msg += `  _(Catatan: ${i.catatan})_%0A`;
             });
-            msg += `%0A*TOTAL ESTIMASI: Rp ${t.toLocaleString('id-ID')}*%0A%0AMohon diproses, terima kasih! 🎤🍹`;
+            msg += `%0A*TOTAL ESTIMASI: Rp ${t.toLocaleString('id-ID')}*%0A%0AMohon segera diproses, terima kasih!`;
             window.open(`https://wa.me/${WA_NUMBER}?text=${msg}`, '_blank');
         }
 
