@@ -24,6 +24,7 @@
         #layar-hitam.tampil, #layar-bantuan.tampil, #notif-sukses.tampil { display: flex; }
         
         .konten-putih {
+            position: relative;
             background: white; width: 100%; border-radius: 32px 32px 0 0;
             padding: 24px; transform: translateY(100%);
             transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
@@ -75,8 +76,7 @@
                         </span>
                         <span id="jumlah-riwayat" class="bg-orange-500 text-white text-[9px] font-black px-2 py-0.5 rounded-full">0</span>
                     </div>
-                    <div id="list-riwayat-luar" class="flex gap-2 overflow-x-auto no-scrollbar">
-                        </div>
+                    <div id="list-riwayat-luar" class="flex gap-2 overflow-x-auto no-scrollbar"></div>
                 </div>
             </div>
         </div>
@@ -104,6 +104,7 @@
 
     <div id="notif-sukses" onclick="tutupNotif()">
         <div class="konten-putih items-center text-center pb-12" onclick="event.stopPropagation()">
+            <button onclick="tutupNotif()" class="absolute top-5 right-6 text-slate-300 text-2xl font-bold p-2">✕</button>
             <div class="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-4xl mb-6 mt-4 shadow-inner">✓</div>
             <h2 class="text-2xl font-black text-slate-800 uppercase italic mb-2">Pesanan Terkirim!</h2>
             <p class="text-slate-500 text-sm px-6 leading-relaxed mb-8 font-medium">Harap tunggu sebentar, staf kami sedang menyiapkan pesanan untuk <span class="font-black text-orange-500">Room <span class="no-room">--</span></span>.</p>
@@ -113,6 +114,7 @@
 
     <div id="layar-bantuan" onclick="tutupBantuan()">
         <div class="konten-putih" onclick="event.stopPropagation()">
+            <button onclick="tutupBantuan()" class="absolute top-5 right-6 text-slate-300 text-2xl font-bold p-2">✕</button>
             <div class="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mb-6"></div>
             <h2 class="font-black text-xl text-slate-800 mb-6 uppercase italic text-center">Layanan Room</h2>
             <div class="grid grid-cols-1 gap-4 mb-8">
@@ -129,6 +131,7 @@
 
     <div id="layar-hitam" onclick="hilangkanPopup()">
         <div class="konten-putih" onclick="event.stopPropagation()">
+            <button onclick="hilangkanPopup()" class="absolute top-5 right-6 text-slate-300 text-2xl font-bold p-2">✕</button>
             <div class="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mb-6"></div>
             <div class="flex justify-between items-start mb-6">
                 <div>
@@ -165,7 +168,7 @@
         let databaseMenu = [];
         let listKategoriTetap = [];
         let dataKeranjang = {}; 
-        let riwayatPesananLokal = []; // Menyimpan pesanan yang sudah dikirim ke WA
+        let riwayatPesananLokal = [];
         let katAktif = "SEMUA";
         let roomNumber = "101"; 
         let queryCari = "";
@@ -331,13 +334,19 @@
             const arr = Object.values(dataKeranjang);
             if (arr.length === 0) return;
             const t = arr.reduce((a, b) => a + (b.harga * b.qty), 0);
-            let msg = `Halo Happy Puppy Samarinda,%0A%0ASaya dari *ROOM ${roomNumber}* ingin memesan:%0A%0A`;
-            arr.forEach(i => { msg += `- *${i.nama}* (${i.qty}x)%0A${i.catatan ? `  _(Catatan: ${i.catatan})_%0A` : ''}`; });
-            msg += `%0A*TOTAL ESTIMASI: Rp ${t.toLocaleString('id-ID')}*%0A%0AMohon segera diproses, terima kasih!`;
+            
+            // POINT 2: PERBAIKAN FORMAT PESAN WHATSAPP
+            let msg = `*PESANAN BARU - ROOM ${roomNumber}*%0A`;
+            msg += `---------------------------%0A`;
+            arr.forEach(i => { 
+                msg += `• *${i.nama}* (${i.qty}x)%0A`; 
+                if(i.catatan) msg += `  _Catatan: ${i.catatan}_%0A`; 
+            });
+            msg += `---------------------------%0A`;
+            msg += `*TOTAL ESTIMASI: Rp ${t.toLocaleString('id-ID')}*%0A%0AMohon segera diproses, terima kasih!`;
             
             window.open(`https://wa.me/${WA_NUMBER}?text=${msg}`, '_blank');
             
-            // Simpan ke riwayat lokal untuk ditampilkan di luar
             arr.forEach(item => {
                 const index = riwayatPesananLokal.findIndex(r => r.nama === item.nama);
                 if (index > -1) {
@@ -351,7 +360,7 @@
                 hilangkanPopup();
                 dataKeranjang = {}; 
                 renderMenu(); renderBestSeller(); updateBar();
-                updateWidgetRiwayat(); // Update tampilan luar
+                updateWidgetRiwayat();
                 document.getElementById('notif-sukses').classList.add('tampil');
             }, 1000);
         }
@@ -360,7 +369,6 @@
             const widget = document.getElementById('widget-pesanan-saya');
             const container = document.getElementById('list-riwayat-luar');
             const badge = document.getElementById('jumlah-riwayat');
-
             if (riwayatPesananLokal.length > 0) {
                 widget.classList.remove('hidden');
                 badge.innerText = riwayatPesananLokal.length;
