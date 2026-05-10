@@ -13,6 +13,7 @@
             color: white; 
             border-radius: 9999px;
             box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
+            border: transparent !important;
         }
         
         #layar-hitam, #layar-bantuan {
@@ -60,7 +61,7 @@
 
         <div class="relative z-10">
             <div class="bg-white/10 border border-white/20 backdrop-blur-md rounded-2xl flex items-center px-4 py-1 focus-within:bg-white focus-within:shadow-2xl transition-all group">
-                <span class="text-orange-400 mr-2 group-focus-within:text-orange-500 transition-all">🔍</span>
+                <span class="text-orange-400 mr-2">🔍</span>
                 <input type="text" id="input-cari" oninput="filterMenu()" placeholder="Cari menu favorit kamu..." class="w-full py-3 bg-transparent text-sm outline-none font-medium text-white focus:text-slate-800 placeholder:text-white/50 focus:placeholder:text-slate-400 italic">
             </div>
         </div>
@@ -130,6 +131,7 @@
         const WA_NUMBER = "6285348773757";
         
         let databaseMenu = [];
+        let listKategoriTetap = []; // Untuk menyimpan urutan kategori agar tidak berantakan
         let dataKeranjang = {}; 
         let katAktif = "SEMUA";
         let roomNumber = "101"; 
@@ -149,7 +151,8 @@
                 const text = await res.text();
                 const baris = text.split(/\r?\n/).slice(1);
                 databaseMenu = [];
-                let setKategori = new Set(["SEMUA"]);
+                let setKategori = new Set();
+
                 baris.forEach(r => {
                     let k = r.split(",");
                     if (k.length >= 2) {
@@ -163,7 +166,11 @@
                         }
                     }
                 });
-                renderTabs(setKategori);
+
+                // PERBAIKAN BUG: Kategori disusun satu kali di awal agar urutannya paten
+                listKategoriTetap = ["SEMUA", ...Array.from(setKategori).sort()];
+                
+                renderTabs();
                 renderBestSeller();
                 renderMenu();
             } catch (e) { console.error(e); }
@@ -171,21 +178,14 @@
 
         function filterMenu() {
             queryCari = document.getElementById('input-cari').value.toLowerCase();
-            
-            // SMART HIDE: Sembunyikan Best Seller jika lagi cari
             const secBest = document.getElementById('section-best-seller');
-            if (queryCari.length > 0) {
-                secBest.style.display = 'none';
-            } else {
-                secBest.style.display = 'block';
-            }
-            
+            secBest.style.display = queryCari.length > 0 ? 'none' : 'block';
             renderMenu();
         }
 
-        function renderTabs(setKategori) {
+        function renderTabs() {
             let htmlKat = "";
-            Array.from(setKategori).forEach(kt => {
+            listKategoriTetap.forEach(kt => {
                 const cls = kt === katAktif ? "active-tab" : "bg-white text-slate-400 font-bold rounded-full border border-slate-200";
                 htmlKat += `<button onclick="gantiKat('${kt}')" class="px-6 py-3 text-[10px] uppercase tracking-widest transition-all ${cls}">${kt}</button>`;
             });
@@ -241,7 +241,11 @@
             document.getElementById('container-menu').innerHTML = html;
         }
 
-        function gantiKat(k) { katAktif = k; renderMenu(); renderTabs(new Set(databaseMenu.map(x=>x.kategori)).add("SEMUA")); }
+        function gantiKat(k) { 
+            katAktif = k; 
+            renderMenu(); 
+            renderTabs(); // Sekarang urutannya akan tetap karena pakai listKategoriTetap
+        }
         
         function ubahQty(nama, d) {
             if (!dataKeranjang[nama]) {
