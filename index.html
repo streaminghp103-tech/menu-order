@@ -4,12 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Menu Happy Puppy Samarinda</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
+    
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    
     <style>
+        /* CSS CUSTOM: Untuk hal-hal yang tidak dicover Tailwind secara default */
         body { font-family: 'Inter', sans-serif; overflow-x: hidden; touch-action: pan-y; background-color: #f8fafc; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         
+        /* Gaya Tombol Kategori saat aktif (Warna Orange Gradasi) */
         .active-tab { 
             background: linear-gradient(135deg, #fb923c 0%, #f97316 100%);
             color: white; border-radius: 9999px;
@@ -17,6 +22,7 @@
             border: transparent !important;
         }
         
+        /* Background Gelap untuk semua jenis Popup/Modal */
         #layar-hitam, #layar-bantuan, #notif-sukses {
             display: none; position: fixed; inset: 0;
             background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(10px);
@@ -24,6 +30,7 @@
         }
         #layar-hitam.tampil, #layar-bantuan.tampil, #notif-sukses.tampil { display: flex; }
         
+        /* Kontainer Putih yang muncul dari bawah (Slide Up) */
         .konten-putih {
             background: white; width: 100%; border-radius: 40px 40px 0 0;
             padding: 24px; transform: translateY(100%);
@@ -32,6 +39,7 @@
         }
         .tampil .konten-putih { transform: translateY(0); }
         
+        /* Animasi Berdenyut pada tombol keranjang */
         @keyframes pulse-orange {
             0% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.7); }
             70% { box-shadow: 0 0 0 10px rgba(249, 115, 22, 0); }
@@ -39,6 +47,7 @@
         }
         .animate-order { animation: pulse-orange 2s infinite; }
 
+        /* Label Merah "BEST" di pojok menu */
         .badge-hot {
             position: absolute; top: 8px; left: 8px;
             background: #ef4444; color: white; font-size: 8px;
@@ -101,25 +110,16 @@
         </button>
     </div>
 
-    <div id="notif-sukses" onclick="tutupNotif()">
-        <div class="konten-putih items-center text-center pb-12" onclick="event.stopPropagation()">
-            <div class="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-4xl mb-6 mt-4 shadow-inner">✓</div>
-            <h2 class="text-2xl font-black text-slate-800 uppercase italic mb-2">Pesanan Terkirim!</h2>
-            <p class="text-slate-500 text-sm px-6 leading-relaxed mb-8 font-medium">Harap tunggu sebentar, staf kami sedang menyiapkan pesanan untuk <span class="font-black text-orange-500">Room <span class="no-room">--</span></span>.</p>
-            <button onclick="tutupNotif()" class="w-full bg-slate-900 text-white py-5 rounded-2xl font-black text-sm uppercase tracking-widest shadow-xl">Siap, Terima Kasih!</button>
-        </div>
-    </div>
-
     <div id="layar-bantuan" onclick="tutupBantuan()">
         <div class="konten-putih" onclick="event.stopPropagation()">
             <div class="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mb-6"></div>
-            <h2 class="font-black text-xl text-slate-800 mb-6 uppercase italic text-center text-slate-900">Layanan Room</h2>
+            <h2 class="font-black text-xl text-slate-800 mb-6 uppercase italic text-center">Layanan Room</h2>
             <div class="grid grid-cols-1 gap-4 mb-8">
                 <button onclick="kirimBantuan('Minta Bill')" class="w-full p-5 bg-slate-50 border border-slate-100 rounded-2xl text-left flex justify-between items-center active:bg-orange-50 transition-all group">
-                    <span class="font-black text-slate-700 uppercase italic group-active:text-orange-600">Minta Bill / Tagihan</span><span class="text-2xl text-slate-900">🧾</span>
+                    <span class="font-black text-slate-700 uppercase italic">Minta Bill / Tagihan</span><span class="text-2xl">🧾</span>
                 </button>
                 <button onclick="kirimBantuan('Panggil Pelayan')" class="w-full p-5 bg-slate-50 border border-slate-100 rounded-2xl text-left flex justify-between items-center active:bg-orange-50 transition-all group">
-                    <span class="font-black text-slate-700 uppercase italic group-active:text-orange-600">Panggil Staff</span><span class="text-2xl text-slate-900">🙋‍♂️</span>
+                    <span class="font-black text-slate-700 uppercase italic">Panggil Staff</span><span class="text-2xl">🙋‍♂️</span>
                 </button>
             </div>
             <button onclick="tutupBantuan()" class="w-full py-4 text-slate-400 font-bold text-[10px] uppercase tracking-widest text-center">Tutup</button>
@@ -131,7 +131,7 @@
             <div class="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mb-6"></div>
             <div class="flex justify-between items-start mb-6">
                 <div>
-                    <h2 class="font-black text-2xl text-slate-800 leading-none uppercase italic text-slate-900">Cek Pesanan</h2>
+                    <h2 class="font-black text-2xl text-slate-800 leading-none uppercase italic">Cek Pesanan</h2>
                     <div id="info-room-popup" class="mt-2 inline-block bg-orange-600 text-white px-3 py-1 rounded-lg text-[10px] font-black uppercase">ROOM: --</div>
                 </div>
                 <button onclick="resetKeranjang()" class="text-red-500 text-[10px] font-black uppercase bg-red-50 px-4 py-2 rounded-xl transition-all italic">Reset</button>
@@ -144,31 +144,35 @@
                     <span class="font-black text-slate-400 text-xs uppercase tracking-[0.2em]">Total Estimasi</span>
                     <span id="harga-akhir" class="font-black text-2xl text-orange-600 italic"></span>
                 </div>
-                
-                <div class="flex flex-col gap-3">
-                    <button type="button" onclick="jalankanKirimWA()" class="w-full bg-green-600 text-white py-5 rounded-2xl font-black text-sm active:scale-95 transition-all uppercase flex items-center justify-center gap-3 shadow-xl shadow-green-600/20">
-                        <span>KONFIRMASI VIA WHATSAPP</span> 🚀
-                    </button>
-                    <button type="button" onclick="hilangkanPopup()" class="w-full bg-slate-100 text-slate-500 py-4 rounded-2xl font-black text-[11px] active:scale-95 transition-all uppercase tracking-widest border border-slate-200">
-                        ← Tambah Menu Lainnya
-                    </button>
-                </div>
+                <button type="button" onclick="jalankanKirimWA()" class="w-full bg-green-600 text-white py-5 rounded-2xl font-black text-sm active:scale-95 transition-all uppercase flex items-center justify-center gap-3 shadow-xl shadow-green-600/20">
+                    <span>KONFIRMASI VIA WHATSAPP</span> 🚀
+                </button>
             </div>
         </div>
     </div>
 
+    <div id="notif-sukses" onclick="tutupNotif()">
+        <div class="konten-putih items-center text-center pb-12" onclick="event.stopPropagation()">
+            <div class="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-4xl mb-6 mt-4">✓</div>
+            <h2 class="text-2xl font-black text-slate-800 uppercase italic">Pesanan Terkirim!</h2>
+            <button onclick="tutupNotif()" class="mt-8 w-full bg-slate-900 text-white py-5 rounded-2xl font-black text-sm uppercase">Siap!</button>
+        </div>
+    </div>
+
     <script>
+        // -- KONFIGURASI UTAMA --
         const URL_SHEETS = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTDCkc69puC1CIoN5NnY8RggTTjvOFvbxau5FcU94eSnROveTeHS4ERbNptDZ_aGVvFNju6DAHiQvYn/pub?output=csv"; 
-        const WA_NUMBER = "6285348773757";
+        const WA_NUMBER = "6285348773757"; // Ganti dengan nomor Admin WA Happy Puppy Samarinda
         
         let databaseMenu = [];
         let listKategoriTetap = [];
         let dataKeranjang = {}; 
-        let riwayatPesananLokal = []; // FITUR BARU: Track pesanan yang sudah dikirim
+        let riwayatPesananLokal = []; 
         let katAktif = "SEMUA";
         let roomNumber = "101"; 
         let queryCari = "";
 
+        // Fungsi Deteksi Room dari URL (contoh: index.html?room=305)
         function deteksiRoom() {
             const params = new URLSearchParams(window.location.search);
             const r = params.get('room');
@@ -178,6 +182,7 @@
             document.getElementById('info-room-popup').innerText = "ROOM: " + roomNumber;
         }
 
+        // Ambil Data dari Google Sheets
         async function ambilData() {
             try {
                 const res = await fetch(URL_SHEETS + "&t=" + new Date().getTime());
@@ -201,15 +206,17 @@
                 });
                 listKategoriTetap = ["SEMUA", ...Array.from(setKategori).sort()];
                 renderTabs(); renderBestSeller(); renderMenu();
-            } catch (e) { console.error(e); }
+            } catch (e) { console.error("Gagal mengambil data sheet:", e); }
         }
 
+        // Fungsi Cari Menu
         function filterMenu() {
             queryCari = document.getElementById('input-cari').value.toLowerCase();
             document.getElementById('section-best-seller').style.display = queryCari.length > 0 ? 'none' : 'block';
             renderMenu();
         }
 
+        // Render Tombol Kategori
         function renderTabs() {
             let htmlKat = "";
             listKategoriTetap.forEach(kt => {
@@ -219,6 +226,7 @@
             document.getElementById('tabs-kategori').innerHTML = htmlKat;
         }
 
+        // Render Menu Best Seller di atas
         function renderBestSeller() {
             let htmlBest = "";
             databaseMenu.slice(0, 6).forEach(m => {
@@ -234,6 +242,7 @@
             document.getElementById('container-best-seller').innerHTML = htmlBest;
         }
 
+        // Render Daftar Menu Utama
         function renderMenu() {
             let html = "";
             const filtered = databaseMenu.filter(m => (katAktif === "SEMUA" || m.kategori === katAktif) && m.nama.toLowerCase().includes(queryCari));
@@ -261,6 +270,7 @@
 
         function gantiKat(k) { katAktif = k; renderMenu(); renderTabs(); }
         
+        // Logika Tambah/Kurang Jumlah Pesanan
         function ubahQty(nama, d) {
             if (!dataKeranjang[nama]) {
                 const item = databaseMenu.find(x => x.nama === nama);
@@ -271,6 +281,7 @@
             renderMenu(); renderBestSeller(); updateBar();
         }
 
+        // Update Bar Hitam di bawah
         function updateBar() {
             const arr = Object.values(dataKeranjang);
             const tQty = arr.reduce((a, b) => a + b.qty, 0);
@@ -282,6 +293,7 @@
             } else { el.classList.add('hidden'); }
         }
 
+        // Tampilkan Isi Keranjang & Rekomendasi Cross-sell
         function munculkanPopup(e) {
             if(e) e.preventDefault();
             const arr = Object.values(dataKeranjang);
@@ -308,7 +320,7 @@
                 </div>`;
             });
             
-            // LOGIKA CROSS-SELL REKOMENDASI (DARI KODE ASLI)
+            // Logika Rekomendasi Otomatis (Jika banyak minum, tawari makanan, dst)
             let targetKategori = (jumlahMinuman > jumlahMakanan) ? ["SNACK", "FOOD", "MAKANAN"] : ["DRINK", "MINUMAN"];
             let saran = databaseMenu.filter(m => !dataKeranjang[m.nama] && targetKategori.some(kat => m.kategori.toUpperCase().includes(kat))).sort(() => 0.5 - Math.random()).slice(0, 2);
             let crossSellHtml = saran.length > 0 ? `<div class="mt-8 mb-4"><p class="text-[10px] font-black text-orange-500 uppercase tracking-widest mb-3">Mau tambah ini?</p><div class="grid grid-cols-2 gap-3">${saran.map(s => `<div onclick="ubahQty('${s.nama.replace(/'/g, "\\'")}', 1); munculkanPopup()" class="bg-orange-50 border border-orange-100 p-3 rounded-2xl text-center active:scale-95"><p class="font-black text-slate-700 text-[9px] uppercase italic">${s.nama}</p><button class="mt-2 bg-white text-orange-500 text-[8px] font-black px-2 py-1 rounded-lg border border-orange-200 uppercase">+ Tambah</button></div>`).join('')}</div></div>` : "";
@@ -318,11 +330,12 @@
             document.getElementById('layar-hitam').classList.add('tampil');
         }
 
+        // Simpan catatan per item
         function updateCatatanItem(nama, val) { if (dataKeranjang[nama]) dataKeranjang[nama].catatan = val; }
         function hilangkanPopup() { document.getElementById('layar-hitam').classList.remove('tampil'); }
         function resetKeranjang() { if (confirm("Hapus pesanan?")) { dataKeranjang = {}; hilangkanPopup(); renderMenu(); renderBestSeller(); updateBar(); } }
         
-        // FITUR ASLI: FUNGSI BANTUAN
+        // Fungsi Bantuan WhatsApp
         function bukaBantuan() { document.getElementById('layar-bantuan').classList.add('tampil'); }
         function tutupBantuan() { document.getElementById('layar-bantuan').classList.remove('tampil'); }
         function kirimBantuan(jenis) {
@@ -330,6 +343,7 @@
             tutupBantuan();
         }
 
+        // Fungsi Kirim Pesanan ke WhatsApp
         function jalankanKirimWA() {
             const arr = Object.values(dataKeranjang);
             if (arr.length === 0) return;
@@ -340,7 +354,7 @@
             
             window.open(`https://wa.me/${WA_NUMBER}?text=${msg}`, '_blank');
             
-            // Simpan ke riwayat lokal untuk fitur baru (Widget Luar)
+            // Simpan ke Riwayat Pesanan Saya
             arr.forEach(item => {
                 const index = riwayatPesananLokal.findIndex(r => r.nama === item.nama);
                 if (index > -1) riwayatPesananLokal[index].qty += item.qty;
@@ -356,6 +370,7 @@
             }, 1000);
         }
 
+        // Update Tampilan Pesanan Terkirim di Bawah Search
         function updateWidgetRiwayat() {
             const widget = document.getElementById('widget-pesanan-saya');
             const container = document.getElementById('list-riwayat-luar');
@@ -379,6 +394,7 @@
 
         function tutupNotif() { document.getElementById('notif-sukses').classList.remove('tampil'); }
 
+        // Mulai jalankan aplikasi
         deteksiRoom(); ambilData();
     </script>
 </body>
