@@ -8,7 +8,6 @@
     <style>
         body { overflow-x: hidden; touch-action: pan-y; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
-        /* Tab Aktif lebih menyala */
         .active-tab { 
             background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
             color: white; 
@@ -30,7 +29,6 @@
         }
         #layar-hitam.tampil .konten-putih, #layar-bantuan.tampil .konten-putih { transform: translateY(0); }
         
-        /* Animasi berdenyut untuk tombol Pesan */
         @keyframes pulse-orange {
             0% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.7); }
             70% { box-shadow: 0 0 0 10px rgba(249, 115, 22, 0); }
@@ -38,7 +36,6 @@
         }
         .animate-order { animation: pulse-orange 2s infinite; }
 
-        /* Badge Promo */
         .badge-hot {
             position: absolute; top: 6px; left: 6px;
             background: #ef4444; color: white; font-size: 8px;
@@ -60,7 +57,14 @@
         <button onclick="bukaBantuan()" class="absolute top-6 right-6 bg-white/10 border border-white/20 text-white px-4 py-2 rounded-full text-[10px] font-black uppercase backdrop-blur-md active:scale-90 transition-all">🆘 Bantuan</button>
     </div>
 
-    <div class="p-5 bg-white mb-3 shadow-sm rounded-b-[32px]">
+    <div class="px-5 -mt-6 relative z-30">
+        <div class="bg-white rounded-2xl shadow-xl border border-slate-100 flex items-center px-4 py-1">
+            <span class="text-slate-400 mr-2">🔍</span>
+            <input type="text" id="input-cari" oninput="filterMenu()" placeholder="Cari makanan atau minuman favoritmu..." class="w-full py-3 bg-transparent text-sm outline-none font-medium italic">
+        </div>
+    </div>
+
+    <div class="p-5 bg-white mt-4 mb-3 shadow-sm rounded-[32px]">
         <h2 class="text-[11px] font-black uppercase text-slate-400 mb-4 tracking-[0.2em] flex items-center gap-2">
             <span class="w-2 h-2 bg-red-500 rounded-full animate-ping"></span> Menu Paling Laris
         </h2>
@@ -106,9 +110,7 @@
                 </div>
                 <button onclick="resetKeranjang()" class="text-red-500 text-[10px] font-black uppercase bg-red-50 px-4 py-2 rounded-xl transition-all">Reset</button>
             </div>
-            
             <div id="list-checkout" class="space-y-4 overflow-y-auto mb-6 pr-1 flex-1 no-scrollbar"></div>
-            
             <div class="border-t border-slate-100 pt-6">
                 <div class="flex justify-between items-center mb-6 px-1">
                     <span class="font-black text-slate-400 text-xs uppercase tracking-[0.2em]">Total Estimasi</span>
@@ -129,6 +131,7 @@
         let dataKeranjang = {}; 
         let katAktif = "SEMUA";
         let roomNumber = "101"; 
+        let queryCari = "";
 
         function deteksiRoom() {
             const params = new URLSearchParams(window.location.search);
@@ -145,7 +148,6 @@
                 const baris = text.split(/\r?\n/).slice(1);
                 databaseMenu = [];
                 let setKategori = new Set(["SEMUA"]);
-
                 baris.forEach(r => {
                     let k = r.split(",");
                     if (k.length >= 2) {
@@ -159,11 +161,15 @@
                         }
                     }
                 });
-
                 renderTabs(setKategori);
                 renderBestSeller();
                 renderMenu();
             } catch (e) { console.error(e); }
+        }
+
+        function filterMenu() {
+            queryCari = document.getElementById('input-cari').value.toLowerCase();
+            renderMenu();
         }
 
         function renderTabs(setKategori) {
@@ -192,7 +198,17 @@
 
         function renderMenu() {
             let html = "";
-            const filtered = katAktif === "SEMUA" ? databaseMenu : databaseMenu.filter(m => m.kategori === katAktif);
+            // Filter berdasarkan Kategori DAN Pencarian
+            const filtered = databaseMenu.filter(m => {
+                const cocokKategori = (katAktif === "SEMUA" || m.kategori === katAktif);
+                const cocokCari = m.nama.toLowerCase().includes(queryCari);
+                return cocokKategori && cocokCari;
+            });
+
+            if (filtered.length === 0) {
+                html = `<div class="py-10 text-center text-slate-400 font-bold text-xs uppercase italic">Menu tidak ditemukan...</div>`;
+            }
+
             filtered.forEach(m => {
                 const q = dataKeranjang[m.nama]?.qty || 0;
                 const activeCard = q > 0 ? 'border-orange-500 bg-orange-50/30' : 'border-slate-100 bg-white';
@@ -200,9 +216,7 @@
                 
                 html += `
                 <div class="p-3 rounded-[28px] shadow-sm flex items-center border transition-all ${activeCard}">
-                    <div class="flex-shrink-0 mr-4 relative">
-                        ${imgTag}
-                    </div>
+                    <div class="flex-shrink-0 mr-4 relative">${imgTag}</div>
                     <div class="min-w-0 flex-1">
                         <h3 class="font-black text-slate-800 text-[14px] truncate uppercase italic leading-none">${m.nama}</h3>
                         <p class="text-orange-600 text-[13px] font-black mt-2 italic underline decoration-orange-200">Rp ${m.harga.toLocaleString('id-ID')}</p>
@@ -217,7 +231,11 @@
             document.getElementById('container-menu').innerHTML = html;
         }
 
-        function gantiKat(k) { katAktif = k; renderMenu(); renderTabs(new Set(databaseMenu.map(x=>x.kategori)).add("SEMUA")); }
+        function gantiKat(k) { 
+            katAktif = k; 
+            renderMenu(); 
+            renderTabs(new Set(databaseMenu.map(x=>x.kategori)).add("SEMUA")); 
+        }
         
         function ubahQty(nama, d) {
             if (!dataKeranjang[nama]) {
