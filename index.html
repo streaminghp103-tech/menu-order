@@ -9,14 +9,21 @@
         body { overflow-x: hidden; touch-action: pan-y; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .active-tab { background-color: #f97316; color: white; border-radius: 9999px; }
-        .fade-up { animation: fadeUp 0.3s ease-out forwards; }
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translate(-50%, 20px); }
-            to { opacity: 1; transform: translate(-50%, 0); }
+        
+        /* Animasi Modal agar muncul dari bawah ke atas */
+        #modal-checkout {
+            transition: opacity 0.3s ease;
+        }
+        .modal-content {
+            transition: transform 0.3s ease-out;
+            transform: translateY(100%);
+        }
+        #modal-checkout.active .modal-content {
+            transform: translateY(0);
         }
     </style>
 </head>
-<body class="bg-gray-100 pb-36 font-sans text-gray-900 w-full">
+<body class="bg-gray-100 pb-40 font-sans text-gray-900 w-full">
 
     <div class="h-40 bg-slate-900 relative w-full overflow-hidden">
         <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800" class="w-full h-full object-cover opacity-40">
@@ -30,38 +37,40 @@
 
     <div class="p-4 w-full max-w-full">
         <div id="container-menu" class="space-y-3">
-            <p class="text-center py-20 text-gray-400 text-xs font-medium">Sinkronisasi data...</p>
+            <p class="text-center py-20 text-gray-400 text-xs">Menghubungkan ke server...</p>
         </div>
     </div>
 
-    <div id="btn-keranjang" class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-md bg-zinc-900/95 backdrop-blur-md text-white p-4 rounded-2xl shadow-2xl flex justify-between items-center hidden z-50 fade-up">
+    <div id="btn-keranjang" class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-md bg-zinc-900 text-white p-4 rounded-2xl shadow-2xl flex justify-between items-center hidden z-[60]">
         <div id="info-pesanan"></div>
-        <button onclick="bukaKonfirmasi()" class="bg-orange-500 active:scale-95 transition-all px-6 py-2 rounded-xl font-bold text-xs shadow-lg">LIHAT PESANAN</button>
+        <button onclick="bukaKonfirmasi()" class="bg-orange-500 active:scale-95 transition-all px-6 py-2 rounded-xl font-bold text-xs">LIHAT PESANAN</button>
     </div>
 
-    <div id="modal-checkout" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] hidden items-end sm:items-center justify-center p-4">
-        <div class="bg-white w-full max-w-md rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl animate-pop overflow-y-auto max-h-[90vh]">
-            <div class="flex justify-between items-center mb-5">
-                <h2 class="font-black text-lg text-gray-800">Detail Pesanan</h2>
-                <button onclick="tutupKonfirmasi()" class="text-gray-400 p-2">✕</button>
+    <div id="modal-checkout" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-[100] hidden flex-col justify-end">
+        <div class="flex-1" onclick="tutupKonfirmasi()"></div>
+        
+        <div class="modal-content bg-white w-full max-w-md mx-auto rounded-t-[32px] p-6 shadow-2xl max-h-[85vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="font-black text-xl text-gray-800 tracking-tight">Konfirmasi Order</h2>
+                <button onclick="tutupKonfirmasi()" class="bg-gray-100 text-gray-400 w-8 h-8 rounded-full flex items-center justify-center font-bold">✕</button>
             </div>
             
-            <div id="ringkasan-item" class="space-y-4 mb-6 border-b pb-6">
+            <div id="ringkasan-item" class="space-y-4 mb-6 border-b border-dashed pb-6">
                 </div>
 
             <div class="mb-6">
-                <label class="block text-[10px] font-bold text-gray-400 uppercase mb-2 tracking-widest">Catatan Tambahan (Opsional)</label>
-                <textarea id="catatan-order" placeholder="Contoh: Es batu dipisah, Pedas sedang, dsb..." 
+                <label class="block text-[10px] font-black text-gray-400 uppercase mb-2 tracking-widest">Catatan Tambahan</label>
+                <textarea id="catatan-order" placeholder="Contoh: Es batu banyakin, pedas, dll..." 
                     class="w-full bg-gray-50 border border-gray-200 rounded-2xl p-4 text-sm focus:ring-2 focus:ring-orange-500 outline-none transition-all" rows="2"></textarea>
             </div>
 
-            <div class="flex justify-between items-center mb-6">
-                <span class="font-bold text-gray-500">Total Pembayaran</span>
-                <span id="total-akhir" class="font-black text-xl text-orange-600"></span>
+            <div class="flex justify-between items-center mb-8 px-1">
+                <span class="font-bold text-gray-500">Total Akhir</span>
+                <span id="total-akhir" class="font-black text-2xl text-orange-600"></span>
             </div>
 
-            <button onclick="kirimWhatsApp()" class="w-full bg-green-500 hover:bg-green-600 active:scale-95 transition-all text-white py-4 rounded-2xl font-black text-sm shadow-xl flex items-center justify-center gap-3">
-                KIRIM KE WHATSAPP KASIR
+            <button onclick="kirimWhatsApp()" class="w-full bg-green-500 active:scale-95 transition-all text-white py-4 rounded-2xl font-black text-sm shadow-xl flex items-center justify-center">
+                KIRIM PESANAN KE WA
             </button>
         </div>
     </div>
@@ -98,14 +107,14 @@
                 renderTabs();
                 tampilkanMenu();
             } catch (error) {
-                document.getElementById('container-menu').innerHTML = "<p class='text-center py-10'>Gagal sinkron.</p>";
+                document.getElementById('container-menu').innerHTML = "<p class='text-center py-10'>Koneksi Error.</p>";
             }
         }
 
         function renderTabs() {
             let html = "";
             daftarKategoriGlobal.forEach(kat => {
-                const activeClass = kat === kategoriAktif ? "active-tab" : "text-gray-500 bg-gray-200/50 rounded-full";
+                const activeClass = kat === kategoriAktif ? "active-tab shadow-md shadow-orange-100" : "text-gray-500 bg-white border border-gray-200 rounded-full";
                 html += `<button onclick="filterKategori('${kat}')" class="px-5 py-2 text-[10px] font-bold uppercase transition-all ${activeClass}">${kat}</button>`;
             });
             document.getElementById('tabs-kategori').innerHTML = html;
@@ -124,14 +133,14 @@
                 const qty = keranjang[m.nama]?.qty || 0;
                 html += `
                 <div class="bg-white p-4 rounded-2xl shadow-sm flex justify-between items-center border border-gray-100">
-                    <div class="min-w-0 flex-1 pr-4">
+                    <div class="min-w-0 flex-1 pr-2">
                         <h3 class="font-bold text-gray-800 text-sm leading-tight truncate">${m.nama}</h3>
-                        <p class="text-orange-600 text-[11px] font-black mt-1">Rp ${m.harga.toLocaleString('id-ID')}</p>
+                        <p class="text-orange-600 text-[11px] font-black mt-1 uppercase">Rp ${m.harga.toLocaleString('id-ID')}</p>
                     </div>
                     <div class="flex items-center gap-2 bg-gray-50 p-1 rounded-xl border border-gray-200">
                         ${qty > 0 ? `<button onclick="updateQty('${m.nama.replace(/'/g, "\\'")}', -1)" class="w-8 h-8 rounded-lg bg-white shadow-sm text-orange-500 font-bold flex items-center justify-center">-</button>
                         <span class="font-bold text-xs w-4 text-center text-gray-800">${qty}</span>` : ''}
-                        <button onclick="updateQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="bg-orange-500 text-white w-8 h-8 rounded-lg font-bold flex items-center justify-center shadow-md shadow-orange-200">+</button>
+                        <button onclick="updateQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="bg-orange-500 text-white w-8 h-8 rounded-lg font-bold flex items-center justify-center shadow-md shadow-orange-100">+</button>
                     </div>
                 </div>`;
             });
@@ -158,10 +167,11 @@
                 btn.classList.remove('hidden');
                 document.getElementById('info-pesanan').innerHTML = `
                     <p class="font-black text-sm">${totalQty} Item</p>
-                    <p class="text-[10px] text-orange-400 font-bold uppercase tracking-widest">Rp ${totalPrice.toLocaleString('id-ID')}</p>`;
+                    <p class="text-[10px] text-orange-400 font-bold uppercase">Rp ${totalPrice.toLocaleString('id-ID')}</p>`;
             } else { btn.classList.add('hidden'); }
         }
 
+        // FUNGSI BARU: BUKA POPUP
         function bukaKonfirmasi() {
             const items = Object.values(keranjang);
             let html = "";
@@ -171,22 +181,31 @@
                 total += subtotal;
                 html += `
                 <div class="flex justify-between items-start">
-                    <div class="flex-1">
+                    <div class="flex-1 pr-4">
                         <p class="font-bold text-gray-800 text-sm leading-tight">${i.nama}</p>
-                        <p class="text-[10px] text-gray-400 font-bold uppercase">${i.qty} x Rp ${i.harga.toLocaleString('id-ID')}</p>
+                        <p class="text-[10px] text-gray-400 font-bold uppercase mt-1">${i.qty} x Rp ${i.harga.toLocaleString('id-ID')}</p>
                     </div>
                     <span class="font-black text-gray-800 text-sm">Rp ${subtotal.toLocaleString('id-ID')}</span>
                 </div>`;
             });
             document.getElementById('ringkasan-item').innerHTML = html;
             document.getElementById('total-akhir').innerText = `Rp ${total.toLocaleString('id-ID')}`;
-            document.getElementById('modal-checkout').classList.remove('hidden');
-            document.getElementById('modal-checkout').classList.add('flex');
+            
+            // Tampilkan Modal
+            const modal = document.getElementById('modal-checkout');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            setTimeout(() => { modal.classList.add('active'); }, 10);
         }
 
+        // FUNGSI BARU: TUTUP POPUP
         function tutupKonfirmasi() {
-            document.getElementById('modal-checkout').classList.add('hidden');
-            document.getElementById('modal-checkout').classList.remove('flex');
+            const modal = document.getElementById('modal-checkout');
+            modal.classList.remove('active');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }, 300);
         }
 
         function kirimWhatsApp() {
@@ -195,7 +214,8 @@
             const catatan = document.getElementById('catatan-order').value;
             const daftar = items.map(i => `• ${i.nama} (${i.qty}x)`).join('%0A');
             const total = items.reduce((acc, curr) => acc + (curr.harga * curr.qty), 0);
-            const teks = `Halo Happy Puppy Samarinda,%0A%0ASaya pesan:%0A${daftar}%0A%0A*Catatan:* ${catatan || '-'}%0A%0A*Total: Rp ${total.toLocaleString('id-ID')}*`;
+            
+            const teks = `Halo Happy Puppy Samarinda,%0A%0ASaya mau pesan:%0A${daftar}%0A%0A*Catatan:* ${catatan || '-'}%0A%0A*Total: Rp ${total.toLocaleString('id-ID')}*`;
             window.open(`https://wa.me/${noWA}?text=${teks}`, '_blank');
         }
 
