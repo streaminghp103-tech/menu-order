@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Menu Happy Puppy Citos</title>
+    <title>Menu Happy Puppy Samarinda</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { overflow-x: hidden; touch-action: pan-y; }
@@ -53,7 +53,7 @@
         
         <div class="relative z-10 flex justify-between items-start mb-6">
             <div class="text-white">
-                <h1 class="text-2xl font-black uppercase italic leading-tight">Happy Puppy<br><span class="text-orange-500">Citos</span></h1>
+                <h1 class="text-2xl font-black uppercase italic leading-tight">Happy Puppy<br><span class="text-orange-500">Samarinda</span></h1>
                 <div id="info-room-header" class="mt-2 inline-block bg-white/10 border border-white/20 px-3 py-1 rounded-full text-[9px] font-bold uppercase backdrop-blur-md text-orange-200 tracking-widest">📍 Room: --</div>
             </div>
             <button onclick="bukaBantuan()" class="bg-white/10 border border-white/20 text-white p-3 rounded-2xl backdrop-blur-md active:scale-90 transition-all text-xl">🆘</button>
@@ -113,7 +113,9 @@
                 </div>
                 <button onclick="resetKeranjang()" class="text-red-500 text-[10px] font-black uppercase bg-red-50 px-4 py-2 rounded-xl transition-all italic">Reset</button>
             </div>
+            
             <div id="list-checkout" class="space-y-4 overflow-y-auto mb-6 pr-1 flex-1 no-scrollbar"></div>
+            
             <div class="border-t border-slate-100 pt-6">
                 <div class="flex justify-between items-center mb-6 px-1">
                     <span class="font-black text-slate-400 text-xs uppercase tracking-[0.2em]">Total Estimasi</span>
@@ -160,7 +162,7 @@
                         const harga = parseInt(k[1]?.replace(/[^0-9]/g, '')) || 0;
                         const kategori = k[2]?.replace(/"/g, '').trim().toUpperCase() || "LAINNYA";
                         const foto = k[3]?.replace(/"/g, '').trim() || "";
-                        const deskripsi = k[4]?.replace(/"/g, '').trim() || ""; // BARU: AMBIL DESKRIPSI
+                        const deskripsi = k[4]?.replace(/"/g, '').trim() || ""; // AMBIL DESKRIPSI
                         if (nama && harga > 0) {
                             databaseMenu.push({ nama, harga, kategori, foto, deskripsi });
                             setKategori.add(kategori);
@@ -223,8 +225,7 @@
                 const activeCard = q > 0 ? 'border-orange-500 bg-orange-50/30' : 'border-white bg-white';
                 const imgTag = m.foto ? `<img src="${m.foto}" class="w-24 h-24 object-cover rounded-2xl shadow-sm">` : `<div class="w-24 h-24 bg-slate-100 rounded-2xl flex items-center justify-center text-xl">🍱</div>`;
                 
-                // FITUR DESKRIPSI MENGGODA
-                const deskripsiHtml = m.deskripsi ? `<p class="text-[10px] text-slate-400 mt-1 line-clamp-2 leading-relaxed italic italic font-medium">"${m.deskripsi}"</p>` : '';
+                const deskripsiHtml = m.deskripsi ? `<p class="text-[10px] text-slate-400 mt-1 line-clamp-2 leading-relaxed italic font-medium">"${m.deskripsi}"</p>` : '';
 
                 html += `
                 <div class="p-3 rounded-[28px] shadow-sm flex items-start border-2 transition-all ${activeCard}">
@@ -274,6 +275,7 @@
             e.preventDefault();
             const arr = Object.values(dataKeranjang);
             let h = ""; let t = 0;
+            
             arr.forEach((i) => {
                 const s = i.harga * i.qty; t += s;
                 h += `
@@ -288,7 +290,33 @@
                     <input type="text" onchange="updateCatatanItem('${i.nama.replace(/'/g, "\\'")}', this.value)" value="${i.catatan || ''}" placeholder="Catatan (es dikit, pedas, dll)..." class="w-full bg-white border border-slate-200 rounded-xl py-3 px-4 text-[11px] outline-none italic focus:border-orange-500 shadow-sm transition-all">
                 </div>`;
             });
-            document.getElementById('list-checkout').innerHTML = h || `<p class="text-center py-10 text-slate-300 font-black uppercase text-[10px] italic">Pesanan masih kosong...</p>`;
+
+            // FITUR CROSS-SELLING (Saran Minuman)
+            let crossSellHtml = "";
+            const saran = databaseMenu
+                .filter(m => !dataKeranjang[m.nama] && (m.kategori.includes("DRINK") || m.kategori.includes("MINUMAN")))
+                .sort(() => 0.5 - Math.random())
+                .slice(0, 2);
+
+            if (saran.length > 0) {
+                crossSellHtml = `
+                <div class="mt-8 mb-4 px-1">
+                    <p class="text-[10px] font-black text-orange-500 uppercase tracking-[0.15em] mb-3 flex items-center gap-2">
+                        <span class="w-1.5 h-1.5 bg-orange-500 rounded-full animate-pulse"></span> Tambah minuman biar makin asyik:
+                    </p>
+                    <div class="grid grid-cols-2 gap-3">
+                        ${saran.map(s => `
+                            <div onclick="ubahQty('${s.nama.replace(/'/g, "\\'")}', 1); munculkanPopup(event)" class="bg-orange-50/50 border border-orange-100 p-3 rounded-2xl flex flex-col items-center text-center active:scale-95 transition-all">
+                                <p class="font-black text-slate-700 text-[10px] uppercase truncate w-full italic">${s.nama}</p>
+                                <p class="text-orange-600 font-black text-[11px] mt-1">Rp ${s.harga.toLocaleString('id-ID')}</p>
+                                <button class="mt-2 bg-white text-orange-500 text-[9px] font-black px-3 py-1 rounded-lg border border-orange-200 shadow-sm uppercase tracking-tighter">+ Tambah</button>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>`;
+            }
+
+            document.getElementById('list-checkout').innerHTML = (h || `<p class="text-center py-10 text-slate-300 font-black uppercase text-[10px] italic">Pesanan masih kosong...</p>`) + crossSellHtml;
             document.getElementById('harga-akhir').innerText = `Rp ${t.toLocaleString('id-ID')}`;
             document.getElementById('layar-hitam').classList.add('tampil');
         }
