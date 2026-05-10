@@ -131,7 +131,7 @@
         const WA_NUMBER = "6285348773757";
         
         let databaseMenu = [];
-        let listKategoriTetap = []; // Untuk menyimpan urutan kategori agar tidak berantakan
+        let listKategoriTetap = [];
         let dataKeranjang = {}; 
         let katAktif = "SEMUA";
         let roomNumber = "101"; 
@@ -160,16 +160,15 @@
                         const harga = parseInt(k[1]?.replace(/[^0-9]/g, '')) || 0;
                         const kategori = k[2]?.replace(/"/g, '').trim().toUpperCase() || "LAINNYA";
                         const foto = k[3]?.replace(/"/g, '').trim() || "";
+                        const deskripsi = k[4]?.replace(/"/g, '').trim() || ""; // BARU: AMBIL DESKRIPSI
                         if (nama && harga > 0) {
-                            databaseMenu.push({ nama, harga, kategori, foto });
+                            databaseMenu.push({ nama, harga, kategori, foto, deskripsi });
                             setKategori.add(kategori);
                         }
                     }
                 });
 
-                // PERBAIKAN BUG: Kategori disusun satu kali di awal agar urutannya paten
                 listKategoriTetap = ["SEMUA", ...Array.from(setKategori).sort()];
-                
                 renderTabs();
                 renderBestSeller();
                 renderMenu();
@@ -222,30 +221,31 @@
             filtered.forEach(m => {
                 const q = dataKeranjang[m.nama]?.qty || 0;
                 const activeCard = q > 0 ? 'border-orange-500 bg-orange-50/30' : 'border-white bg-white';
-                const imgTag = m.foto ? `<img src="${m.foto}" class="w-20 h-20 object-cover rounded-2xl shadow-sm">` : `<div class="w-20 h-20 bg-slate-100 rounded-2xl flex items-center justify-center text-xl">🍱</div>`;
+                const imgTag = m.foto ? `<img src="${m.foto}" class="w-24 h-24 object-cover rounded-2xl shadow-sm">` : `<div class="w-24 h-24 bg-slate-100 rounded-2xl flex items-center justify-center text-xl">🍱</div>`;
                 
+                // FITUR DESKRIPSI MENGGODA
+                const deskripsiHtml = m.deskripsi ? `<p class="text-[10px] text-slate-400 mt-1 line-clamp-2 leading-relaxed italic italic font-medium">"${m.deskripsi}"</p>` : '';
+
                 html += `
-                <div class="p-3 rounded-[28px] shadow-sm flex items-center border-2 transition-all ${activeCard}">
+                <div class="p-3 rounded-[28px] shadow-sm flex items-start border-2 transition-all ${activeCard}">
                     <div class="flex-shrink-0 mr-4 relative">${imgTag}</div>
-                    <div class="min-w-0 flex-1">
+                    <div class="min-w-0 flex-1 pt-1">
                         <h3 class="font-black text-slate-800 text-[14px] truncate uppercase italic leading-none">${m.nama}</h3>
-                        <p class="text-orange-600 text-[13px] font-black mt-2 italic underline decoration-orange-200">Rp ${m.harga.toLocaleString('id-ID')}</p>
+                        ${deskripsiHtml}
+                        <p class="text-orange-600 text-[13px] font-black mt-3 italic underline decoration-orange-200">Rp ${m.harga.toLocaleString('id-ID')}</p>
                     </div>
-                    <div class="flex items-center gap-2 bg-slate-50 p-1.5 rounded-2xl ml-2 border border-slate-200">
-                        ${q > 0 ? `<button onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', -1)" class="w-9 h-9 rounded-xl bg-white text-orange-500 font-black shadow-sm active:bg-orange-50">-</button>
-                        <span class="font-black text-sm w-5 text-center text-slate-700">${q}</span>` : ''}
-                        <button onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="bg-orange-500 text-white w-9 h-9 rounded-xl font-black shadow-lg active:scale-90">+</button>
+                    <div class="flex flex-col items-center gap-2 bg-slate-50 p-1 rounded-2xl ml-2 border border-slate-200">
+                        <button onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="bg-orange-500 text-white w-10 h-10 rounded-xl font-black shadow-lg active:scale-90 flex items-center justify-center text-xl">+</button>
+                        ${q > 0 ? `
+                        <span class="font-black text-sm text-slate-700">${q}</span>
+                        <button onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', -1)" class="text-red-400 font-bold text-[9px] uppercase p-1">Hapus</button>` : ''}
                     </div>
                 </div>`;
             });
             document.getElementById('container-menu').innerHTML = html;
         }
 
-        function gantiKat(k) { 
-            katAktif = k; 
-            renderMenu(); 
-            renderTabs(); // Sekarang urutannya akan tetap karena pakai listKategoriTetap
-        }
+        function gantiKat(k) { katAktif = k; renderMenu(); renderTabs(); }
         
         function ubahQty(nama, d) {
             if (!dataKeranjang[nama]) {
