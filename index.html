@@ -55,7 +55,7 @@
         
         <div class="relative z-10 flex justify-between items-start mb-6">
             <div class="text-white">
-                <h1 class="text-2xl font-black uppercase italic leading-tight">Happy Puppy<br><span class="text-orange-500">Citos</span></h1>
+                <h1 class="text-2xl font-black uppercase italic leading-tight">Happy Puppy<br><span class="text-orange-500">Samarinda</span></h1>
                 <div id="info-room-header" class="mt-2 inline-block bg-white/10 border border-white/20 px-3 py-1 rounded-full text-[9px] font-bold uppercase backdrop-blur-md text-orange-200 tracking-widest">📍 Room: --</div>
             </div>
             <button onclick="bukaBantuan()" class="bg-white/10 border border-white/20 text-white p-3 rounded-2xl backdrop-blur-md active:scale-90 transition-all text-xl">Bantuan</button>
@@ -167,7 +167,6 @@
         let roomNumber = "101"; 
         let queryCari = "";
 
-        // 1. PROTEKSI SESI 2 JAM
         function proteksiSesi() {
             const DURASI_SESI = 2 * 60 * 60 * 1000; 
             const waktuSekarang = new Date().getTime();
@@ -249,7 +248,6 @@
             document.getElementById('tabs-kategori').innerHTML = htmlKat;
         }
 
-        // 2. INTERAKTIVITAS BEST SELLER
         function handleBestSellerClick(nama) {
             const q = dataKeranjang[nama]?.qty || 0;
             if (q === 0) ubahQty(nama, 1);
@@ -326,7 +324,7 @@
             } else { el.classList.add('hidden'); }
         }
 
-        // 3. CROSS SELLING DALAM KERANJANG
+        // --- UPDATE: CROSS SELLING DENGAN GAMBAR ---
         function munculkanPopup(e) {
             if(e) e.preventDefault();
             const arr = Object.values(dataKeranjang);
@@ -356,16 +354,33 @@
 
             let crossSellHtml = "";
             if (arr.length > 0) {
-                let targetKat = (jMinum > jMakan) ? ["SNACK", "FOOD", "MAKANAN"] : ["DRINK", "MINUMAN"];
+                // Logika: Jika lebih banyak minum -> tawarkan snack. Jika lebih banyak makan -> tawarkan minum.
+                let targetKat = (jMinum > jMakan) ? ["SNACK", "FOOD", "MAKANAN", "GORENGAN"] : ["DRINK", "MINUMAN", "COFFEE", "JUICE"];
+                
                 let saran = databaseMenu
                     .filter(m => !dataKeranjang[m.nama] && targetKat.some(k => m.kategori.toUpperCase().includes(k)))
                     .sort(() => 0.5 - Math.random()).slice(0, 2);
 
                 if (saran.length > 0) {
-                    crossSellHtml = `<div class="mt-8 mb-4">
-                        <p class="text-[10px] font-black text-orange-500 uppercase tracking-widest mb-3 px-1">Lengkapi pesananmu:</p>
+                    crossSellHtml = `
+                    <div class="mt-8 mb-4">
+                        <p class="text-[10px] font-black text-orange-500 uppercase tracking-widest mb-3 px-1 flex items-center gap-2">
+                            <span class="flex h-1.5 w-1.5 rounded-full bg-orange-500 animate-pulse"></span>
+                            Lengkapi pesananmu:
+                        </p>
                         <div class="grid grid-cols-2 gap-3">
-                            ${saran.map(s => `<div onclick="ubahQty('${s.nama.replace(/'/g, "\\'")}', 1); munculkanPopup()" class="bg-orange-50 border border-orange-100 p-3 rounded-2xl text-center active:scale-95 transition-all"><p class="font-black text-slate-700 text-[9px] uppercase italic truncate">${s.nama}</p><button class="mt-2 bg-white text-orange-500 text-[8px] font-black px-3 py-1 rounded-lg border border-orange-200 uppercase">+ Tambah</button></div>`).join('')}
+                            ${saran.map(s => {
+                                const fotoS = s.foto ? s.foto : 'https://placehold.co/400x400?text=Menu';
+                                return `
+                                <div onclick="ubahQty('${s.nama.replace(/'/g, "\\'")}', 1); munculkanPopup()" class="group bg-orange-50/50 border border-orange-100 p-2 rounded-2xl active:scale-95 transition-all cursor-pointer">
+                                    <div class="relative overflow-hidden rounded-xl mb-2">
+                                        <img src="${fotoS}" class="w-full h-20 object-cover transform group-active:scale-110 transition-transform">
+                                    </div>
+                                    <p class="font-black text-slate-700 text-[9px] uppercase italic truncate mb-1 px-1">${s.nama}</p>
+                                    <p class="text-orange-600 font-black text-[9px] italic mb-2 px-1">Rp ${s.harga.toLocaleString('id-ID')}</p>
+                                    <button class="w-full bg-white text-orange-500 text-[8px] font-black py-1.5 rounded-lg border border-orange-200 uppercase shadow-sm">+ Tambah</button>
+                                </div>`;
+                            }).join('')}
                         </div>
                     </div>`;
                 }
