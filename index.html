@@ -61,8 +61,8 @@
             <div class="flex justify-between items-start mb-5 flex-shrink-0">
                 <div>
                     <h2 class="font-black text-xl text-gray-800 leading-none">Detail Order</h2>
-                    <div id="info-room-popup" class="mt-2 inline-block bg-orange-100 text-orange-600 px-2 py-1 rounded text-[11px] font-black uppercase tracking-wider">
-                        Room: Belum Terdeteksi
+                    <div id="info-room-popup" class="mt-2 inline-block bg-orange-500 text-white px-3 py-1 rounded text-[11px] font-black uppercase tracking-wider">
+                        ROOM: 101
                     </div>
                 </div>
                 <button onclick="resetKeranjang()" class="text-red-500 text-[10px] font-bold uppercase border border-red-100 px-3 py-1 rounded-lg">Reset</button>
@@ -89,18 +89,16 @@
         let databaseMenu = [];
         let dataKeranjang = {}; 
         let katAktif = "SEMUA";
-        let roomNumber = "TIDAK ADA";
+        let roomNumber = "101"; // Default awal kita set ke 101
 
-        // Fungsi Deteksi Room
         function deteksiRoom() {
             const params = new URLSearchParams(window.location.search);
             const r = params.get('room');
             if (r) {
                 roomNumber = r.toUpperCase();
-                document.getElementById('info-room-popup').innerText = "ROOM: " + roomNumber;
-                document.getElementById('info-room-popup').classList.replace('bg-orange-100', 'bg-orange-500');
-                document.getElementById('info-room-popup').classList.replace('text-orange-600', 'text-white');
             }
+            // Update tulisan di pop-up
+            document.getElementById('info-room-popup').innerText = "ROOM: " + roomNumber;
         }
 
         async function ambilData() {
@@ -145,11 +143,11 @@
                 <div class="bg-white p-4 rounded-2xl shadow-sm flex justify-between items-center border border-gray-50">
                     <div class="min-w-0 flex-1 pr-3">
                         <h3 class="font-bold text-gray-800 text-sm truncate">${m.nama}</h3>
-                        <p class="text-orange-600 text-[11px] font-black mt-1">Rp ${m.harga.toLocaleString('id-ID')}</p>
+                        <p class="text-orange-600 text-[11px] font-black mt-1 uppercase">Rp ${m.harga.toLocaleString('id-ID')}</p>
                     </div>
                     <div class="flex items-center gap-2 bg-gray-50 p-1 rounded-xl">
-                        ${q > 0 ? `<button onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', -1)" class="w-8 h-8 rounded-lg bg-white text-orange-500 font-bold">-</button>
-                        <span class="font-bold text-xs w-4 text-center font-bold">${q}</span>` : ''}
+                        ${q > 0 ? `<button onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', -1)" class="w-8 h-8 rounded-lg bg-white text-orange-500 font-bold shadow-sm">-</button>
+                        <span class="font-bold text-xs w-4 text-center">${q}</span>` : ''}
                         <button onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="bg-orange-500 text-white w-8 h-8 rounded-lg font-bold shadow-md shadow-orange-100">+</button>
                     </div>
                 </div>`;
@@ -175,7 +173,7 @@
             const el = document.getElementById('bar-keranjang');
             if (tQty > 0) {
                 el.classList.remove('hidden');
-                document.getElementById('ringkasan-singkat').innerHTML = `<p class="font-black text-sm">${tQty} Item</p><p class="text-[10px] text-orange-400 font-bold uppercase">Rp ${tPrice.toLocaleString('id-ID')}</p>`;
+                document.getElementById('ringkasan-singkat').innerHTML = `<p class="font-black text-sm">${tQty} Item</p><p class="text-[10px] text-orange-400 font-bold uppercase">Total Rp ${tPrice.toLocaleString('id-ID')}</p>`;
             } else { el.classList.add('hidden'); }
         }
 
@@ -197,8 +195,8 @@
                     <input type="text" 
                         onchange="updateCatatanItem('${i.nama.replace(/'/g, "\\'")}', this.value)"
                         value="${i.catatan || ''}"
-                        placeholder="Catatan: Dingin, pedas, dll..." 
-                        class="w-full bg-gray-50 border border-gray-100 rounded-xl py-2 px-3 text-[11px] outline-none focus:border-orange-400 italic text-gray-500">
+                        placeholder="Tambahkan catatan..." 
+                        class="w-full bg-gray-50 border border-gray-200 rounded-xl py-2 px-3 text-[11px] outline-none focus:border-orange-400 italic text-gray-500">
                 </div>`;
             });
             document.getElementById('list-checkout').innerHTML = h;
@@ -227,13 +225,11 @@
             const arr = Object.values(dataKeranjang);
             if (arr.length === 0) return;
             const wa = "6285348773757";
-            
             const txtOrder = arr.map(i => {
                 let line = `• ${i.nama} (${i.qty}x)`;
                 if (i.catatan) line += `%0A  _Catatan: ${i.catatan}_`;
                 return line;
             }).join('%0A');
-            
             const t = arr.reduce((a, b) => a + (b.harga * b.qty), 0);
             const msg = `Halo Happy Puppy Samarinda,%0A%0A*PESANAN DARI ROOM ${roomNumber}*%0A%0A${txtOrder}%0A%0A*Total: Rp ${t.toLocaleString('id-ID')}*`;
             window.open(`https://wa.me/${wa}?text=${msg}`, '_blank');
