@@ -162,7 +162,7 @@
                         const harga = parseInt(k[1]?.replace(/[^0-9]/g, '')) || 0;
                         const kategori = k[2]?.replace(/"/g, '').trim().toUpperCase() || "LAINNYA";
                         const foto = k[3]?.replace(/"/g, '').trim() || "";
-                        const deskripsi = k[4]?.replace(/"/g, '').trim() || ""; // AMBIL DESKRIPSI
+                        const deskripsi = k[4]?.replace(/"/g, '').trim() || ""; 
                         if (nama && harga > 0) {
                             databaseMenu.push({ nama, harga, kategori, foto, deskripsi });
                             setKategori.add(kategori);
@@ -271,13 +271,21 @@
             } else { el.classList.add('hidden'); }
         }
 
+        // FUNGSI POPUP DENGAN LOGIKA SMART CROSS-SELLING
         function munculkanPopup(e) {
             e.preventDefault();
             const arr = Object.values(dataKeranjang);
             let h = ""; let t = 0;
             
+            let jumlahMinuman = 0;
+            let jumlahMakanan = 0;
+
             arr.forEach((i) => {
                 const s = i.harga * i.qty; t += s;
+                const kat = i.kategori.toUpperCase();
+                if(kat.includes("DRINK") || kat.includes("MINUMAN")) jumlahMinuman += i.qty;
+                else jumlahMakanan += i.qty;
+
                 h += `
                 <div class="bg-slate-50 p-4 rounded-[24px] border border-slate-100 flex flex-col gap-3">
                     <div class="flex justify-between items-start">
@@ -291,10 +299,25 @@
                 </div>`;
             });
 
-            // FITUR CROSS-SELLING (Saran Minuman)
+            let targetKategori = [];
+            let pesanSaran = "";
+
+            if (jumlahMinuman > jumlahMakanan) {
+                targetKategori = ["SNACK", "FOOD", "MAKANAN", "MEAL"];
+                pesanSaran = "Cari temen ngemil yang pas:";
+            } else {
+                targetKategori = ["DRINK", "MINUMAN"];
+                pesanSaran = "Tambah minuman biar makin asyik:";
+            }
+
             let crossSellHtml = "";
             const saran = databaseMenu
-                .filter(m => !dataKeranjang[m.nama] && (m.kategori.includes("DRINK") || m.kategori.includes("MINUMAN")))
+                .filter(m => {
+                    const sudahAda = dataKeranjang[m.nama];
+                    const katMenu = m.kategori.toUpperCase();
+                    const cocokKategori = targetKategori.some(kat => katMenu.includes(kat));
+                    return !sudahAda && cocokKategori;
+                })
                 .sort(() => 0.5 - Math.random())
                 .slice(0, 2);
 
@@ -302,7 +325,7 @@
                 crossSellHtml = `
                 <div class="mt-8 mb-4 px-1">
                     <p class="text-[10px] font-black text-orange-500 uppercase tracking-[0.15em] mb-3 flex items-center gap-2">
-                        <span class="w-1.5 h-1.5 bg-orange-500 rounded-full animate-pulse"></span> Tambah minuman biar makin asyik:
+                        <span class="w-1.5 h-1.5 bg-orange-500 rounded-full animate-pulse"></span> ${pesanSaran}
                     </p>
                     <div class="grid grid-cols-2 gap-3">
                         ${saran.map(s => `
