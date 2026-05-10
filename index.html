@@ -10,15 +10,30 @@
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .active-tab { background-color: #f97316; color: white; border-radius: 9999px; }
         
-        /* Animasi Modal agar muncul dari bawah ke atas */
+        /* Modal Style */
         #modal-checkout {
-            transition: opacity 0.3s ease;
+            display: none; /* Default sembunyi */
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(4px);
+            z-index: 9999;
+            align-items: flex-end;
+            justify-content: center;
         }
-        .modal-content {
-            transition: transform 0.3s ease-out;
+        #modal-checkout.show {
+            display: flex;
+        }
+        .modal-box {
+            background: white;
+            width: 100%;
+            max-width: 500px;
+            border-radius: 24px 24px 0 0;
+            padding: 24px;
             transform: translateY(100%);
+            transition: transform 0.3s ease-out;
         }
-        #modal-checkout.active .modal-content {
+        #modal-checkout.show .modal-box {
             transform: translateY(0);
         }
     </style>
@@ -35,41 +50,39 @@
 
     <div class="sticky top-0 bg-white shadow-sm z-40 overflow-x-auto no-scrollbar flex whitespace-nowrap px-4 py-3 gap-2 border-b border-gray-100" id="tabs-kategori"></div>
 
-    <div class="p-4 w-full max-w-full">
+    <div class="p-4 w-full">
         <div id="container-menu" class="space-y-3">
-            <p class="text-center py-20 text-gray-400 text-xs">Menghubungkan ke server...</p>
+            <p class="text-center py-20 text-gray-400 text-xs">Memuat menu...</p>
         </div>
     </div>
 
-    <div id="btn-keranjang" class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-md bg-zinc-900 text-white p-4 rounded-2xl shadow-2xl flex justify-between items-center hidden z-[60]">
+    <div id="btn-keranjang" class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-md bg-zinc-900 text-white p-4 rounded-2xl shadow-2xl flex justify-between items-center hidden z-50">
         <div id="info-pesanan"></div>
-        <button onclick="bukaKonfirmasi()" class="bg-orange-500 active:scale-95 transition-all px-6 py-2 rounded-xl font-bold text-xs">LIHAT PESANAN</button>
+        <button type="button" onclick="bukaModal()" class="bg-orange-500 px-6 py-2 rounded-xl font-bold text-xs uppercase tracking-tight">Cek Pesanan</button>
     </div>
 
-    <div id="modal-checkout" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-[100] hidden flex-col justify-end">
-        <div class="flex-1" onclick="tutupKonfirmasi()"></div>
-        
-        <div class="modal-content bg-white w-full max-w-md mx-auto rounded-t-[32px] p-6 shadow-2xl max-h-[85vh] overflow-y-auto">
+    <div id="modal-checkout">
+        <div class="modal-box shadow-2xl">
             <div class="flex justify-between items-center mb-6">
-                <h2 class="font-black text-xl text-gray-800 tracking-tight">Konfirmasi Order</h2>
-                <button onclick="tutupKonfirmasi()" class="bg-gray-100 text-gray-400 w-8 h-8 rounded-full flex items-center justify-center font-bold">✕</button>
+                <h2 class="font-black text-xl text-gray-800">Daftar Order</h2>
+                <button onclick="tutupModal()" class="text-gray-400 text-2xl">✕</button>
             </div>
             
-            <div id="ringkasan-item" class="space-y-4 mb-6 border-b border-dashed pb-6">
+            <div id="ringkasan-item" class="space-y-4 mb-6 max-h-60 overflow-y-auto pr-2 border-b border-dashed pb-6">
                 </div>
 
             <div class="mb-6">
-                <label class="block text-[10px] font-black text-gray-400 uppercase mb-2 tracking-widest">Catatan Tambahan</label>
-                <textarea id="catatan-order" placeholder="Contoh: Es batu banyakin, pedas, dll..." 
-                    class="w-full bg-gray-50 border border-gray-200 rounded-2xl p-4 text-sm focus:ring-2 focus:ring-orange-500 outline-none transition-all" rows="2"></textarea>
+                <label class="block text-[10px] font-black text-gray-400 uppercase mb-2 tracking-widest">Catatan (Opsional)</label>
+                <textarea id="catatan-order" placeholder="Contoh: Es batu banyak, jangan pedas..." 
+                    class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm outline-none focus:border-orange-500 transition-all" rows="2"></textarea>
             </div>
 
             <div class="flex justify-between items-center mb-8 px-1">
-                <span class="font-bold text-gray-500">Total Akhir</span>
+                <span class="font-bold text-gray-500">Total Harga</span>
                 <span id="total-akhir" class="font-black text-2xl text-orange-600"></span>
             </div>
 
-            <button onclick="kirimWhatsApp()" class="w-full bg-green-500 active:scale-95 transition-all text-white py-4 rounded-2xl font-black text-sm shadow-xl flex items-center justify-center">
+            <button onclick="kirimKeWA()" class="w-full bg-green-500 text-white py-4 rounded-2xl font-black text-sm shadow-xl active:scale-95 transition-all">
                 KIRIM PESANAN KE WA
             </button>
         </div>
@@ -107,15 +120,15 @@
                 renderTabs();
                 tampilkanMenu();
             } catch (error) {
-                document.getElementById('container-menu').innerHTML = "<p class='text-center py-10'>Koneksi Error.</p>";
+                console.log(error);
             }
         }
 
         function renderTabs() {
             let html = "";
             daftarKategoriGlobal.forEach(kat => {
-                const activeClass = kat === kategoriAktif ? "active-tab shadow-md shadow-orange-100" : "text-gray-500 bg-white border border-gray-200 rounded-full";
-                html += `<button onclick="filterKategori('${kat}')" class="px-5 py-2 text-[10px] font-bold uppercase transition-all ${activeClass}">${kat}</button>`;
+                const activeClass = kat === kategoriAktif ? "active-tab" : "text-gray-500 bg-white border border-gray-100 rounded-full";
+                html += `<button onclick="filterKategori('${kat}')" class="px-5 py-2 text-[10px] font-bold uppercase ${activeClass}">${kat}</button>`;
             });
             document.getElementById('tabs-kategori').innerHTML = html;
         }
@@ -135,12 +148,12 @@
                 <div class="bg-white p-4 rounded-2xl shadow-sm flex justify-between items-center border border-gray-100">
                     <div class="min-w-0 flex-1 pr-2">
                         <h3 class="font-bold text-gray-800 text-sm leading-tight truncate">${m.nama}</h3>
-                        <p class="text-orange-600 text-[11px] font-black mt-1 uppercase">Rp ${m.harga.toLocaleString('id-ID')}</p>
+                        <p class="text-orange-600 text-[11px] font-black mt-1 uppercase tracking-tighter">Rp ${m.harga.toLocaleString('id-ID')}</p>
                     </div>
                     <div class="flex items-center gap-2 bg-gray-50 p-1 rounded-xl border border-gray-200">
-                        ${qty > 0 ? `<button onclick="updateQty('${m.nama.replace(/'/g, "\\'")}', -1)" class="w-8 h-8 rounded-lg bg-white shadow-sm text-orange-500 font-bold flex items-center justify-center">-</button>
+                        ${qty > 0 ? `<button onclick="updateQty('${m.nama.replace(/'/g, "\\'")}', -1)" class="w-8 h-8 rounded-lg bg-white text-orange-500 font-bold">-</button>
                         <span class="font-bold text-xs w-4 text-center text-gray-800">${qty}</span>` : ''}
-                        <button onclick="updateQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="bg-orange-500 text-white w-8 h-8 rounded-lg font-bold flex items-center justify-center shadow-md shadow-orange-100">+</button>
+                        <button onclick="updateQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="bg-orange-500 text-white w-8 h-8 rounded-lg font-bold">+</button>
                     </div>
                 </div>`;
             });
@@ -149,73 +162,64 @@
 
         function updateQty(nama, delta) {
             if (!keranjang[nama]) {
-                const itemData = semuaMenu.find(m => m.nama === nama);
-                keranjang[nama] = { ...itemData, qty: 0 };
+                const data = semuaMenu.find(m => m.nama === nama);
+                keranjang[nama] = { ...data, qty: 0 };
             }
             keranjang[nama].qty += delta;
             if (keranjang[nama].qty <= 0) delete keranjang[nama];
             tampilkanMenu();
-            updateKeranjangUI();
+            updateUI();
         }
 
-        function updateKeranjangUI() {
+        function updateUI() {
             const items = Object.values(keranjang);
-            const totalQty = items.reduce((acc, curr) => acc + curr.qty, 0);
-            const totalPrice = items.reduce((acc, curr) => acc + (curr.harga * curr.qty), 0);
+            const totalQty = items.reduce((a, b) => a + b.qty, 0);
+            const totalPrice = items.reduce((a, b) => a + (b.harga * b.qty), 0);
             const btn = document.getElementById('btn-keranjang');
             if (totalQty > 0) {
                 btn.classList.remove('hidden');
                 document.getElementById('info-pesanan').innerHTML = `
                     <p class="font-black text-sm">${totalQty} Item</p>
-                    <p class="text-[10px] text-orange-400 font-bold uppercase">Rp ${totalPrice.toLocaleString('id-ID')}</p>`;
+                    <p class="text-[10px] text-orange-400 font-bold uppercase tracking-tight">Total: Rp ${totalPrice.toLocaleString('id-ID')}</p>`;
             } else { btn.classList.add('hidden'); }
         }
 
-        // FUNGSI BARU: BUKA POPUP
-        function bukaKonfirmasi() {
+        // FUNGSI MODAL
+        function bukaModal() {
             const items = Object.values(keranjang);
             let html = "";
             let total = 0;
             items.forEach(i => {
-                const subtotal = i.harga * i.qty;
-                total += subtotal;
+                const sub = i.harga * i.qty;
+                total += sub;
                 html += `
-                <div class="flex justify-between items-start">
-                    <div class="flex-1 pr-4">
+                <div class="flex justify-between items-start border-b border-gray-50 pb-2">
+                    <div class="flex-1">
                         <p class="font-bold text-gray-800 text-sm leading-tight">${i.nama}</p>
-                        <p class="text-[10px] text-gray-400 font-bold uppercase mt-1">${i.qty} x Rp ${i.harga.toLocaleString('id-ID')}</p>
+                        <p class="text-[10px] text-gray-400 font-bold uppercase">${i.qty} x Rp ${i.harga.toLocaleString('id-ID')}</p>
                     </div>
-                    <span class="font-black text-gray-800 text-sm">Rp ${subtotal.toLocaleString('id-ID')}</span>
+                    <span class="font-black text-gray-800 text-sm">Rp ${sub.toLocaleString('id-ID')}</span>
                 </div>`;
             });
             document.getElementById('ringkasan-item').innerHTML = html;
             document.getElementById('total-akhir').innerText = `Rp ${total.toLocaleString('id-ID')}`;
-            
-            // Tampilkan Modal
-            const modal = document.getElementById('modal-checkout');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-            setTimeout(() => { modal.classList.add('active'); }, 10);
+            document.getElementById('modal-checkout').classList.add('show');
         }
 
-        // FUNGSI BARU: TUTUP POPUP
-        function tutupKonfirmasi() {
-            const modal = document.getElementById('modal-checkout');
-            modal.classList.remove('active');
-            setTimeout(() => {
-                modal.classList.add('hidden');
-                modal.classList.remove('flex');
-            }, 300);
+        function tutupModal() {
+            document.getElementById('modal-checkout').classList.remove('show');
         }
 
-        function kirimWhatsApp() {
-            const noWA = "6285348773757";
+        function kirimKeWA() {
             const items = Object.values(keranjang);
-            const catatan = document.getElementById('catatan-order').value;
+            if (items.length === 0) return;
+
+            const noWA = "6285348773757";
+            const catatan = document.getElementById('catatan-order').value || "-";
             const daftar = items.map(i => `• ${i.nama} (${i.qty}x)`).join('%0A');
-            const total = items.reduce((acc, curr) => acc + (curr.harga * curr.qty), 0);
+            const total = items.reduce((a, b) => a + (b.harga * b.qty), 0);
             
-            const teks = `Halo Happy Puppy Samarinda,%0A%0ASaya mau pesan:%0A${daftar}%0A%0A*Catatan:* ${catatan || '-'}%0A%0A*Total: Rp ${total.toLocaleString('id-ID')}*`;
+            const teks = `Halo Happy Puppy Samarinda,%0A%0ASaya mau pesan:%0A${daftar}%0A%0A*Catatan:* ${catatan}%0A%0A*Total: Rp ${total.toLocaleString('id-ID')}*`;
             window.open(`https://wa.me/${noWA}?text=${teks}`, '_blank');
         }
 
