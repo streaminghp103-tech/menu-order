@@ -5,29 +5,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Menu Happy Puppy Samarinda</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
 </head>
-<body class="bg-gray-50 pb-32">
-    <div class="h-40 bg-slate-800 relative">
-        <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800" class="w-full h-full object-cover opacity-50">
-        <div class="absolute bottom-4 left-4 text-white">
-            <h1 class="text-xl font-bold text-orange-400 uppercase">Happy Puppy Samarinda</h1>
-            <p class="text-xs opacity-80">Karaoke & Family Resto</p>
+<body class="bg-gray-50 pb-32 font-sans">
+
+    <div class="h-44 bg-slate-900 relative">
+        <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800" class="w-full h-full object-cover opacity-40">
+        <div class="absolute bottom-5 left-5 text-white">
+            <h1 class="text-2xl font-bold text-orange-400 leading-tight uppercase">Happy Puppy <br>Samarinda</h1>
+            <p class="text-xs opacity-80 mt-1">Digital Menu & Order System</p>
         </div>
     </div>
 
-    <div class="p-4">
-        <h2 class="font-bold text-gray-700 mb-4 border-b-2 border-orange-500 inline-block">Menu Populer</h2>
-        <div id="container-menu" class="space-y-3">
-            <p class="text-center py-10 text-gray-400 italic">Mengambil data menu...</p>
+    <div class="p-5">
+        <div class="flex justify-between items-center mb-5">
+            <h2 class="font-bold text-gray-800 text-lg border-b-4 border-orange-500 pb-1">Menu Populer</h2>
+            <span class="text-[10px] bg-gray-200 px-2 py-1 rounded text-gray-500 font-bold uppercase">Update Live</span>
+        </div>
+        
+        <div id="container-menu" class="space-y-4">
+            <div class="text-center py-20">
+                <div class="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-orange-500 mb-2"></div>
+                <p class="text-gray-400 italic text-sm">Menghubungkan ke database...</p>
+            </div>
         </div>
     </div>
 
-    <div id="btn-keranjang" class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-md bg-black text-white p-4 rounded-2xl shadow-2xl flex justify-between items-center hidden transition-all">
-        <div id="info-pesanan"></div>
-        <button onclick="kirimWhatsApp()" class="bg-green-500 px-6 py-2 rounded-xl font-bold text-sm">PESAN</button>
+    <div id="btn-keranjang" class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[92%] max-w-md bg-zinc-900 text-white p-4 rounded-2xl shadow-2xl flex justify-between items-center hidden z-50">
+        <div id="info-pesanan">
+            </div>
+        <button onclick="kirimWhatsApp()" class="bg-green-500 hover:bg-green-600 active:scale-95 transition-all px-6 py-2 rounded-xl font-bold text-sm shadow-lg">
+            PESAN VIA WA
+        </button>
     </div>
 
     <script>
+        // MASUKKAN LINK CSV GOOGLE SHEETS KAMU DI SINI
         const URL_SHEETS = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTDCkc69puC1CIoN5NnY8RggTTjvOFvbxau5FcU94eSnROveTeHS4ERbNptDZ_aGVvFNju6DAHiQvYn/pub?output=csv"; 
         
         let keranjang = [];
@@ -36,54 +52,79 @@
             try {
                 const response = await fetch(URL_SHEETS);
                 const data = await response.text();
-                const baris = data.split("\n").slice(1);
+                const baris = data.split("\n").slice(1); // Potong baris judul
                 
                 let html = "";
                 baris.forEach(brs => {
-                    const kolom = brs.split(","); // BARIS PENTING INI SUDAH KEMBALI
+                    // Deteksi otomatis apakah pemisahnya Koma (,) atau Titik Koma (;)
+                    let kolom = brs.split(",");
+                    if (kolom.length < 2) kolom = brs.split(";");
+
                     if(kolom.length >= 2) {
-                        const nama = kolom[0] ? kolom[0].trim() : "Menu";
-                        // Bersihkan angka dari huruf Rp atau titik agar tidak NaN
+                        const nama = kolom[0] ? kolom[0].trim().replace(/"/g, '') : "";
+                        
+                        // Membersihkan harga dari karakter non-angka (Rp, Titik, Spasi, dll)
                         const hargaMentah = kolom[1] ? kolom[1].replace(/[^0-9]/g, '') : "0";
                         const hargaFix = parseInt(hargaMentah) || 0;
 
-                        html += `
-                        <div class="bg-white p-3 rounded-xl shadow-sm flex justify-between items-center border border-gray-100">
-                            <div class="flex items-center gap-3">
-                                <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center text-xs text-gray-400 font-bold uppercase">HP</div>
-                                <div>
-                                    <h3 class="font-bold text-sm text-gray-800">${nama}</h3>
-                                    <p class="text-orange-500 text-xs font-bold">Rp ${hargaFix.toLocaleString('id-ID')}</p>
+                        if (nama !== "" && nama !== "undefined") {
+                            html += `
+                            <div class="bg-white p-4 rounded-2xl shadow-sm flex justify-between items-center border border-gray-100 transition-all active:bg-gray-50">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-14 h-14 bg-orange-50 rounded-xl flex items-center justify-center text-[10px] text-orange-300 font-black border border-orange-100 uppercase italic">HP</div>
+                                    <div>
+                                        <h3 class="font-bold text-gray-800 text-sm">${nama}</h3>
+                                        <p class="text-orange-600 text-xs font-black mt-1">Rp ${hargaFix.toLocaleString('id-ID')}</p>
+                                    </div>
                                 </div>
-                            </div>
-                            <button onclick="tambah('${nama}', ${hargaFix})" class="bg-orange-500 text-white w-8 h-8 rounded-full font-bold shadow-sm">+</button>
-                        </div>`;
+                                <button onclick="tambahKeKeranjang('${nama.replace(/'/g, "\\'")}', ${hargaFix})" 
+                                    class="bg-orange-500 hover:bg-orange-600 text-white w-10 h-10 rounded-xl font-bold shadow-md shadow-orange-200 flex items-center justify-center text-xl active:scale-90 transition-all">
+                                    +
+                                </button>
+                            </div>`;
+                        }
                     }
                 });
                 document.getElementById('container-menu').innerHTML = html;
-            } catch (e) {
-                document.getElementById('container-menu').innerHTML = "<p class='text-red-500 text-center py-10 font-bold'>Gagal memuat data. Periksa koneksi internet.</p>";
+            } catch (error) {
+                console.error(error);
+                document.getElementById('container-menu').innerHTML = `
+                    <div class="text-center py-10">
+                        <p class="text-red-500 font-bold">Gagal memuat menu.</p>
+                        <p class="text-xs text-gray-400 mt-2">Pastikan Google Sheets sudah di-publish ke web sebagai CSV.</p>
+                    </div>`;
             }
         }
 
-        function tambah(nama, harga) {
+        function tambahKeKeranjang(nama, harga) {
             keranjang.push({nama, harga});
+            
             const btn = document.getElementById('btn-keranjang');
             const info = document.getElementById('info-pesanan');
+            
             btn.classList.remove('hidden');
             
             const total = keranjang.reduce((a, b) => a + b.harga, 0);
-            info.innerHTML = `<p class='font-bold text-sm'>${keranjang.length} Item</p><p class='text-[10px] text-orange-400'>Total: Rp ${total.toLocaleString('id-ID')}</p>`;
+            
+            info.innerHTML = `
+                <p class="font-black text-sm">${keranjang.length} Pesanan</p>
+                <p class="text-[11px] text-orange-400 font-bold uppercase tracking-tighter">Total: Rp ${total.toLocaleString('id-ID')}</p>
+            `;
         }
 
         function kirimWhatsApp() {
             const noWA = "6285348773757";
-            const daftar = keranjang.map(i => `- ${i.nama}`).join('%0A');
+            
+            // Mengelompokkan item yang sama (opsional, tapi ini kita buat list sederhana dulu)
+            const daftar = keranjang.map(i => `• ${i.nama}`).join('%0A');
             const total = keranjang.reduce((a, b) => a + b.harga, 0);
-            const teks = `Halo Kasir Happy Puppy Samarinda,%0ASaya mau pesan:%0A${daftar}%0A%0ATotal: Rp ${total.toLocaleString('id-ID')}`;
-            window.open(`https://wa.me/${noWA}?text=${teks}`);
+            
+            const teks = `Halo Kasir *Happy Puppy Samarinda*,%0A%0ASaya ingin memesan:%0A${daftar}%0A%0A*Total Pembayaran: Rp ${total.toLocaleString('id-ID')}*%0A%0AMohon diproses, terima kasih!`;
+            
+            window.open(`https://wa.me/${noWA}?text=${teks}`, '_blank');
         }
 
+        // Jalankan fungsi saat halaman dibuka
         muatMenu();
     </script>
 </body>
