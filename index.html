@@ -353,27 +353,40 @@
         }
 
         function renderMenu() {
-            let html = "";
-            const filtered = databaseMenu.filter(m => (katAktif === "SEMUA" || m.kategori === katAktif) && m.nama.toLowerCase().includes(queryCari));
-            filtered.forEach(m => {
-                const q = dataKeranjang[m.nama]?.qty || 0;
-                const img = m.foto ? `<img src="${m.foto}" class="w-24 h-24 object-cover rounded-2xl shadow-md">` : `<div class="w-24 h-24 bg-slate-100 rounded-2xl flex items-center justify-center text-2xl">🍱</div>`;
-                html += `
-                <div class="p-3 rounded-[32px] shadow-sm flex items-center border-2 transition-all ${q > 0 ? 'border-orange-500 bg-orange-50/30 scale-[1.02]' : 'border-white bg-white'}">
-                    <div class="flex-shrink-0 mr-4">${img}</div>
-                    <div class="min-w-0 flex-1">
-                        <h3 class="font-black text-slate-800 text-[14px] truncate uppercase italic leading-none">${m.nama}</h3>
-                        <p class="text-[10px] text-slate-400 mt-1 italic font-medium leading-tight">${m.deskripsi || 'Menu spesial pilihan terbaik.'}</p>
-                        <p class="text-orange-600 text-[14px] font-black mt-2 italic">Rp ${m.harga.toLocaleString('id-ID')}</p>
+    let html = "";
+    const filtered = databaseMenu.filter(m => (katAktif === "SEMUA" || m.kategori === katAktif) && m.nama.toLowerCase().includes(queryCari));
+    
+    filtered.forEach(m => {
+        const q = dataKeranjang[m.nama]?.qty || 0;
+        const img = m.foto ? `<img src="${m.foto}" class="w-20 h-20 object-cover rounded-[20px] shadow-sm">` : `<div class="w-20 h-20 bg-slate-100 rounded-[20px] flex items-center justify-center text-xl">🍱</div>`;
+        
+        html += `
+        <div class="p-3 rounded-[28px] flex items-center transition-all duration-300 ${q > 0 ? 'bg-orange-50/50 ring-1 ring-orange-200 shadow-md' : 'bg-white shadow-sm border border-slate-50'}">
+            <div class="flex-shrink-0 mr-4 relative">
+                ${img}
+                ${q > 0 ? `<div class="absolute -top-1 -right-1 bg-orange-500 text-white text-[9px] font-black w-5 h-5 rounded-full flex items-center justify-center ring-2 ring-white">${q}</div>` : ''}
+            </div>
+            
+            <div class="min-w-0 flex-1">
+                <h3 class="font-black text-slate-800 text-[13px] truncate uppercase italic leading-tight">${m.nama}</h3>
+                <p class="text-[9px] text-slate-400 mt-1 italic font-medium leading-tight line-clamp-2">${m.deskripsi || 'Menu spesial Happy Puppy.'}</p>
+                <div class="flex items-center justify-between mt-2">
+                    <p class="text-orange-600 text-[13px] font-black italic">Rp ${m.harga.toLocaleString('id-ID')}</p>
+                    
+                    <div class="flex items-center gap-1">
+                        ${q > 0 ? `
+                            <button onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', -1)" class="w-8 h-8 flex items-center justify-center bg-white text-red-500 rounded-lg shadow-sm border border-slate-100 active:scale-90">-</button>
+                            <span class="w-6 text-center text-[11px] font-black text-slate-700">${q}</span>
+                        ` : ''}
+                        <button onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="w-8 h-8 flex items-center justify-center bg-orange-500 text-white rounded-lg shadow-md shadow-orange-100 active:scale-90">+</button>
                     </div>
-                    <div class="flex items-center bg-slate-50 p-1 rounded-2xl border border-slate-100 ml-2 shadow-inner">
-                        ${q > 0 ? `<button onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', -1)" class="bg-white text-red-500 w-9 h-9 rounded-xl font-black shadow-sm">-</button><span class="px-3 font-black text-sm">${q}</span>` : ''}
-                        <button onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="bg-orange-500 text-white w-9 h-9 rounded-xl font-black shadow-md">+</button>
-                    </div>
-                </div>`;
-            });
-            document.getElementById('container-menu').innerHTML = html || `<div class="py-20 text-center font-black uppercase italic text-slate-300">Menu tidak ditemukan</div>`;
-        }
+                </div>
+            </div>
+        </div>`;
+    });
+    
+    document.getElementById('container-menu').innerHTML = html || `<div class="py-20 text-center font-black uppercase italic text-slate-300">Menu tidak ditemukan</div>`;
+}
 
         function ubahQty(nama, d) {
             if (!dataKeranjang[nama]) {
