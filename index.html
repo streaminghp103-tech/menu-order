@@ -416,7 +416,7 @@
     let h = ""; let t = 0;
     let jMinum = 0; let jMakan = 0;
 
-    // 1. Loop Item (Padding & Margin diperketat agar lebih slim)
+    // 1. Loop Item (Daftar pesanan)
     arr.forEach((i) => {
         const s = i.harga * i.qty; t += s;
         if(i.kategori.includes("DRINK") || i.kategori.includes("MINUMAN")) jMinum += i.qty; else jMakan += i.qty;
@@ -432,11 +432,11 @@
                         </div>
                     </div>
                 </div>
-                <input type="text" onchange="updateCatatanItem('${i.nama.replace(/'/g, "\\'")}', this.value)" value="${i.catatan || ''}" placeholder="Catatan (opsional)..." class="w-full bg-white border border-slate-100 rounded-lg py-1 px-3 text-[8px] italic focus:border-orange-500 outline-none">
+                <input type="text" onchange="updateCatatanItem('${i.nama.replace(/'/g, "\\'")}', this.value)" value="${i.catatan || ''}" placeholder="Catatan..." class="w-full bg-white border border-slate-100 rounded-lg py-1 px-3 text-[8px] italic focus:border-orange-500 outline-none">
             </div>`;
     });
 
-    // 2. STICKY CROSS SELLING (Dibuat sangat tipis)
+    // 2. LOGIKA CROSS SELLING
     let crossHtml = "";
     let targetKat = (jMinum > jMakan) ? ["SNACK", "FOOD", "MAKANAN"] : ["DRINK", "MINUMAN", "JUICE"];
     let saran = databaseMenu.filter(m => !dataKeranjang[m.nama] && targetKat.some(k => m.kategori.includes(k))).sort(() => 0.5 - Math.random()).slice(0, 3);
@@ -459,13 +459,13 @@
         </div>`;
     }
 
-    // Tampilkan ke layar dengan penyesuaian header & footer minimalis
+    // --- DI SINI KODE YANG KAKAK TANYAKAN DI PASANG ---
     document.getElementById('list-checkout').innerHTML = crossHtml + `<div>${h}</div>`;
     document.getElementById('harga-akhir').innerText = `Rp ${t.toLocaleString('id-ID')}`;
-    document.getElementById('subtotal-angka').innerText = `Rp ${t.toLocaleString('id-ID')}`;
+    document.getElementById('subtotal-angka').innerText = `Rp ${t.toLocaleString('id-ID')}`; 
     document.getElementById('layar-hitam').classList.add('tampil');
-    cekRoomStatus();
-}
+    cekRoomStatus(); 
+} // <--- Ini penutup fungsinya
         // 6. FINISHING ORDER
         function jalankanKirimWA() {
             const arr = Object.values(dataKeranjang);
