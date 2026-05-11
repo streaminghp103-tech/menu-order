@@ -136,37 +136,49 @@
             <div id="list-checkout" class="space-y-4 overflow-y-auto mb-2 flex-1 no-scrollbar p-1">
                 </div>
             
-            <div class="border-t border-slate-100 pt-6">
-                <div class="mb-6">
-                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2 px-1 italic">Konfirmasi Lokasi Room :</label>
-                    <div class="relative">
-                        <select id="input-room-final" onchange="cekRoomStatus()" class="w-full bg-slate-50 border border-slate-200 p-4 rounded-2xl font-black text-slate-800 outline-none appearance-none focus:border-orange-500 transition-all uppercase shadow-inner text-sm">
-                            <option value="" disabled selected>-- PILIH NOMOR ROOM --</option>
-                            <optgroup label="LANTAI 1">
-                                <option value="101">Room 101</option><option value="102">Room 102</option>
-                                <option value="103">Room 103</option><option value="104">Room 104</option>
-                                <option value="105">Room 105</option>
-                            </optgroup>
-                            <optgroup label="LANTAI 2">
-                                <option value="201">Room 201</option><option value="202">Room 202</option>
-                                <option value="203">Room 203</option><option value="205">Room 205</option>
-                            </optgroup>
-                            <optgroup label="SPECIAL ROOM">
-                                <option value="VIP 1">VIP 1</option><option value="VIP 2">VIP 2</option>
-                                <option value="SUITE">SUITE ROOM</option>
-                            </optgroup>
-                            <option value="LOBBY">LOBBY / WAITING AREA</option>
-                        </select>
-                        <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-orange-500 font-bold">▼</div>
-                    </div>
-                </div>
+            <div class="mt-4 pt-4 border-t border-slate-50">
+    <div class="mb-5">
+        <div class="flex justify-between items-end mb-2 px-1">
+            <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest italic">Lokasi Room</label>
+            <span class="text-[9px] font-bold text-orange-500 uppercase italic">Wajib Diisi *</span>
+        </div>
+        <div class="relative group">
+            <select id="input-room-final" onchange="cekRoomStatus()" class="w-full bg-slate-50 border-none p-4 rounded-2xl font-black text-slate-800 outline-none appearance-none focus:ring-2 focus:ring-orange-500/20 transition-all uppercase text-xs tracking-wider shadow-inner">
+                <option value="" disabled selected>Pilih Nomor Room...</option>
+                <optgroup label="LANTAI 1">
+                    <option value="101">Room 101</option><option value="102">Room 102</option>
+                    <option value="103">Room 103</option><option value="104">Room 104</option>
+                    <option value="105">Room 105</option>
+                </optgroup>
+                <optgroup label="LANTAI 2">
+                    <option value="201">Room 201</option><option value="202">Room 202</option>
+                    <option value="203">Room 203</option><option value="205">Room 205</option>
+                </optgroup>
+                <optgroup label="SPECIAL ROOM">
+                    <option value="VIP 1">VIP 1</option><option value="VIP 2">VIP 2</option>
+                    <option value="SUITE">SUITE ROOM</option>
+                </optgroup>
+                <option value="LOBBY">LOBBY / WAITING</option>
+            </select>
+            <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400 text-[10px]">▼</div>
+        </div>
+    </div>
 
-                <div class="flex justify-between items-center mb-4 px-1">
-                    <span class="font-black text-slate-400 text-xs uppercase tracking-widest italic">Subtotal</span>
-                    <span id="harga-akhir" class="font-black text-2xl text-orange-600 italic">Rp 0</span>
-                </div>
-                <button type="button" id="btn-kirim-wa" onclick="jalankanKirimWA()" disabled class="w-full bg-slate-300 text-white py-5 rounded-2xl font-black text-sm uppercase shadow-lg transition-all">PILIH ROOM DULU 🎤</button>
-            </div>
+    <div class="space-y-2 mb-6 px-1">
+        <div class="flex justify-between items-center text-slate-400">
+            <span class="text-[10px] font-bold uppercase italic tracking-wider">Subtotal</span>
+            <span id="subtotal-angka" class="text-[11px] font-black">Rp 0</span>
+        </div>
+        <div class="flex justify-between items-center border-t border-dashed border-slate-200 pt-2">
+            <span class="text-[11px] font-black text-slate-800 uppercase italic tracking-tighter">Total Pembayaran</span>
+            <span id="harga-akhir" class="text-xl font-black text-orange-600 italic">Rp 0</span>
+        </div>
+    </div>
+
+    <button type="button" id="btn-kirim-wa" onclick="jalankanKirimWA()" disabled class="w-full bg-slate-200 text-slate-400 py-5 rounded-[24px] font-black text-[12px] uppercase tracking-[0.15em] transition-all duration-300 shadow-sm active:scale-95">
+        Pilih Room Dulu 🎤
+    </button>
+</div>
         </div>
     </div>
 
