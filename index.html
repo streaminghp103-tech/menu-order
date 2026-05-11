@@ -416,42 +416,42 @@
     let h = ""; let t = 0;
     let jMinum = 0; let jMakan = 0;
 
-    // 1. Loop Item (Border diperkecil & Padding diringkas)
+    // 1. Loop Item (Padding & Margin diperketat agar lebih slim)
     arr.forEach((i) => {
         const s = i.harga * i.qty; t += s;
         if(i.kategori.includes("DRINK") || i.kategori.includes("MINUMAN")) jMinum += i.qty; else jMakan += i.qty;
-        h += `<div class="bg-slate-50 p-3 rounded-[20px] border border-slate-100 flex flex-col gap-2 mb-2 shadow-sm">
+        h += `<div class="bg-slate-50 p-2.5 rounded-[18px] border border-slate-100 flex flex-col gap-1.5 mb-1.5 shadow-sm">
                 <div class="flex justify-between items-center">
-                    <p class="font-black text-slate-800 text-[12px] uppercase italic flex-1 pr-3 leading-tight">${i.nama}</p>
-                    <div class="flex items-center gap-3">
-                        <span class="font-black text-slate-800 text-[12px]">Rp ${s.toLocaleString('id-ID')}</span>
-                        <div class="flex items-center gap-2 bg-white border border-slate-200 rounded-lg px-2 py-1">
+                    <p class="font-black text-slate-800 text-[11px] uppercase italic flex-1 pr-3 leading-none truncate">${i.nama}</p>
+                    <div class="flex items-center gap-2.5">
+                        <span class="font-black text-slate-800 text-[11px]">Rp ${s.toLocaleString('id-ID')}</span>
+                        <div class="flex items-center gap-2 bg-white border border-slate-200 rounded-lg px-1.5 py-0.5">
                             <button onclick="ubahQty('${i.nama.replace(/'/g, "\\'")}', -1); munculkanPopup()" class="text-red-500 font-bold text-xs px-1">-</button>
-                            <span class="text-[10px] font-black">${i.qty}</span>
+                            <span class="text-[10px] font-black w-3 text-center">${i.qty}</span>
                             <button onclick="ubahQty('${i.nama.replace(/'/g, "\\'")}', 1); munculkanPopup()" class="text-green-500 font-bold text-xs px-1">+</button>
                         </div>
                     </div>
                 </div>
-                <input type="text" onchange="updateCatatanItem('${i.nama.replace(/'/g, "\\'")}', this.value)" value="${i.catatan || ''}" placeholder="Catatan..." class="w-full bg-white border border-slate-100 rounded-xl py-1.5 px-3 text-[9px] italic focus:border-orange-500 outline-none">
+                <input type="text" onchange="updateCatatanItem('${i.nama.replace(/'/g, "\\'")}', this.value)" value="${i.catatan || ''}" placeholder="Catatan (opsional)..." class="w-full bg-white border border-slate-100 rounded-lg py-1 px-3 text-[8px] italic focus:border-orange-500 outline-none">
             </div>`;
     });
 
-    // 2. LOGIKA CROSS SELLING (DIBUAT STICKY/MENGAMBANG)
+    // 2. STICKY CROSS SELLING (Dibuat sangat tipis)
     let crossHtml = "";
     let targetKat = (jMinum > jMakan) ? ["SNACK", "FOOD", "MAKANAN"] : ["DRINK", "MINUMAN", "JUICE"];
     let saran = databaseMenu.filter(m => !dataKeranjang[m.nama] && targetKat.some(k => m.kategori.includes(k))).sort(() => 0.5 - Math.random()).slice(0, 3);
     
     if (saran.length > 0) {
         crossHtml = `
-        <div class="sticky top-0 z-20 bg-white pt-1 pb-3 mb-2 border-b border-slate-50">
-            <p class="text-[9px] font-black text-orange-600 uppercase tracking-[0.2em] mb-2 px-1 italic">🔥 Rekomendasi buat Kakak:</p>
-            <div class="flex gap-3 overflow-x-auto no-scrollbar pb-1">
+        <div class="sticky top-0 z-20 bg-white pb-2 mb-2 border-b border-slate-50">
+            <p class="text-[8px] font-black text-orange-600 uppercase tracking-widest mb-1.5 px-1 italic">Saran buat Kakak:</p>
+            <div class="flex gap-2 overflow-x-auto no-scrollbar">
                 ${saran.map(s => `
-                    <div onclick="ubahQty('${s.nama.replace(/'/g, "\\'")}', 1); munculkanPopup()" class="min-w-[130px] bg-orange-50/50 p-2 rounded-2xl border border-orange-100 flex items-center gap-2 cursor-pointer active:scale-95 transition-all shadow-sm">
-                        <img src="${s.foto || 'https://placehold.co/80x80?text=Menu'}" class="w-8 h-8 object-cover rounded-lg">
+                    <div onclick="ubahQty('${s.nama.replace(/'/g, "\\'")}', 1); munculkanPopup()" class="min-w-[110px] bg-orange-50/50 p-1.5 rounded-xl border border-orange-100 flex items-center gap-2 cursor-pointer shadow-sm">
+                        <img src="${s.foto || 'https://placehold.co/60x60'}" class="w-6 h-6 object-cover rounded-md">
                         <div class="min-w-0">
-                            <p class="font-black text-slate-700 text-[8px] uppercase truncate italic">${s.nama}</p>
-                            <p class="text-orange-600 text-[8px] font-black italic">+ Tambah</p>
+                            <p class="font-black text-slate-700 text-[7px] uppercase truncate italic">${s.nama}</p>
+                            <p class="text-orange-600 text-[7px] font-black">+ Tambah</p>
                         </div>
                     </div>
                 `).join('')}
@@ -459,9 +459,10 @@
         </div>`;
     }
 
-    // Tampilkan ke layar
-    document.getElementById('list-checkout').innerHTML = crossHtml + `<div class="mt-2">${h}</div>`;
+    // Tampilkan ke layar dengan penyesuaian header & footer minimalis
+    document.getElementById('list-checkout').innerHTML = crossHtml + `<div>${h}</div>`;
     document.getElementById('harga-akhir').innerText = `Rp ${t.toLocaleString('id-ID')}`;
+    document.getElementById('subtotal-angka').innerText = `Rp ${t.toLocaleString('id-ID')}`;
     document.getElementById('layar-hitam').classList.add('tampil');
     cekRoomStatus();
 }
