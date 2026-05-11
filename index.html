@@ -205,32 +205,39 @@
 
         // 1. LOGIKA WIFI (6 Detik Loading, 2 Detik Hilang)
         function inisialisasiWiFi() {
-            const params = new URLSearchParams(window.location.search);
-            if (params.get('source') === 'wifi') {
-                const bar = document.getElementById('wifi-activation-bar');
-                bar.classList.remove('hidden');
-                let p = 0;
-                const iv = setInterval(() => {
-                    p++;
-                    document.getElementById('wifi-progress-line').style.width = p + "%";
-                    document.getElementById('wifi-percentage').innerText = p + "%";
-                    
-                    if (p < 30) document.getElementById('wifi-status-text').innerText = "Menghubungkan Server...";
-                    else if (p < 70) document.getElementById('wifi-status-text').innerText = "Mengunduh Menu Terbaru...";
-                    else if (p < 100) document.getElementById('wifi-status-text').innerText = "Hampir Selesai...";
-                    else document.getElementById('wifi-status-text').innerText = "Internet Aktif!";
-                    
-                    if (p >= 100) { 
-                        clearInterval(iv); 
-                        setTimeout(() => { 
-                            bar.style.height = "0"; 
-                            bar.style.opacity = "0"; 
-                            bar.style.padding = "0"; 
-                        }, 2000); // Hilang dalam 2 detik
-                    }
-                }, 60); // 60ms * 100 = 6 detik total
+    const params = new URLSearchParams(window.location.search);
+    const adaNomorRoom = params.get('room'); // Cek apakah ada parameter room
+
+    // LOGIKA: Jika TIDAK ADA nomor room, maka tampilkan bar loading (asumsi dari WiFi)
+    // Jika ADA nomor room, bar tetap 'hidden' (langsung ke menu)
+    if (!adaNomorRoom) {
+        const bar = document.getElementById('wifi-activation-bar');
+        bar.classList.remove('hidden');
+        let p = 0;
+        const iv = setInterval(() => {
+            p++;
+            document.getElementById('wifi-progress-line').style.width = p + "%";
+            document.getElementById('wifi-percentage').innerText = p + "%";
+            
+            if (p < 30) document.getElementById('wifi-status-text').innerText = "Menghubungkan Server...";
+            else if (p < 70) document.getElementById('wifi-status-text').innerText = "Mengunduh Menu Terbaru...";
+            else if (p < 100) document.getElementById('wifi-status-text').innerText = "Hampir Selesai...";
+            else document.getElementById('wifi-status-text').innerText = "Internet Aktif!";
+            
+            if (p >= 100) { 
+                clearInterval(iv); 
+                setTimeout(() => { 
+                    bar.style.height = "0"; 
+                    bar.style.opacity = "0"; 
+                    bar.style.padding = "0"; 
+                }, 2000); 
             }
-        }
+        }, 60); 
+    } else {
+        // Jika discan dari QR Room, pastikan bar tetap tersembunyi
+        document.getElementById('wifi-activation-bar').classList.add('hidden');
+    }
+}
 
         // 2. SESI PROTEKSI (2 JAM)
         function proteksiSesi() {
