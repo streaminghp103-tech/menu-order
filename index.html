@@ -283,20 +283,28 @@
         }
 
         function cekRoomStatus() {
-            const val = document.getElementById('input-room-final').value;
-            const btn = document.getElementById('btn-kirim-wa');
-            if (val !== "") {
-                roomNumber = val;
-                btn.disabled = false;
-                btn.classList.replace('bg-slate-300', 'bg-green-600');
-                btn.innerText = "PESAN SEKARANG 🚀";
-                updateTampilanRoom();
-            } else {
-                btn.disabled = true;
-                btn.classList.replace('bg-green-600', 'bg-slate-300');
-                btn.innerText = "PILIH ROOM DULU 🎤";
-            }
-        }
+    const val = document.getElementById('input-room-final').value;
+    const btn = document.getElementById('btn-kirim-wa');
+    const subTotal = document.getElementById('harga-akhir').innerText;
+    
+    // Update angka subtotal kecil di atas total utama
+    document.getElementById('subtotal-angka').innerText = subTotal;
+
+    if (val !== "") {
+        roomNumber = val;
+        btn.disabled = false;
+        // Ganti warna jadi Oranye Brand Happy Puppy
+        btn.classList.remove('bg-slate-200', 'text-slate-400');
+        btn.classList.add('bg-orange-500', 'text-white', 'shadow-orange-200', 'shadow-xl');
+        btn.innerText = "Kirim Pesanan Sekarang 🚀";
+        updateTampilanRoom();
+    } else {
+        btn.disabled = true;
+        btn.classList.add('bg-slate-200', 'text-slate-400');
+        btn.classList.remove('bg-orange-500', 'text-white', 'shadow-orange-200', 'shadow-xl');
+        btn.innerText = "Pilih Room Dulu 🎤";
+    }
+}
 
         async function ambilData() {
             try {
