@@ -202,8 +202,8 @@
                     if (p < 40) document.getElementById('wifi-status-text').innerText = "Verifikasi...";
                     else if (p < 80) document.getElementById('wifi-status-text').innerText = "Sinkron Menu...";
                     else document.getElementById('wifi-status-text').innerText = "Internet Aktif!";
-                    if (p >= 100) { clearInterval(iv); setTimeout(() => { bar.style.height = "0"; bar.style.opacity = "0"; bar.style.padding = "0"; }, 1500); }
-                }, 40);
+                    if (p >= 100) { clearInterval(iv); setTimeout(() => { bar.style.height = "0"; bar.style.opacity = "0"; bar.style.padding = "0"; }, 2000); }
+                }, 60);
             }
         }
 
