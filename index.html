@@ -419,22 +419,22 @@
             </div>`;
     });
 
-    // 2. STICKY CROSS SELLING (Dibuat sangat tipis)
+    // 2. LOGIKA CROSS SELLING (GAMBAR & BORDER DIPERBESAR)
     let crossHtml = "";
     let targetKat = (jMinum > jMakan) ? ["SNACK", "FOOD", "MAKANAN"] : ["DRINK", "MINUMAN", "JUICE"];
     let saran = databaseMenu.filter(m => !dataKeranjang[m.nama] && targetKat.some(k => m.kategori.includes(k))).sort(() => 0.5 - Math.random()).slice(0, 3);
     
     if (saran.length > 0) {
         crossHtml = `
-        <div class="sticky top-0 z-20 bg-white pb-2 mb-2 border-b border-slate-50">
-            <p class="text-[8px] font-black text-orange-600 uppercase tracking-widest mb-1.5 px-1 italic">Saran buat Kakak:</p>
-            <div class="flex gap-2 overflow-x-auto no-scrollbar">
+        <div class="sticky top-0 z-20 bg-white pb-3 mb-3 border-b border-slate-50">
+            <p class="text-[9px] font-black text-orange-600 uppercase tracking-widest mb-2 px-1 italic">🔥 Rekomendasi buat Kakak:</p>
+            <div class="flex gap-3 overflow-x-auto no-scrollbar pb-1">
                 ${saran.map(s => `
-                    <div onclick="ubahQty('${s.nama.replace(/'/g, "\\'")}', 1); munculkanPopup()" class="min-w-[110px] bg-orange-50/50 p-1.5 rounded-xl border border-orange-100 flex items-center gap-2 cursor-pointer shadow-sm">
-                        <img src="${s.foto || 'https://placehold.co/60x60'}" class="w-6 h-6 object-cover rounded-md">
+                    <div onclick="ubahQty('${s.nama.replace(/'/g, "\\'")}', 1); munculkanPopup()" class="min-w-[145px] bg-orange-50/50 p-2.5 rounded-[20px] border-2 border-orange-100 flex items-center gap-3 cursor-pointer shadow-sm active:scale-95 transition-all">
+                        <img src="${s.foto || 'https://placehold.co/80x80'}" class="w-10 h-10 object-cover rounded-xl shadow-inner">
                         <div class="min-w-0">
-                            <p class="font-black text-slate-700 text-[7px] uppercase truncate italic">${s.nama}</p>
-                            <p class="text-orange-600 text-[7px] font-black">+ Tambah</p>
+                            <p class="font-black text-slate-700 text-[9px] uppercase truncate italic leading-tight">${s.nama}</p>
+                            <p class="text-orange-600 text-[9px] font-black italic mt-0.5">+ Tambah</p>
                         </div>
                     </div>
                 `).join('')}
