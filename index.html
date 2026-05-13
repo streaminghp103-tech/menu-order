@@ -24,6 +24,7 @@
             border: transparent !important;
         }
         
+        /* Overlay System */
         #layar-hitam, #layar-bantuan, #notif-sukses {
             display: none; position: fixed; inset: 0;
             background: rgba(0,0,0,0.85); backdrop-filter: blur(8px);
@@ -40,11 +41,6 @@
         }
         #layar-hitam.tampil .konten-putih, #layar-bantuan.tampil .konten-putih, #notif-sukses.tampil .konten-putih { transform: translateY(0); }
         
-        #wifi-activation-bar { 
-            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1); 
-            overflow: hidden; 
-        }
-
         @keyframes pulse-orange {
             0% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.7); }
             70% { box-shadow: 0 0 0 10px rgba(249, 115, 22, 0); }
@@ -62,9 +58,10 @@
 </head>
 <body class="bg-slate-50 pb-40 text-slate-900 w-full">
 
+    <!-- WiFi Progress Bar -->
     <div id="wifi-activation-bar" class="hidden bg-slate-900 p-4 border-b border-white/10">
         <div class="flex justify-between items-center mb-2">
-            <span id="wifi-status-text" class="text-[10px] font-black text-orange-500 uppercase tracking-widest italic">Inisialisasi...</span>
+            <span id="wifi-status-text" class="text-[10px] font-black text-orange-500 uppercase tracking-widest italic">Menghubungkan ke System...</span>
             <span id="wifi-percentage" class="text-[10px] font-black text-white italic">0%</span>
         </div>
         <div class="w-full h-1 bg-white/10 rounded-full overflow-hidden">
@@ -72,6 +69,7 @@
         </div>
     </div>
 
+    <!-- Header Section -->
     <div id="top-header" class="bg-slate-900 relative p-6 pt-8 rounded-b-[40px] shadow-lg overflow-hidden border-b-4 border-orange-500">
         <img src="https://images.unsplash.com/photo-1514525253344-76337eb979cd?w=800" class="absolute inset-0 w-full h-full object-cover opacity-30">
         <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent"></div>
@@ -84,6 +82,7 @@
             <button onclick="bukaBantuan()" class="bg-white/10 border border-white/20 text-white p-3 rounded-2xl backdrop-blur-md active:scale-90 text-sm font-black uppercase italic">Bantuan</button>
         </div>
 
+        <!-- Search Bar -->
         <div class="relative z-10">
             <div class="bg-white/10 border border-white/20 backdrop-blur-md rounded-2xl flex items-center px-4 py-1 focus-within:bg-white transition-all">
                 <span class="mr-2">🔍</span>
@@ -91,6 +90,7 @@
                 <button id="btn-reset-cari" onclick="resetCari()" class="hidden text-slate-400 p-2 text-lg">✕</button>
             </div>
 
+            <!-- History Widget -->
             <div id="widget-pesanan-saya" class="mt-4 hidden animate-fadeIn">
                 <div class="bg-orange-500/20 border border-orange-500/30 backdrop-blur-md rounded-2xl p-4">
                     <div class="flex justify-between items-center mb-2">
@@ -105,6 +105,7 @@
         </div>
     </div>
 
+    <!-- Main Content Area -->
     <div id="section-best-seller" class="p-5 bg-white mb-3 shadow-sm rounded-b-[32px]">
         <h2 class="text-[11px] font-black uppercase text-slate-400 mb-4 tracking-[0.2em] flex items-center gap-2">
             <span class="w-2 h-2 bg-red-500 rounded-full animate-ping"></span> Menu Terlaris Pekan Ini
@@ -118,18 +119,16 @@
         <div id="container-menu" class="space-y-4"></div>
     </div>
 
+    <!-- Floating Order Bar -->
     <div id="bar-keranjang" class="fixed bottom-8 left-1/2 -translate-x-1/2 w-[92%] max-w-md bg-slate-900 text-white p-5 rounded-[28px] shadow-2xl flex justify-between items-center hidden z-50 border border-white/10 backdrop-blur-xl">
-        <div id="ringkasan-singkat">
-            </div>
-        <button id="btn-keranjang" onclick="munculkanPopup(event)" class="bg-orange-500 px-6 py-4 rounded-2xl font-black text-[11px] uppercase animate-order tracking-wider">
-            Lihat Pesanan
-        </button>
+        <div id="ringkasan-singkat"></div>
+        <button id="btn-keranjang" onclick="munculkanPopup(event)" class="bg-orange-500 px-6 py-4 rounded-2xl font-black text-[11px] uppercase animate-order tracking-wider">Lihat Pesanan</button>
     </div>
 
+    <!-- Modals System (Cleaned) -->
     <div id="layar-hitam" onclick="hilangkanPopup()">
         <div class="konten-putih" onclick="event.stopPropagation()">
             <div class="w-10 h-1 bg-slate-100 rounded-full mx-auto mb-5"></div>
-            
             <div class="flex justify-between items-center mb-5 px-1">
                 <div class="flex flex-col">
                     <h2 class="font-black text-xl text-slate-800 uppercase italic tracking-tighter leading-none">Keranjang</h2>
@@ -140,10 +139,7 @@
                     <button onclick="hilangkanPopup()" class="w-9 h-9 flex items-center justify-center bg-slate-100 text-slate-500 rounded-full font-bold text-sm">✕</button>
                 </div>
             </div>
-            
-            <div id="list-checkout" class="overflow-y-auto mb-2 flex-1 no-scrollbar pr-1">
-                </div>
-            
+            <div id="list-checkout" class="overflow-y-auto mb-2 flex-1 no-scrollbar pr-1"></div>
             <div class="mt-2 pt-4 border-t border-slate-50">
                 <div class="flex items-center gap-4 mb-4">
                     <div class="flex-[1.5] relative">
@@ -151,109 +147,63 @@
                             <option value="" disabled selected>PILIH ROOM...</option>
                             <optgroup label="LANTAI 1">
                                 <option value="101">101</option><option value="102">102</option><option value="103">103</option>
-                                <option value="104">104</option><option value="105">105</option>
                             </optgroup>
                             <optgroup label="LANTAI 2">
-                                <option value="201">201</option><option value="202">202</option><option value="203">203</option><option value="205">205</option>
+                                <option value="201">201</option><option value="202">202</option><option value="203">203</option>
                             </optgroup>
-                            <optgroup label="SPECIAL">
-                                <option value="VIP 1">VIP 1</option><option value="VIP 2">VIP 2</option><option value="SUITE">SUITE</option>
-                            </optgroup>
-                            <option value="LOBBY">LOBBY / WAITING</option>
+                            <option value="LOBBY">LOBBY</option>
                         </select>
-                        <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-[8px] text-slate-300">▼</div>
                     </div>
-
                     <div class="flex-1 text-right">
-                        <p class="text-[8px] font-black text-slate-400 uppercase italic leading-none mb-1">Total Bayar</p>
+                        <p class="text-[8px] font-black text-slate-400 uppercase italic mb-1">Total Bayar</p>
                         <p id="harga-akhir" class="text-xl font-black text-orange-600 italic leading-none">Rp 0</p>
                     </div>
                 </div>
-
-                <button type="button" id="btn-kirim-wa" onclick="jalankanKirimWA()" disabled class="w-full bg-slate-200 text-slate-400 py-5 rounded-[24px] font-black text-[12px] uppercase tracking-[0.15em] transition-all duration-300 shadow-sm active:scale-95">
+                <button type="button" id="btn-kirim-wa" onclick="jalankanKirimWA()" disabled class="w-full bg-slate-200 text-slate-400 py-5 rounded-[24px] font-black text-[12px] uppercase tracking-[0.15em] transition-all duration-300">
                     Pilih Room Dulu 🎤
                 </button>
-                <span id="subtotal-angka" class="hidden">Rp 0</span>
             </div>
         </div>
     </div>
 
-    <div id="notif-sukses" onclick="tutupNotifSelesai()">
-        <div class="konten-putih items-center text-center pb-12" onclick="event.stopPropagation()">
-            <div class="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-4xl mb-6 shadow-inner">✓</div>
-            <h2 class="text-2xl font-black text-slate-800 uppercase italic mb-2 tracking-tighter">Pesanan Terkirim!</h2>
-            <p class="text-slate-500 text-sm px-6 leading-relaxed mb-8 font-medium italic">Pesanan Kakak sedang disiapkan untuk <span class="font-black text-orange-500 uppercase italic">Room <span class="no-room">--</span></span>. Mohon ditunggu ya!</p>
-            <button onclick="tutupNotifSelesai()" class="w-full bg-slate-900 text-white py-5 rounded-2xl font-black text-sm uppercase italic tracking-widest">Siap, Terima Kasih!</button>
-        </div>
-    </div>
-
-    <div id="layar-bantuan" onclick="tutupBantuan()">
-        <div class="konten-putih" onclick="event.stopPropagation()">
-            <button onclick="tutupBantuan()" class="absolute top-5 right-6 text-slate-300 text-2xl font-bold p-2">✕</button>
-            <h2 class="font-black text-xl text-slate-800 mb-6 uppercase italic text-center">Layanan Room</h2>
-            <div class="space-y-4 mb-8">
-                <button onclick="kirimBantuan('Minta Bill')" class="w-full p-5 bg-slate-50 border border-slate-100 rounded-2xl text-left flex justify-between items-center font-black text-slate-700 italic uppercase">Minta Bill 🧾</button>
-                <button onclick="kirimBantuan('Panggil Pelayan')" class="w-full p-5 bg-slate-50 border border-slate-100 rounded-2xl text-left flex justify-between items-center font-black text-slate-700 italic uppercase">Panggil Staff 🙋‍♂️</button>
-            </div>
-        </div>
-    </div>
-
+    <!-- Script Placeholder (Will be completed in Part 2) -->
     <script>
-        // CONFIG
-const URL_SHEETS = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTDCkc69puC1CIoN5NnY8RggTTjvOFvbxau5FcU94eSnROveTeHS4ERbNptDZ_aGVvFNju6DAHi (link tetap sama)"; 
-const WA_NUMBER = "6285348773757";
+        const WA_NUMBER = "6285348773757";
+        let databaseMenu = [];
+        let dataKeranjang = {}; 
+        let roomNumber = "--";
 
-let databaseMenu = [];
-let listKategoriTetap = [];
-let dataKeranjang = {}; 
-let riwayatPesananLokal = [];
-let katAktif = "SEMUA";
-let roomNumber = "--"; 
-let queryCari = "";
+        // Fungsi awal yang sudah Kakak buat
+        function inisialisasiWiFi() {
+            const bar = document.getElementById('wifi-activation-bar');
+            bar.classList.remove('hidden');
+            let p = 0;
+            const iv = setInterval(() => {
+                p++;
+                document.getElementById('wifi-progress-line').style.width = p + "%";
+                document.getElementById('wifi-percentage').innerText = p + "%";
+                if (p >= 100) { 
+                    clearInterval(iv); 
+                    setTimeout(() => { bar.style.opacity = "0"; setTimeout(() => bar.classList.add('hidden'), 500); }, 1500); 
+                }
+            }, 20); 
+        }
 
-// 1. LOGIKA LOADING
-function inisialisasiWiFi() {
-    const params = new URLSearchParams(window.location.search);
-    const adaNomorRoom = params.get('room');
-    if (!adaNomorRoom) {
-        const bar = document.getElementById('wifi-activation-bar');
-        if(!bar) return;
-        bar.classList.remove('hidden');
-        let p = 0;
-        const iv = setInterval(() => {
-            p++;
-            document.getElementById('wifi-progress-line').style.width = p + "%";
-            document.getElementById('wifi-percentage').innerText = p + "%";
-            if (p >= 100) { 
-                clearInterval(iv); 
-                setTimeout(() => { bar.style.opacity = "0"; setTimeout(() => bar.classList.add('hidden'), 500); }, 2000); 
-            }
-        }, 30); 
-    }
-}
-
-// 2. PROTEKSI SESI
-function proteksiSesi() {
-    const DURASI = 2 * 60 * 60 * 1000;
-    const now = new Date().getTime();
-    const tag = 'sesi_hp_samarinda';
-    const start = localStorage.getItem(tag);
-    if (!start) { localStorage.setItem(tag, now); return true; }
-    if (now - parseInt(start) > DURASI) {
-        document.body.innerHTML = `<div class="h-screen bg-slate-900 text-white flex flex-col items-center justify-center p-10 text-center"><h1 class="text-2xl font-black italic mb-4">SESI HABIS</h1><p class="text-slate-400 text-xs">Silakan scan ulang QR Code di room.</p></div>`;
-        return false;
-    }
-    return true;
-}
+        window.onload = () => {
+            inisialisasiWiFi();
+        };
 
 // 3. LOGIKA DATA & ROOM
 async function ambilData() {
     try {
+        // Mengambil data real-time dari Google Sheets
         const res = await fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vTDCkc69puC1CIoN5NnY8RggTTjvOFvbxau5FcU94eSnROveTeHS4ERbNptDZ_aGVvFNju6DAHiQvYn/pub?output=csv&t=" + new Date().getTime());
         const text = await res.text();
         const baris = text.split(/\r?\n/).slice(1);
+        
         databaseMenu = [];
         let setKategori = new Set();
+        
         baris.forEach(r => {
             let k = r.split(",");
             if (k.length >= 2) {
@@ -262,15 +212,22 @@ async function ambilData() {
                 const kategori = k[2]?.replace(/"/g, '').trim().toUpperCase() || "LAINNYA";
                 const foto = k[3]?.replace(/"/g, '').trim() || "";
                 const deskripsi = k[4]?.replace(/"/g, '').trim() || ""; 
+                
                 if (nama && harga > 0) {
                     databaseMenu.push({ nama, harga, kategori, foto, deskripsi });
                     setKategori.add(kategori);
                 }
             }
         });
+        
         listKategoriTetap = ["SEMUA", ...Array.from(setKategori).sort()];
-        renderTabs(); renderBestSeller(); renderMenu();
-    } catch (e) { console.error("Gagal ambil data:", e); }
+        renderTabs(); 
+        renderBestSeller(); 
+        renderMenu();
+        deteksiRoom(); // Jalankan deteksi room setelah data siap
+    } catch (e) { 
+        console.error("Gagal ambil data:", e); 
+    }
 }
 
 function deteksiRoom() {
@@ -280,6 +237,7 @@ function deteksiRoom() {
         roomNumber = r.toUpperCase();
         const drop = document.getElementById('input-room-final');
         if(drop) { drop.value = roomNumber; }
+        cekRoomStatus(); // Langsung aktifkan tombol jika room sudah ada di URL
     }
     updateTampilanRoom();
 }
@@ -287,17 +245,15 @@ function deteksiRoom() {
 function updateTampilanRoom() {
     document.querySelectorAll('.no-room').forEach(el => el.innerText = roomNumber);
     const headerRoom = document.getElementById('info-room-header');
-    if(headerRoom && roomNumber !== "--") headerRoom.innerText = "📍 Room: " + roomNumber;
+    if(headerRoom && roomNumber !== "--") {
+        headerRoom.innerText = "📍 Room: " + roomNumber;
+    }
 }
 
 function cekRoomStatus() {
     const val = document.getElementById('input-room-final').value;
     const btn = document.getElementById('btn-kirim-wa');
-    const hargaAkhir = document.getElementById('harga-akhir')?.innerText || "0";
     
-    const stAngka = document.getElementById('subtotal-angka');
-    if(stAngka) stAngka.innerText = hargaAkhir;
-
     if (val !== "" && btn) {
         roomNumber = val;
         btn.disabled = false;
@@ -309,11 +265,36 @@ function cekRoomStatus() {
 }
 
 // 4. RENDERING MENU
+function renderTabs() {
+    let html = "";
+    listKategoriTetap.forEach(kat => {
+        const aktif = katAktif === kat ? 'active-tab' : 'bg-white border border-slate-100 text-slate-400';
+        html += `<button onclick="filterKategori('${kat}')" class="px-6 py-3 text-[10px] font-black uppercase italic transition-all ${aktif}">${kat}</button>`;
+    });
+    document.getElementById('tabs-kategori').innerHTML = html;
+}
+
+function filterKategori(kat) {
+    katAktif = kat;
+    renderTabs();
+    renderMenu();
+}
+
 function renderMenu() {
     let html = "";
-    const filtered = databaseMenu.filter(m => (katAktif === "SEMUA" || m.kategori === katAktif) && m.nama.toLowerCase().includes(queryCari));
+    const filtered = databaseMenu.filter(m => 
+        (katAktif === "SEMUA" || m.kategori === katAktif) && 
+        m.nama.toLowerCase().includes(queryCari.toLowerCase())
+    );
+    
+    if(filtered.length === 0) {
+        html = `<div class="text-center py-10 text-slate-400 italic text-sm">Menu tidak ditemukan...</div>`;
+    }
+
     filtered.forEach(m => {
         const q = dataKeranjang[m.nama]?.qty || 0;
+        const safeNama = m.nama.replace(/'/g, "\\'");
+        
         html += `
         <div class="p-3 rounded-[28px] flex items-center transition-all ${q > 0 ? 'bg-orange-50/50 ring-1 ring-orange-200' : 'bg-white shadow-sm border border-slate-50'}">
             <div class="flex-shrink-0 mr-4 relative">
@@ -325,8 +306,14 @@ function renderMenu() {
                 <p class="text-orange-600 text-[12px] font-black mt-1">Rp ${m.harga.toLocaleString('id-ID')}</p>
             </div>
             <div class="flex items-center gap-1">
-                ${q > 0 ? `<button onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', -1)" class="w-8 h-8 bg-white text-red-500 rounded-lg shadow-sm border border-slate-100 font-bold">-</button><span class="w-5 text-center font-black text-xs">${q}</span>` : ''}
-                <button onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="w-8 h-8 bg-orange-500 text-white rounded-lg shadow-md font-bold">+</button>
+                ${q > 1 ? `
+                    <button onclick="ubahQty('${safeNama}', -1)" class="w-8 h-8 bg-white text-red-500 rounded-lg shadow-sm border border-slate-100 font-bold">-</button>
+                    <span class="w-5 text-center font-black text-xs">${q}</span>
+                ` : q === 1 ? `
+                    <button onclick="ubahQty('${safeNama}', -1)" class="w-8 h-8 bg-white text-red-500 rounded-lg shadow-sm border border-slate-100 font-bold">🗑️</button>
+                    <span class="w-5 text-center font-black text-xs">${q}</span>
+                ` : ''}
+                <button onclick="ubahQty('${safeNama}', 1)" class="w-8 h-8 bg-orange-500 text-white rounded-lg shadow-md font-bold">+</button>
             </div>
         </div>`;
     });
@@ -335,14 +322,15 @@ function renderMenu() {
 
 function renderBestSeller() {
     let htmlBest = "";
+    // Menampilkan 5 menu pertama sebagai best seller
     databaseMenu.slice(0, 5).forEach(m => {
-        const q = dataKeranjang[m.nama]?.qty || 0;
+        const safeNama = m.nama.replace(/'/g, "\\'");
         htmlBest += `
         <div class="min-w-[150px] bg-white p-3 rounded-[28px] shadow-sm border border-slate-50">
             <img src="${m.foto || 'https://placehold.co/100x100'}" class="w-full h-24 object-cover rounded-2xl mb-2">
             <p class="font-black text-slate-800 text-[10px] uppercase truncate italic">${m.nama}</p>
             <p class="text-orange-600 font-black text-[11px] mb-2">Rp ${m.harga.toLocaleString('id-ID')}</p>
-            <button onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="w-full py-2 bg-orange-500 text-white rounded-xl text-[10px] font-black uppercase italic">+ Tambah</button>
+            <button onclick="ubahQty('${safeNama}', 1)" class="w-full py-2 bg-orange-500 text-white rounded-xl text-[10px] font-black uppercase italic">+ Tambah</button>
         </div>`;
     });
     document.getElementById('container-best-seller').innerHTML = htmlBest;
@@ -351,52 +339,68 @@ function renderBestSeller() {
 function ubahQty(nama, d) {
     if (!dataKeranjang[nama]) {
         const item = databaseMenu.find(x => x.nama === nama);
-        dataKeranjang[nama] = { ...item, qty: 0, catatan: "" };
+        if(!item) return;
+        dataKeranjang[nama] = { ...item, qty: 0 };
     }
     dataKeranjang[nama].qty += d;
     if (dataKeranjang[nama].qty <= 0) delete dataKeranjang[nama];
-    renderMenu(); renderBestSeller(); updateBar();
+    
+    renderMenu(); 
+    renderBestSeller(); 
+    updateBar();
 }
 
 function updateBar() {
-    const arr = Object.values(dataKeranjang);
-    const tQty = arr.reduce((a, b) => a + b.qty, 0);
-    const tPrice = arr.reduce((a, b) => a + (b.harga * b.qty), 0);
+    const items = Object.values(dataKeranjang);
+    const totalQty = items.reduce((a, b) => a + b.qty, 0);
+    const totalPrice = items.reduce((a, b) => a + (b.harga * b.qty), 0);
     
-    // Sinkronisasi dengan Floating Bar & Popup
     const elBar = document.getElementById('bar-keranjang');
-    const elFloating = document.getElementById('btn-keranjang'); // ID Tombol "Lihat Pesanan"
-    
-    if (tQty > 0) {
-        if(elBar) elBar.classList.remove('hidden');
-        if(elFloating) elFloating.classList.remove('hidden');
-        
-        const ringkasan = document.getElementById('ringkasan-singkat');
-        if(ringkasan) ringkasan.innerHTML = `<p class="font-black text-lg italic leading-none">${tQty} Item</p><p class="text-[9px] text-orange-400 font-black mt-1">Total: Rp ${tPrice.toLocaleString('id-ID')}</p>`;
-        
-        // Update angka di tombol Lihat Pesanan
-        const jmlItem = document.getElementById('jml-item');
-        const totalKeranjang = document.getElementById('total-keranjang');
-        if(jmlItem) jmlItem.innerText = tQty;
-        if(totalKeranjang) totalKeranjang.innerText = "Rp " + tPrice.toLocaleString('id-ID');
+    const ringkasan = document.getElementById('ringkasan-singkat');
+    const displayHargaPopup = document.getElementById('harga-akhir');
+
+    if (totalQty > 0) {
+        elBar.classList.remove('hidden');
+        if(ringkasan) {
+            ringkasan.innerHTML = `
+                <p class="font-black text-lg italic leading-none">${totalQty} Item</p>
+                <p class="text-[9px] text-orange-400 font-black mt-1 uppercase tracking-tighter">Total: Rp ${totalPrice.toLocaleString('id-ID')}</p>
+            `;
+        }
+        if(displayHargaPopup) {
+            displayHargaPopup.innerText = "Rp " + totalPrice.toLocaleString('id-ID');
+        }
     } else {
-        if(elBar) elBar.classList.add('hidden');
-        if(elFloating) elFloating.classList.add('hidden');
+        elBar.classList.add('hidden');
+        hilangkanPopup();
     }
+}
+
+// Inisialisasi awal
+if (proteksiSesi()) {
+    ambilData();
 }
 
 // 5. POPUP SYSTEM
 function munculkanPopup(e) {
     if(e) e.preventDefault();
     const arr = Object.values(dataKeranjang);
-    if(arr.length === 0) return;
+    if(arr.length === 0) {
+        hilangkanPopup();
+        return;
+    }
 
     let h = ""; let t = 0;
     let jMinum = 0; let jMakan = 0;
 
     arr.forEach((i) => {
         const s = i.harga * i.qty; t += s;
-        if(i.kategori.includes("DRINK")) jMinum += i.qty; else jMakan += i.qty;
+        // Logika cerdas untuk deteksi kategori
+        if(i.kategori.includes("DRINK") || i.kategori.includes("JUICE")) jMinum += i.qty; 
+        else jMakan += i.qty;
+        
+        const safeNama = i.nama.replace(/'/g, "\\'");
+        
         h += `
         <div class="bg-slate-50 p-3 rounded-[20px] mb-2 border border-slate-100 shadow-sm">
             <div class="flex justify-between items-center mb-1">
@@ -404,45 +408,71 @@ function munculkanPopup(e) {
                 <span class="font-black text-orange-600 text-[11px]">Rp ${s.toLocaleString('id-ID')}</span>
             </div>
             <div class="flex items-center justify-between">
-                <input type="text" onchange="updateCatatanItem('${i.nama.replace(/'/g, "\\'")}', this.value)" value="${i.catatan || ''}" placeholder="Catatan..." class="bg-white border-none rounded-lg py-1 px-3 text-[9px] italic w-2/3 outline-none shadow-inner">
+                <input type="text" oninput="updateCatatanItem('${safeNama}', this.value)" value="${i.catatan || ''}" placeholder="Catatan (Misal: Kurangi es, pedas...)" class="bg-white border-none rounded-lg py-1 px-3 text-[9px] italic w-2/3 outline-none shadow-inner text-slate-600">
                 <div class="flex items-center gap-2 bg-white rounded-lg px-2 py-1 shadow-sm border border-slate-100">
-                    <button onclick="ubahQty('${i.nama.replace(/'/g, "\\'")}', -1); munculkanPopup()" class="text-red-500 font-bold">-</button>
+                    <button onclick="ubahQty('${safeNama}', -1); munculkanPopup()" class="w-5 h-5 flex items-center justify-center text-red-500 font-bold">-</button>
                     <span class="text-[10px] font-black">${i.qty}</span>
-                    <button onclick="ubahQty('${i.nama.replace(/'/g, "\\'")}', 1); munculkanPopup()" class="text-green-500 font-bold">+</button>
+                    <button onclick="ubahQty('${safeNama}', 1); munculkanPopup()" class="w-5 h-5 flex items-center justify-center text-green-500 font-bold">+</button>
                 </div>
             </div>
         </div>`;
     });
 
+    // 6. LOGIKA SARAN (CROSS-SELLING)
     let crossHtml = "";
     let targetKat = (jMinum > jMakan) ? ["SNACK", "FOOD"] : ["DRINK", "JUICE"];
-    let saran = databaseMenu.filter(m => !dataKeranjang[m.nama] && targetKat.some(k => m.kategori.includes(k))).sort(() => 0.5 - Math.random()).slice(0, 3);
+    let saran = databaseMenu.filter(m => !dataKeranjang[m.nama] && targetKat.some(k => m.kategori.includes(k)))
+                             .sort(() => 0.5 - Math.random())
+                             .slice(0, 3);
     
     if (saran.length > 0) {
         crossHtml = `
         <div class="sticky top-0 z-20 bg-white pb-3 mb-3 border-b border-slate-50">
-            <p class="text-[9px] font-black text-orange-600 uppercase mb-2 italic">🔥 Tambah ini juga?</p>
+            <p class="text-[9px] font-black text-orange-600 uppercase mb-2 italic">🔥 Tambah ini juga biar makin asik?</p>
             <div class="flex gap-3 overflow-x-auto no-scrollbar">
-                ${saran.map(s => `
-                    <div onclick="ubahQty('${s.nama.replace(/'/g, "\\'")}', 1); munculkanPopup()" class="min-w-[140px] bg-orange-50/50 p-2.5 rounded-[20px] border-2 border-orange-100 flex items-center gap-2 cursor-pointer shadow-sm">
+                ${saran.map(s => {
+                    const safeSaran = s.nama.replace(/'/g, "\\'");
+                    return `
+                    <div onclick="ubahQty('${safeSaran}', 1); munculkanPopup()" class="min-w-[140px] bg-orange-50/50 p-2.5 rounded-[20px] border-2 border-orange-100 flex items-center gap-2 cursor-pointer shadow-sm active:scale-95 transition-transform">
                         <img src="${s.foto || 'https://placehold.co/60x60'}" class="w-10 h-10 object-cover rounded-xl shadow-inner">
-                        <div class="min-w-0"><p class="font-black text-slate-700 text-[8px] uppercase truncate italic">${s.nama}</p><p class="text-orange-600 text-[8px] font-black">+ Tambah</p></div>
-                    </div>
-                `).join('')}
+                        <div class="min-w-0">
+                            <p class="font-black text-slate-700 text-[8px] uppercase truncate italic">${s.nama}</p>
+                            <p class="text-orange-600 text-[8px] font-black">+ Tambah</p>
+                        </div>
+                    </div>`;
+                }).join('')}
             </div>
         </div>`;
     }
 
     const listContainer = document.getElementById('list-checkout');
     const hargaContainer = document.getElementById('harga-akhir');
-    if(listContainer) listContainer.innerHTML = crossHtml + `<div>${h}</div>`;
+    if(listContainer) listContainer.innerHTML = crossHtml + `<div class="mt-2">${h}</div>`;
     if(hargaContainer) hargaContainer.innerText = `Rp ${t.toLocaleString('id-ID')}`;
     
     document.getElementById('layar-hitam').classList.add('tampil');
     cekRoomStatus(); 
 }
 
-function hilangkanPopup() { document.getElementById('layar-hitam').classList.remove('tampil'); }
+function updateCatatanItem(nama, teks) {
+    if (dataKeranjang[nama]) {
+        dataKeranjang[nama].catatan = teks;
+    }
+}
+
+function hilangkanPopup() { 
+    document.getElementById('layar-hitam').classList.remove('tampil'); 
+}
+
+function resetKeranjang() {
+    if(confirm("Hapus semua pesanan?")) {
+        dataKeranjang = {};
+        renderMenu();
+        renderBestSeller();
+        updateBar();
+        hilangkanPopup();
+    }
+}
 
 // 6. ORDERING
 function jalankanKirimWA() {
