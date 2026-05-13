@@ -1,198 +1,489 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Menu Happy Puppy</title>
-<script src="https://cdn.tailwindcss.com"></script>
-
-<style>
-body { font-family: sans-serif; }
-.active-tab {
-    background:#f97316;
-    color:white;
-    border-radius:999px;
-}
-</style>
-</head>
-
-<body class="bg-gray-50">
-
-<div class="p-5">
-    <h1 class="text-xl font-bold mb-3">Happy Puppy Menu</h1>
-
-    <input id="input-cari" oninput="cekInputCari()" 
-    class="w-full p-3 border rounded-xl mb-4"
-    placeholder="Cari menu...">
-
-    <div id="tabs-kategori" class="flex gap-2 mb-4 overflow-x-auto"></div>
-
-    <div id="container-menu"></div>
-</div>
-
-<div id="bar-keranjang" class="fixed bottom-5 left-1/2 -translate-x-1/2 bg-black text-white p-4 rounded-xl hidden">
-    <span id="ringkasan"></span>
-    <button onclick="munculkanPopup()" class="ml-3 bg-orange-500 px-3 py-1 rounded">Lihat</button>
-</div>
-
-<script>
-const WA_NUMBER = "6285348773757";
-
-let databaseMenu = [];
-let dataKeranjang = {};
-
-let listKategoriTetap = [];
-let katAktif = "SEMUA";
-let queryCari = "";
-let roomNumber = "--";
-
-function proteksiSesi() { return true; }
-
-// ================= DATA =================
-async function ambilData() {
-    document.getElementById("container-menu").innerHTML = "Loading...";
-
-    const res = await fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vTDCkc69puC1CIoN5NnY8RggTTjvOFvbxau5FcU94eSnROveTeHS4ERbNptDZ_aGVvFNju6DAHiQvYn/pub?output=csv");
-    const text = await res.text();
-
-    const rows = text.split("\n").slice(1);
-    let kategoriSet = new Set();
-
-    databaseMenu = [];
-
-    rows.forEach(r=>{
-        let k = r.split(",");
-        if(k.length>=2){
-            let nama = k[0].trim();
-            let harga = parseInt(k[1]) || 0;
-            let kategori = (k[2]||"LAINNYA").toUpperCase();
-
-            databaseMenu.push({nama,harga,kategori});
-            kategoriSet.add(kategori);
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Menu Happy Puppy Samarinda</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+        
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow-x: hidden; 
+            touch-action: pan-y; 
+            scroll-behavior: smooth; 
         }
-    });
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        
+        .active-tab { 
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+            color: white; 
+            border-radius: 9999px;
+            box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
+            border: transparent !important;
+        }
+        
+        #layar-hitam, #layar-bantuan, #notif-sukses {
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,0.85); backdrop-filter: blur(8px);
+            z-index: 9999; align-items: flex-end;
+        }
+        #layar-hitam.tampil, #layar-bantuan.tampil, #notif-sukses.tampil { display: flex; }
+        
+        .konten-putih {
+            position: relative;
+            background: white; width: 100%; border-radius: 32px 32px 0 0;
+            padding: 24px; transform: translateY(100%);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+            max-height: 90vh; display: flex; flex-direction: column;
+        }
+        #layar-hitam.tampil .konten-putih, #layar-bantuan.tampil .konten-putih, #notif-sukses.tampil .konten-putih { transform: translateY(0); }
+        
+        #wifi-activation-bar { 
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1); 
+            overflow: hidden; 
+        }
 
-    listKategoriTetap = ["SEMUA",...kategoriSet];
+        @keyframes pulse-orange {
+            0% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(249, 115, 22, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0); }
+        }
+        .animate-order { animation: pulse-orange 2s infinite; }
 
-    renderTabs();
-    renderMenu();
-}
+        .badge-hot {
+            position: absolute; top: 6px; left: 6px;
+            background: #ef4444; color: white; font-size: 8px;
+            font-weight: 900; padding: 2px 8px; border-radius: 6px;
+            z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 pb-40 text-slate-900 w-full">
 
-// ================= TABS =================
-function renderTabs(){
-    let html="";
-    listKategoriTetap.forEach(k=>{
-        html+=`
-        <button onclick="gantiKat('${k}')"
-        class="px-4 py-2 text-sm ${katAktif===k?'active-tab':'bg-white'}">
-        ${k}
-        </button>`;
-    });
-    document.getElementById("tabs-kategori").innerHTML=html;
-}
+    <div id="wifi-activation-bar" class="hidden bg-slate-900 p-4 border-b border-white/10">
+        <div class="flex justify-between items-center mb-2">
+            <span id="wifi-status-text" class="text-[10px] font-black text-orange-500 uppercase tracking-widest italic">Inisialisasi...</span>
+            <span id="wifi-percentage" class="text-[10px] font-black text-white italic">0%</span>
+        </div>
+        <div class="w-full h-1 bg-white/10 rounded-full overflow-hidden">
+            <div id="wifi-progress-line" class="h-full bg-orange-500 w-0 transition-all duration-75"></div>
+        </div>
+    </div>
 
-function gantiKat(k){
-    katAktif=k;
-    renderTabs();
-    renderMenu();
-}
+    <div id="top-header" class="bg-slate-900 relative p-6 pt-8 rounded-b-[40px] shadow-lg overflow-hidden border-b-4 border-orange-500">
+        <img src="https://images.unsplash.com/photo-1514525253344-76337eb979cd?w=800" class="absolute inset-0 w-full h-full object-cover opacity-30">
+        <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent"></div>
+        
+        <div class="relative z-10 flex justify-between items-start mb-6">
+            <div class="text-white">
+                <h1 class="text-2xl font-black uppercase italic leading-tight tracking-tighter">Happy Puppy<br><span class="text-orange-500">Samarinda</span></h1>
+                <div id="info-room-header" class="mt-2 inline-block bg-white/10 border border-white/20 px-3 py-1 rounded-full text-[9px] font-bold uppercase backdrop-blur-md text-orange-200 tracking-widest">📍 WiFi Connected</div>
+            </div>
+            <button onclick="bukaBantuan()" class="bg-white/10 border border-white/20 text-white p-3 rounded-2xl backdrop-blur-md active:scale-90 text-sm font-black uppercase italic">Bantuan</button>
+        </div>
 
-// ================= MENU =================
-function renderMenu(){
-    let html="";
-
-    let filtered = databaseMenu.filter(m=>{
-        return (katAktif==="SEMUA" || m.kategori===katAktif) &&
-        m.nama.toLowerCase().includes(queryCari);
-    });
-
-    if(filtered.length===0){
-        html="Menu tidak ada";
-    }
-
-    filtered.forEach(m=>{
-        let qty = dataKeranjang[m.nama]?.qty || 0;
-
-        html+=`
-        <div class="bg-white p-3 mb-2 rounded-xl flex justify-between">
-            <div>
-                <p class="font-bold">${m.nama}</p>
-                <p>Rp ${m.harga}</p>
+        <div class="relative z-10">
+            <div class="bg-white/10 border border-white/20 backdrop-blur-md rounded-2xl flex items-center px-4 py-1 focus-within:bg-white transition-all">
+                <span class="mr-2">🔍</span>
+                <input type="text" id="input-cari" oninput="cekInputCari()" placeholder="Mau makan apa hari ini?" class="w-full py-3 bg-transparent text-sm outline-none font-medium text-white focus:text-slate-800 italic">
+                <button id="btn-reset-cari" onclick="resetCari()" class="hidden text-slate-400 p-2 text-lg">✕</button>
             </div>
 
-            <div>
-                ${qty>0 ? `
-                <button onclick="ubahQty('${m.nama}',-1)">-</button>
-                ${qty}
-                `:""}
-                <button onclick="ubahQty('${m.nama}',1)">+</button>
+            <div id="widget-pesanan-saya" class="mt-4 hidden animate-fadeIn">
+                <div class="bg-orange-500/20 border border-orange-500/30 backdrop-blur-md rounded-2xl p-4">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-[10px] font-black text-orange-400 uppercase tracking-widest flex items-center gap-2">
+                            <span class="flex h-2 w-2 rounded-full bg-orange-500 animate-pulse"></span> Sedang Diproses
+                        </span>
+                        <span id="jumlah-riwayat" class="bg-orange-500 text-white text-[9px] font-black px-2 py-0.5 rounded-full">0</span>
+                    </div>
+                    <div id="list-riwayat-luar" class="flex gap-2 overflow-x-auto no-scrollbar"></div>
+                </div>
             </div>
-        </div>`;
-    });
+        </div>
+    </div>
 
-    document.getElementById("container-menu").innerHTML=html;
-}
+    <div id="section-best-seller" class="p-5 bg-white mb-3 shadow-sm rounded-b-[32px]">
+        <h2 class="text-[11px] font-black uppercase text-slate-400 mb-4 tracking-[0.2em] flex items-center gap-2">
+            <span class="w-2 h-2 bg-red-500 rounded-full animate-ping"></span> Menu Terlaris Pekan Ini
+        </h2>
+        <div id="container-best-seller" class="flex gap-4 overflow-x-auto no-scrollbar pb-2"></div>
+    </div>
 
-// ================= KERANJANG =================
-function ubahQty(nama,d){
-    if(!dataKeranjang[nama]){
-        let item = databaseMenu.find(x=>x.nama===nama);
-        dataKeranjang[nama]={...item,qty:0};
-    }
+    <div class="sticky top-0 bg-slate-50/80 backdrop-blur-lg z-40 overflow-x-auto no-scrollbar flex whitespace-nowrap px-5 py-4 gap-3" id="tabs-kategori"></div>
 
-    dataKeranjang[nama].qty+=d;
+    <div class="p-5 w-full">
+        <div id="container-menu" class="space-y-4"></div>
+    </div>
 
-    if(dataKeranjang[nama].qty<=0){
-        delete dataKeranjang[nama];
-    }
+    <div id="bar-keranjang" class="fixed bottom-8 left-1/2 -translate-x-1/2 w-[92%] max-w-md bg-slate-900 text-white p-5 rounded-[28px] shadow-2xl flex justify-between items-center hidden z-50 border border-white/10 backdrop-blur-xl">
+        <div id="ringkasan-singkat"></div>
+        <button onclick="munculkanPopup(event)" class="bg-orange-500 px-6 py-4 rounded-2xl font-black text-[11px] uppercase animate-order tracking-wider">Lihat Pesanan</button>
+    </div>
 
-    renderMenu();
-    updateBar();
-}
+    <div id="layar-hitam" onclick="hilangkanPopup()">
+        <div class="konten-putih" onclick="event.stopPropagation()">
+            <button onclick="hilangkanPopup()" class="absolute top-5 right-6 text-slate-300 text-2xl p-2">✕</button>
+            <div class="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mb-6"></div>
+            
+            <div class="flex justify-between items-start mb-4">
+                <h2 class="font-black text-2xl text-slate-800 uppercase italic">Keranjang</h2>
+                <button onclick="resetKeranjang()" class="text-red-500 text-[10px] font-black uppercase bg-red-50 px-4 py-2 rounded-xl italic">Kosongkan</button>
+            </div>
+            
+            <div id="list-checkout" class="space-y-4 overflow-y-auto mb-2 flex-1 no-scrollbar p-1">
+                </div>
+            
+            <div class="border-t border-slate-100 pt-6">
+                <div class="mb-6">
+                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2 px-1 italic">Konfirmasi Lokasi Room :</label>
+                    <div class="relative">
+                        <select id="input-room-final" onchange="cekRoomStatus()" class="w-full bg-slate-50 border border-slate-200 p-4 rounded-2xl font-black text-slate-800 outline-none appearance-none focus:border-orange-500 transition-all uppercase shadow-inner text-sm">
+                            <option value="" disabled selected>-- PILIH NOMOR ROOM --</option>
+                            <optgroup label="LANTAI 1">
+                                <option value="101">Room 101</option><option value="102">Room 102</option>
+                                <option value="103">Room 103</option><option value="104">Room 104</option>
+                                <option value="105">Room 105</option>
+                            </optgroup>
+                            <optgroup label="LANTAI 2">
+                                <option value="201">Room 201</option><option value="202">Room 202</option>
+                                <option value="203">Room 203</option><option value="205">Room 205</option>
+                            </optgroup>
+                            <optgroup label="SPECIAL ROOM">
+                                <option value="VIP 1">VIP 1</option><option value="VIP 2">VIP 2</option>
+                                <option value="SUITE">SUITE ROOM</option>
+                            </optgroup>
+                            <option value="LOBBY">LOBBY / WAITING AREA</option>
+                        </select>
+                        <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-orange-500 font-bold">▼</div>
+                    </div>
+                </div>
 
-function updateBar(){
-    let items = Object.values(dataKeranjang);
+                <div class="flex justify-between items-center mb-4 px-1">
+                    <span class="font-black text-slate-400 text-xs uppercase tracking-widest italic">Subtotal</span>
+                    <span id="harga-akhir" class="font-black text-2xl text-orange-600 italic">Rp 0</span>
+                </div>
+                <button type="button" id="btn-kirim-wa" onclick="jalankanKirimWA()" disabled class="w-full bg-slate-300 text-white py-5 rounded-2xl font-black text-sm uppercase shadow-lg transition-all">PILIH ROOM DULU 🎤</button>
+            </div>
+        </div>
+    </div>
 
-    let total = items.reduce((a,b)=>a+b.qty,0);
+    <div id="notif-sukses" onclick="tutupNotifSelesai()">
+        <div class="konten-putih items-center text-center pb-12" onclick="event.stopPropagation()">
+            <div class="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-4xl mb-6 shadow-inner">✓</div>
+            <h2 class="text-2xl font-black text-slate-800 uppercase italic mb-2 tracking-tighter">Pesanan Terkirim!</h2>
+            <p class="text-slate-500 text-sm px-6 leading-relaxed mb-8 font-medium italic">Pesanan Kakak sedang disiapkan untuk <span class="font-black text-orange-500 uppercase italic">Room <span class="no-room">--</span></span>. Mohon ditunggu ya!</p>
+            <button onclick="tutupNotifSelesai()" class="w-full bg-slate-900 text-white py-5 rounded-2xl font-black text-sm uppercase italic tracking-widest">Siap, Terima Kasih!</button>
+        </div>
+    </div>
 
-    if(total>0){
-        document.getElementById("bar-keranjang").classList.remove("hidden");
-        document.getElementById("ringkasan").innerText = total+" item";
-    }else{
-        document.getElementById("bar-keranjang").classList.add("hidden");
-    }
-}
+    <div id="layar-bantuan" onclick="tutupBantuan()">
+        <div class="konten-putih" onclick="event.stopPropagation()">
+            <button onclick="tutupBantuan()" class="absolute top-5 right-6 text-slate-300 text-2xl font-bold p-2">✕</button>
+            <h2 class="font-black text-xl text-slate-800 mb-6 uppercase italic text-center">Layanan Room</h2>
+            <div class="space-y-4 mb-8">
+                <button onclick="kirimBantuan('Minta Bill')" class="w-full p-5 bg-slate-50 border border-slate-100 rounded-2xl text-left flex justify-between items-center font-black text-slate-700 italic uppercase">Minta Bill 🧾</button>
+                <button onclick="kirimBantuan('Panggil Pelayan')" class="w-full p-5 bg-slate-50 border border-slate-100 rounded-2xl text-left flex justify-between items-center font-black text-slate-700 italic uppercase">Panggil Staff 🙋‍♂️</button>
+            </div>
+        </div>
+    </div>
 
-// ================= SEARCH =================
-function cekInputCari(){
-    queryCari = document.getElementById("input-cari").value.toLowerCase();
-    renderMenu();
-}
+    <script>
+        // CONFIG
+        const URL_SHEETS = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTDCkc69puC1CIoN5NnY8RggTTjvOFvbxau5FcU94eSnROveTeHS4ERbNptDZ_aGVvFNju6DAHiQvYn/pub?output=csv"; 
+        const WA_NUMBER = "6285348773757";
+        
+        let databaseMenu = [];
+        let listKategoriTetap = [];
+        let dataKeranjang = {}; 
+        let riwayatPesananLokal = [];
+        let katAktif = "SEMUA";
+        let roomNumber = "--"; 
+        let queryCari = "";
 
-// ================= ORDER =================
-function munculkanPopup(){
-    let items = Object.values(dataKeranjang);
-    if(items.length===0) return;
+        // 1. LOGIKA WIFI (6 Detik Loading, 2 Detik Hilang)
+        function inisialisasiWiFi() {
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('source') === 'wifi') {
+                const bar = document.getElementById('wifi-activation-bar');
+                bar.classList.remove('hidden');
+                let p = 0;
+                const iv = setInterval(() => {
+                    p++;
+                    document.getElementById('wifi-progress-line').style.width = p + "%";
+                    document.getElementById('wifi-percentage').innerText = p + "%";
+                    
+                    if (p < 30) document.getElementById('wifi-status-text').innerText = "Menghubungkan Server...";
+                    else if (p < 70) document.getElementById('wifi-status-text').innerText = "Mengunduh Menu Terbaru...";
+                    else if (p < 100) document.getElementById('wifi-status-text').innerText = "Hampir Selesai...";
+                    else document.getElementById('wifi-status-text').innerText = "Internet Aktif!";
+                    
+                    if (p >= 100) { 
+                        clearInterval(iv); 
+                        setTimeout(() => { 
+                            bar.style.height = "0"; 
+                            bar.style.opacity = "0"; 
+                            bar.style.padding = "0"; 
+                        }, 2000); // Hilang dalam 2 detik
+                    }
+                }, 60); // 60ms * 100 = 6 detik total
+            }
+        }
 
-    let total = items.reduce((a,b)=>a+(b.harga*b.qty),0);
+        // 2. SESI PROTEKSI (2 JAM)
+        function proteksiSesi() {
+            const DURASI = 2 * 60 * 60 * 1000;
+            const now = new Date().getTime();
+            const tag = 'sesi_hp_samarinda';
+            const start = localStorage.getItem(tag);
+            if (!start) { localStorage.setItem(tag, now); return true; }
+            if (now - parseInt(start) > DURASI) {
+                document.body.innerHTML = `<div class="h-screen bg-slate-900 text-white flex flex-col items-center justify-center p-10 text-center"><h1 class="text-2xl font-black uppercase italic mb-4">Sesi Habis</h1><p class="text-slate-400 text-sm italic">Akses menu Anda telah berakhir demi keamanan. Silakan scan ulang QR Code di room.</p></div>`;
+                return false;
+            }
+            return true;
+        }
 
-    let msg = "*Pesanan Baru*%0A";
-    items.forEach(i=>{
-        msg+=`${i.nama} (${i.qty}x)%0A`;
-    });
+        // 3. LOGIKA ROOM & DATA
+        function deteksiRoom() {
+            const params = new URLSearchParams(window.location.search);
+            const r = params.get('room');
+            if (r) {
+                roomNumber = r.toUpperCase();
+                const drop = document.getElementById('input-room-final');
+                if(drop) { drop.value = roomNumber; cekRoomStatus(); }
+            }
+            updateTampilanRoom();
+        }
 
-    msg+=`Total: Rp ${total}`;
+        function updateTampilanRoom() {
+            document.querySelectorAll('.no-room').forEach(el => el.innerText = roomNumber);
+            if(roomNumber !== "--") document.getElementById('info-room-header').innerText = "📍 Room: " + roomNumber;
+        }
 
-    window.open(`https://wa.me/${WA_NUMBER}?text=${msg}`);
-}
+        function cekRoomStatus() {
+            const val = document.getElementById('input-room-final').value;
+            const btn = document.getElementById('btn-kirim-wa');
+            if (val !== "") {
+                roomNumber = val;
+                btn.disabled = false;
+                btn.classList.replace('bg-slate-300', 'bg-green-600');
+                btn.innerText = "PESAN SEKARANG 🚀";
+                updateTampilanRoom();
+            } else {
+                btn.disabled = true;
+                btn.classList.replace('bg-green-600', 'bg-slate-300');
+                btn.innerText = "PILIH ROOM DULU 🎤";
+            }
+        }
 
-// ================= INIT =================
-window.onload = ()=>{
-    if(proteksiSesi()){
-        ambilData();
-    }
-};
-</script>
+        async function ambilData() {
+            try {
+                const res = await fetch(URL_SHEETS + "&t=" + new Date().getTime());
+                const text = await res.text();
+                const baris = text.split(/\r?\n/).slice(1);
+                databaseMenu = [];
+                let setKategori = new Set();
+                baris.forEach(r => {
+                    let k = r.split(",");
+                    if (k.length >= 2) {
+                        const nama = k[0]?.replace(/"/g, '').trim();
+                        const harga = parseInt(k[1]?.replace(/[^0-9]/g, '')) || 0;
+                        const kategori = k[2]?.replace(/"/g, '').trim().toUpperCase() || "LAINNYA";
+                        const foto = k[3]?.replace(/"/g, '').trim() || "";
+                        const deskripsi = k[4]?.replace(/"/g, '').trim() || ""; 
+                        if (nama && harga > 0) {
+                            databaseMenu.push({ nama, harga, kategori, foto, deskripsi });
+                            setKategori.add(kategori);
+                        }
+                    }
+                });
+                listKategoriTetap = ["SEMUA", ...Array.from(setKategori).sort()];
+                renderTabs(); renderBestSeller(); renderMenu();
+            } catch (e) { console.error(e); }
+        }
 
+        // 4. RENDERING TAMPILAN
+        function renderBestSeller() {
+            let htmlBest = "";
+            databaseMenu.slice(0, 6).forEach(m => {
+                const q = dataKeranjang[m.nama]?.qty || 0;
+                const img = m.foto ? `<img src="${m.foto}" class="w-full h-24 object-cover rounded-2xl mb-3 shadow-md">` : `<div class="w-full h-24 bg-orange-50 rounded-2xl mb-3 flex items-center justify-center text-2xl">🍲</div>`;
+                htmlBest += `
+                <div class="min-w-[160px] bg-white p-3 rounded-[28px] border border-slate-100 relative active:scale-95 transition-all cursor-pointer shadow-sm">
+                    <span class="badge-hot italic tracking-tighter">HOT</span> ${img}
+                    <p class="font-black text-slate-800 text-[11px] truncate uppercase italic px-1">${m.nama}</p>
+                    <p class="text-orange-600 font-black text-[12px] italic mb-3 px-1">Rp ${m.harga.toLocaleString('id-ID')}</p>
+                    <div class="flex items-center justify-between bg-slate-50 rounded-xl p-1 shadow-inner">
+                        ${q > 0 ? `<button onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', -1)" class="bg-white text-red-500 w-8 h-8 rounded-lg font-black shadow-sm">-</button><span class="font-black text-[10px] text-slate-800">${q}</span>` : '<span class="px-2"></span>'}
+                        <button onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="bg-orange-500 text-white w-8 h-8 rounded-lg font-black shadow-md shadow-orange-200">+</button>
+                    </div>
+                </div>`;
+            });
+            document.getElementById('container-best-seller').innerHTML = htmlBest;
+        }
+
+        function renderMenu() {
+            let html = "";
+            const filtered = databaseMenu.filter(m => (katAktif === "SEMUA" || m.kategori === katAktif) && m.nama.toLowerCase().includes(queryCari));
+            filtered.forEach(m => {
+                const q = dataKeranjang[m.nama]?.qty || 0;
+                const img = m.foto ? `<img src="${m.foto}" class="w-24 h-24 object-cover rounded-2xl shadow-md">` : `<div class="w-24 h-24 bg-slate-100 rounded-2xl flex items-center justify-center text-2xl">🍱</div>`;
+                html += `
+                <div class="p-3 rounded-[32px] shadow-sm flex items-center border-2 transition-all ${q > 0 ? 'border-orange-500 bg-orange-50/30 scale-[1.02]' : 'border-white bg-white'}">
+                    <div class="flex-shrink-0 mr-4">${img}</div>
+                    <div class="min-w-0 flex-1">
+                        <h3 class="font-black text-slate-800 text-[14px] truncate uppercase italic leading-none">${m.nama}</h3>
+                        <p class="text-[10px] text-slate-400 mt-1 italic font-medium leading-tight">${m.deskripsi || 'Menu spesial pilihan terbaik.'}</p>
+                        <p class="text-orange-600 text-[14px] font-black mt-2 italic">Rp ${m.harga.toLocaleString('id-ID')}</p>
+                    </div>
+                    <div class="flex items-center bg-slate-50 p-1 rounded-2xl border border-slate-100 ml-2 shadow-inner">
+                        ${q > 0 ? `<button onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', -1)" class="bg-white text-red-500 w-9 h-9 rounded-xl font-black shadow-sm">-</button><span class="px-3 font-black text-sm">${q}</span>` : ''}
+                        <button onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="bg-orange-500 text-white w-9 h-9 rounded-xl font-black shadow-md">+</button>
+                    </div>
+                </div>`;
+            });
+            document.getElementById('container-menu').innerHTML = html || `<div class="py-20 text-center font-black uppercase italic text-slate-300">Menu tidak ditemukan</div>`;
+        }
+
+        function ubahQty(nama, d) {
+            if (!dataKeranjang[nama]) {
+                const item = databaseMenu.find(x => x.nama === nama);
+                dataKeranjang[nama] = { ...item, qty: 0, catatan: "" };
+            }
+            dataKeranjang[nama].qty += d;
+            if (dataKeranjang[nama].qty <= 0) delete dataKeranjang[nama];
+            renderMenu(); renderBestSeller(); updateBar();
+        }
+
+        function updateBar() {
+            const arr = Object.values(dataKeranjang);
+            const tQty = arr.reduce((a, b) => a + b.qty, 0);
+            const tPrice = arr.reduce((a, b) => a + (b.harga * b.qty), 0);
+            const el = document.getElementById('bar-keranjang');
+            if (tQty > 0) {
+                el.classList.remove('hidden');
+                document.getElementById('ringkasan-singkat').innerHTML = `<p class="font-black text-lg italic leading-none">${tQty} Menu</p><p class="text-[9px] text-orange-400 font-black uppercase tracking-widest mt-1">Estimasi: Rp ${tPrice.toLocaleString('id-ID')}</p>`;
+            } else { el.classList.add('hidden'); }
+        }
+
+        // 5. KERANJANG & CROSS-SELLING (UX OPTIMIZED)
+        function munculkanPopup(e) {
+            if(e) e.preventDefault();
+            const arr = Object.values(dataKeranjang);
+            let h = ""; let t = 0;
+            let jMinum = 0; let jMakan = 0;
+
+            arr.forEach((i) => {
+                const s = i.harga * i.qty; t += s;
+                if(i.kategori.includes("DRINK") || i.kategori.includes("MINUMAN")) jMinum += i.qty; else jMakan += i.qty;
+                h += `<div class="bg-slate-50 p-4 rounded-[24px] border border-slate-100 flex flex-col gap-3 mb-2">
+                        <div class="flex justify-between items-start">
+                            <p class="font-black text-slate-800 text-[13px] uppercase italic flex-1 pr-4">${i.nama}</p>
+                            <div class="flex flex-col items-end gap-2">
+                                <span class="font-black text-slate-800 text-[13px]">Rp ${s.toLocaleString('id-ID')}</span>
+                                <div class="flex items-center gap-3 bg-white border border-slate-200 rounded-lg px-2 py-1 shadow-sm">
+                                    <button onclick="ubahQty('${i.nama.replace(/'/g, "\\'")}', -1); munculkanPopup()" class="text-red-500 font-bold text-xs p-1">-</button>
+                                    <span class="text-[10px] font-black">${i.qty}</span>
+                                    <button onclick="ubahQty('${i.nama.replace(/'/g, "\\'")}', 1); munculkanPopup()" class="text-green-500 font-bold text-xs p-1">+</button>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="text" onchange="updateCatatanItem('${i.nama.replace(/'/g, "\\'")}', this.value)" value="${i.catatan || ''}" placeholder="Catatan (Misal: pedas, es dikit...)" class="w-full bg-white border border-slate-200 rounded-xl py-2 px-4 text-[10px] italic focus:border-orange-500 outline-none">
+                    </div>`;
+            });
+
+            let crossHtml = "";
+            let targetKat = (jMinum > jMakan) ? ["SNACK", "FOOD", "MAKANAN"] : ["DRINK", "MINUMAN", "JUICE"];
+            let saran = databaseMenu.filter(m => !dataKeranjang[m.nama] && targetKat.some(k => m.kategori.includes(k))).sort(() => 0.5 - Math.random()).slice(0, 3);
+            
+            if (saran.length > 0) {
+                crossHtml = `
+                <div class="mb-4 bg-orange-50/50 p-3 rounded-[24px] border border-orange-100">
+                    <p class="text-[9px] font-black text-orange-600 uppercase tracking-[0.2em] mb-2 px-1 italic">Cocok buat nemenin nyanyi:</p>
+                    <div class="flex gap-3 overflow-x-auto no-scrollbar">
+                        ${saran.map(s => `
+                            <div onclick="ubahQty('${s.nama.replace(/'/g, "\\'")}', 1); munculkanPopup()" class="min-w-[140px] bg-white p-2 rounded-2xl shadow-sm border border-orange-100 flex items-center gap-2 cursor-pointer active:scale-95 transition-all">
+                                <img src="${s.foto || 'https://placehold.co/100x100?text=Menu'}" class="w-10 h-10 object-cover rounded-lg">
+                                <div class="min-w-0">
+                                    <p class="font-black text-slate-700 text-[8px] uppercase truncate italic">${s.nama}</p>
+                                    <p class="text-orange-500 text-[8px] font-black italic">Rp ${s.harga.toLocaleString('id-ID')}</p>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>`;
+            }
+
+            document.getElementById('list-checkout').innerHTML = crossHtml + h;
+            document.getElementById('harga-akhir').innerText = `Rp ${t.toLocaleString('id-ID')}`;
+            document.getElementById('layar-hitam').classList.add('tampil');
+            cekRoomStatus();
+        }
+
+        // 6. FINISHING ORDER
+        function jalankanKirimWA() {
+            const arr = Object.values(dataKeranjang);
+            if (arr.length === 0) return;
+            const finalRoom = document.getElementById('input-room-final').value;
+            const t = arr.reduce((a, b) => a + (b.harga * b.qty), 0);
+            let msg = `*PESANAN BARU - ROOM ${finalRoom}*%0A---------------------------%0A`;
+            arr.forEach(i => { msg += `• *${i.nama}* (${i.qty}x)%0A`; if(i.catatan) msg += `  _Cat: ${i.catatan}_%0A`; });
+            msg += `---------------------------%0A*TOTAL: Rp ${t.toLocaleString('id-ID')}*`;
+            window.open(`https://wa.me/${WA_NUMBER}?text=${msg}`, '_blank');
+
+            arr.forEach(item => {
+                const idx = riwayatPesananLokal.findIndex(r => r.nama === item.nama);
+                if (idx > -1) riwayatPesananLokal[idx].qty += item.qty;
+                else riwayatPesananLokal.push({ nama: item.nama, qty: item.qty });
+            });
+
+            setTimeout(() => { 
+                hilangkanPopup(); dataKeranjang = {}; renderMenu(); renderBestSeller(); updateBar(); 
+                updateWidgetRiwayat(); document.getElementById('notif-sukses').classList.add('tampil');
+            }, 1000);
+        }
+
+        function updateWidgetRiwayat() {
+            if (riwayatPesananLokal.length > 0) {
+                document.getElementById('widget-pesanan-saya').classList.remove('hidden');
+                document.getElementById('jumlah-riwayat').innerText = riwayatPesananLokal.length;
+                let h = "";
+                riwayatPesananLokal.forEach(r => { h += `<div class="bg-white/90 px-3 py-2 rounded-xl flex items-center gap-2 flex-shrink-0 shadow-sm border border-white/50"><span class="text-[10px] font-black text-orange-600">${r.qty}x</span><span class="text-[9px] font-bold text-slate-800 uppercase italic truncate max-w-[80px]">${r.nama}</span><span class="text-green-500 text-[10px]">✓</span></div>`; });
+                document.getElementById('list-riwayat-luar').innerHTML = h;
+            }
+        }
+
+        // 7. FUNGSI UTILITAS
+        function updateCatatanItem(nama, val) { if (dataKeranjang[nama]) dataKeranjang[nama].catatan = val; }
+        function hilangkanPopup() { document.getElementById('layar-hitam').classList.remove('tampil'); }
+        function resetKeranjang() { if (confirm("Hapus semua item di keranjang?")) { dataKeranjang = {}; hilangkanPopup(); renderMenu(); renderBestSeller(); updateBar(); } }
+        function gantiKat(k) { katAktif = k; renderMenu(); renderTabs(); }
+        function renderTabs() {
+            let h = "";
+            listKategoriTetap.forEach(kt => {
+                const cls = kt === katAktif ? "active-tab" : "bg-white text-slate-400 font-bold rounded-full border border-slate-200";
+                h += `<button onclick="gantiKat('${kt}')" class="px-6 py-3 text-[10px] uppercase tracking-widest transition-all ${cls}">${kt}</button>`;
+            });
+            document.getElementById('tabs-kategori').innerHTML = h;
+        }
+        function cekInputCari() { queryCari = document.getElementById('input-cari').value.toLowerCase(); const br = document.getElementById('btn-reset-cari'); const bs = document.getElementById('section-best-seller'); if (queryCari.length > 0) { br.classList.remove('hidden'); bs.style.display = 'none'; } else { br.classList.add('hidden'); bs.style.display = 'block'; } renderMenu(); }
+        function resetCari() { document.getElementById('input-cari').value = ""; cekInputCari(); }
+        function bukaBantuan() { document.getElementById('layar-bantuan').classList.add('tampil'); }
+        function tutupBantuan() { document.getElementById('layar-bantuan').classList.remove('tampil'); }
+        function kirimBantuan(j) { const r = document.getElementById('input-room-final').value || roomNumber; window.open(`https://wa.me/${WA_NUMBER}?text=Halo Happy Puppy Samarinda,%0ASaya tamu dari *ROOM ${r}*%0A*MINTA BANTUAN:* ${j}.`, '_blank'); tutupBantuan(); }
+        function tutupNotifSelesai() { document.getElementById('notif-sukses').classList.remove('tampil'); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+
+        // INIT EXECUTION
+        window.onload = () => {
+            inisialisasiWiFi();
+            if(proteksiSesi()) { 
+                deteksiRoom(); 
+                ambilData(); 
+            }
+        };
+    </script>
 </body>
 </html>
