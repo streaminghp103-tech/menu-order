@@ -388,7 +388,7 @@
             const el = document.getElementById('bar-keranjang');
             if (tQty > 0) {
                 el.classList.remove('hidden');
-                document.getElementById('ringkasan-singkat').innerHTML = `<p class="font-black text-lg italic leading-none">${tQty} Menu</p><p class="text-[9px] text-orange-400 font-black uppercase tracking-widest mt-1">Estimasi: Rp ${tPrice.toLocaleString('id-ID')}</p>`;
+                document.getElementById('ringkasan-singkat').innerHTML = `<p class="font-black text-lg italic leading-none">${tQty} Menu</p><p class="text-[9px] text-orange-400 font-black uppercase tracking-widest mt-1">Total: Rp ${tPrice.toLocaleString('id-ID')}</p>`;
             } else { el.classList.add('hidden'); }
         }
 
