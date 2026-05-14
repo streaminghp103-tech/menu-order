@@ -412,15 +412,29 @@
             </div>`;
     });
 
-    // 2. LOGIKA CROSS SELLING (GAMBAR & BORDER DIPERBESAR)
+    // 2. LOGIKA CROSS SELLING DENGAN KALIMAT DINAMIS
     let crossHtml = "";
-    let targetKat = (jMinum > jMakan) ? ["SNACK", "FOOD", "MAKANAN"] : ["DRINK", "MINUMAN", "JUICE"];
+    
+    // Tentukan target kategori dan kalimat ajakan
+    let targetKat = [];
+    let teksAjakan = "";
+
+    if (jMinum > jMakan) {
+        // Jika lebih banyak minum, tawarkan snack/makanan
+        targetKat = ["SNACK", "FOOD", "MAKANAN"];
+        teksAjakan = "Gak snack sekalian kak? Biar makin seru nyanyinya! 🔥";
+    } else {
+        // Jika lebih banyak makanan, tawarkan minuman
+        targetKat = ["DRINK", "MINUMAN", "JUICE"];
+        teksAjakan = "Minuman gak pengen nyemil kak? Biar makin asyik! 🔥";
+    }
+
     let saran = databaseMenu.filter(m => !dataKeranjang[m.nama] && targetKat.some(k => m.kategori.includes(k))).sort(() => 0.5 - Math.random()).slice(0, 3);
     
     if (saran.length > 0) {
         crossHtml = `
         <div class="sticky top-0 z-20 bg-white pb-3 mb-3 border-b border-slate-50">
-            <p class="text-[9px] font-black text-orange-600 uppercase tracking-widest mb-2 px-1 italic">🔥 Rekomendasi buat Kakak:</p>
+            <p class="text-[9px] font-black text-orange-600 uppercase tracking-widest mb-2 px-1 italic">${teksAjakan}</p>
             <div class="flex gap-3 overflow-x-auto no-scrollbar pb-1">
                 ${saran.map(s => `
                     <div onclick="ubahQty('${s.nama.replace(/'/g, "\\'")}', 1); munculkanPopup()" class="min-w-[145px] bg-orange-50/50 p-2.5 rounded-[20px] border-2 border-orange-100 flex items-center gap-3 cursor-pointer shadow-sm active:scale-95 transition-all">
@@ -435,7 +449,7 @@
         </div>`;
     }
 
-    // Tampilkan ke layar dengan penyesuaian header & footer minimalis
+    // Tampilkan ke layar
     document.getElementById('list-checkout').innerHTML = crossHtml + `<div>${h}</div>`;
     document.getElementById('harga-akhir').innerText = `Rp ${t.toLocaleString('id-ID')}`;
     document.getElementById('subtotal-angka').innerText = `Rp ${t.toLocaleString('id-ID')}`;
