@@ -426,7 +426,7 @@
     } else {
         // Jika lebih banyak makanan, tawarkan minuman
         targetKat = ["DRINK", "MINUMAN", "JUICE"];
-        teksAjakan = "Minuman gak pengen nyemil kak? Biar makin asyik! 🔥";
+        teksAjakan = "Minuman yg segar gak sekalian kak? Biar makin asyik! 🔥";
     }
 
     let saran = databaseMenu.filter(m => !dataKeranjang[m.nama] && targetKat.some(k => m.kategori.includes(k))).sort(() => 0.5 - Math.random()).slice(0, 3);
