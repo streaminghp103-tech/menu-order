@@ -333,7 +333,7 @@
             let htmlBest = "";
             databaseMenu.slice(0, 6).forEach(m => {
                 const q = dataKeranjang[m.nama]?.qty || 0;
-                const img = m.foto ? `<img src="${m.foto}" class="w-full h-20 object-cover rounded-2xl mb-3 shadow-md">` : `<div class="w-full h-24 bg-orange-50 rounded-2xl mb-3 flex items-center justify-center text-2xl">🍲</div>`;
+                const img = m.foto ? `<img src="${m.foto}" class="w-full h-16 object-cover rounded-2xl mb-3 shadow-md">` : `<div class="w-full h-20 bg-orange-50 rounded-2xl mb-3 flex items-center justify-center text-2xl">🍲</div>`;
                 htmlBest += `
                 <div onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="menu-card min-w-[140px] bg-white p-3 rounded-[28px] border-2 transition-all ${q > 0 ? 'border-orange-500 bg-orange-50/20 shadow-lg shadow-orange-100' : 'border-slate-100'} relative active:scale-95 transition-all cursor-pointer shadow-sm">
                     <span class="badge-hot italic tracking-tighter">HOT</span> ${img}
