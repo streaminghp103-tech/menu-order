@@ -333,8 +333,8 @@
                     <p class="font-black text-slate-800 text-[11px] truncate uppercase italic px-1">${m.nama}</p>
                     <p class="text-orange-600 font-black text-[12px] italic mb-3 px-1">Rp ${m.harga.toLocaleString('id-ID')}</p>
                     <div class="flex items-center justify-between bg-slate-50 rounded-xl p-1 shadow-inner">
-                        ${q > 0 ? `<button onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', -1)" class="bg-white text-red-500 w-8 h-8 rounded-lg font-black shadow-sm">-</button><span class="font-black text-[10px] text-slate-800">${q}</span>` : '<span class="px-2"></span>'}
-                        <button onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="bg-orange-500 text-white active:scale-95 transition-all duration-200 w-8 h-8 rounded-lg font-black shadow-md shadow-orange-200">+</button>
+                        ${q > 0 ? `<button onclick="onclick="event.stopPropagation(); ubahQty('${m.nama.replace(/'/g, "\\'")}', -1)"" class="bg-white text-red-500 w-8 h-8 rounded-lg font-black shadow-sm">-</button><span class="font-black text-[10px] text-slate-800">${q}</span>` : '<span class="px-2"></span>'}
+                        <button onclick="onclick="event.stopPropagation(); ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)"" class="bg-orange-500 text-white active:scale-95 transition-all duration-200 w-8 h-8 rounded-lg font-black shadow-md shadow-orange-200">+</button>
                     </div>
                 </div>`;
             });
