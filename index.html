@@ -530,7 +530,7 @@
 };
             listKategoriTetap.forEach(kt => {
                 const cls = kt === katAktif ? "active-tab" : "bg-white text-slate-400 font-bold rounded-full border border-slate-200";
-                h += `<button onclick="gantiKat('${kt}')" class="px-6 py-3 text-[10px] uppercase tracking-widest transition-all ${cls}">${kt}</button>`;
+                h += `<button onclick="gantiKat('${kt}')" class="px-6 py-3 text-[10px] uppercase tracking-widest transition-all ${cls}">${iconKategori[kt] || "🍴"} ${kt}</button>`;
             });
             document.getElementById('tabs-kategori').innerHTML = h;
         }
