@@ -151,7 +151,17 @@
         <div id="container-best-seller" class="flex gap-4 overflow-x-auto no-scrollbar pb-2"></div>
     </div>
 
-    <div class="sticky top-[56px] bg-slate-50/95 backdrop-blur-lg z-40 overflow-x-auto no-scrollbar flex whitespace-nowrap px-4 py-2 gap-2 shadow-sm" id="tabs-kategori"></div>
+    <div id="sticky-order-bar" class="sticky top-0 z-50 bg-slate-50/95 backdrop-blur-2xl shadow-sm border-b border-slate-200/60 px-4 pt-3 pb-2">
+
+    <div class="bg-white border border-slate-200 rounded-[20px] flex items-center px-4 mb-2 shadow-sm">
+        <span class="mr-2">🔍</span>
+        <input type="text" id="input-cari-sticky" oninput="cekInputCariSticky()" placeholder="Cari menu favorit..." class="w-full py-2 bg-transparent text-sm outline-none font-medium text-slate-800 italic">
+        <button id="btn-reset-cari-sticky" onclick="resetCariSticky()" class="hidden text-slate-400 p-2 text-lg">✕</button>
+    </div>
+
+    <div class="overflow-x-auto no-scrollbar flex whitespace-nowrap gap-2" id="tabs-kategori"></div>
+
+</div>
 
     <div class="px-4 pt-2 pb-5 w-full">
     <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest italic mb-2">
@@ -609,6 +619,30 @@
             });
             document.getElementById('tabs-kategori').innerHTML = h;
         }
+        function cekInputCariSticky() {
+    queryCari = document.getElementById('input-cari-sticky').value.toLowerCase();
+
+    const br = document.getElementById('btn-reset-cari-sticky');
+    const bs = document.getElementById('section-best-seller');
+    const inputUtama = document.getElementById('input-cari');
+
+    if (inputUtama) inputUtama.value = queryCari;
+
+    if (queryCari.length > 0) {
+        br.classList.remove('hidden');
+        bs.style.display = 'none';
+    } else {
+        br.classList.add('hidden');
+        bs.style.display = 'block';
+    }
+
+    renderMenu();
+}
+
+function resetCariSticky() {
+    document.getElementById('input-cari-sticky').value = "";
+    resetCari();
+}
         function cekInputCari() { queryCari = document.getElementById('input-cari').value.toLowerCase(); const br = document.getElementById('btn-reset-cari'); const bs = document.getElementById('section-best-seller'); if (queryCari.length > 0) { br.classList.remove('hidden'); bs.style.display = 'none'; } else { br.classList.add('hidden'); bs.style.display = 'block'; } renderMenu(); }
         function resetCari() { document.getElementById('input-cari').value = ""; cekInputCari(); }
         function bukaBantuan() { document.getElementById('layar-bantuan').classList.add('tampil'); }
