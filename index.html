@@ -17,12 +17,16 @@
 }
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
         
-        body { 
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            overflow-x: hidden; 
-            touch-action: pan-y; 
-            scroll-behavior: smooth; 
-        }
+        body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    overflow-x: hidden;
+    touch-action: pan-y;
+    scroll-behavior: smooth;
+
+    background:
+        radial-gradient(circle at top, rgba(249,115,22,0.12), transparent 35%),
+        linear-gradient(to bottom, #f8fafc, #eef2ff);
+}
         .no-scrollbar::-webkit-scrollbar { display: none; }
         
         .active-tab { 
@@ -67,13 +71,17 @@
         
 
 .menu-card {
-    transition: all 0.2s ease;
-    background: linear-gradient(to bottom, #ffffff, #f8fafc);
-    box-shadow:
-        0 4px 10px rgba(0,0,0,0.04),
-        inset 0 1px 0 rgba(255,255,255,0.8);
-}
+    transition: all 0.25s ease;
+    background: rgba(255,255,255,0.92);
 
+    backdrop-filter: blur(10px);
+
+    box-shadow:
+        0 8px 20px rgba(15,23,42,0.06),
+        0 2px 6px rgba(15,23,42,0.04);
+
+    border: 1px solid rgba(255,255,255,0.6);
+}
 .menu-card:active {
     transform: scale(0.96);
 }
@@ -89,11 +97,25 @@
     100% { opacity: 0; transform: translate(-50%, -20px) scale(0.95); }
 }
         .badge-hot {
-            position: absolute; top: 6px; left: 6px;
-            background: #ef4444; color: white; font-size: 8px;
-            font-weight: 900; padding: 2px 8px; border-radius: 6px;
-            z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
+    position: absolute;
+    top: 8px;
+    left: 8px;
+
+    background: linear-gradient(135deg,#ef4444,#f97316);
+
+    color: white;
+    font-size: 8px;
+    font-weight: 900;
+
+    padding: 3px 10px;
+    border-radius: 999px;
+
+    z-index: 10;
+
+    box-shadow:
+        0 4px 10px rgba(239,68,68,0.35),
+        0 0 20px rgba(249,115,22,0.2);
+}
     </style>
 </head>
 <body class="bg-slate-50 pb-40 text-slate-900 w-full">
@@ -111,7 +133,7 @@
         </div>
     </div>
 
-    <div id="top-header" class="bg-slate-900 relative z-50 px-4 pt-3 pb-2 rounded-b-[40px] shadow-lg overflow-hidden border-b-4 border-orange-500">
+    <div id="top-header" class="bg-gradient-to-br from-slate-950 via-slate-900 to-orange-950 relative z-50 px-4 pt-3 pb-2 rounded-b-[40px] shadow-lg overflow-hidden border-b-4 border-orange-500">
         <img src="https://lh3.googleusercontent.com/u/0/d/1VMXIBZSme4siqoboYqcH7hk9UNW1RT7s?w=800" class="absolute inset-0 w-full h-full object-cover opacity-30">
         <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent"></div>
         
@@ -375,7 +397,7 @@
                 const q = dataKeranjang[m.nama]?.qty || 0;
                 const img = m.foto ? `<img src="${m.foto}" class="w-full h-14 object-cover rounded-2xl mb-3 shadow-md">` : `<div class="w-full h-14 bg-orange-50 rounded-2xl mb-3 flex items-center justify-center text-2xl">🍲</div>`;
                 htmlBest += `
-                <div onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="menu-card min-w-[140px] bg-white p-3 rounded-[28px] border-2 transition-all ${q > 0 ? 'border-orange-500 bg-orange-50/20 shadow-lg shadow-orange-100' : 'border-slate-100'} relative active:scale-95 transition-all cursor-pointer shadow-sm">
+                <div onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="menu-card min-w-[140px] bg-white p-3 rounded-[28px] border-2 transition-all ${q > 0 ? 'border-orange-400 bg-orange-50/40 shadow-[0_0_20px_rgba(249,115,22,0.18)] shadow-lg shadow-orange-100' : 'border-slate-100'} relative active:scale-95 transition-all cursor-pointer shadow-sm">
                     <span class="badge-hot italic tracking-tighter">HOT</span> ${img}
                     <p class="font-black text-slate-800 text-[11px] truncate uppercase italic px-1">${m.nama}</p>
                     <p class="text-orange-600 font-black text-[12px] italic mb-3 px-1">Rp ${m.harga.toLocaleString('id-ID')}</p>
@@ -403,7 +425,7 @@
                 if(m.kategori.includes("DRINK") || m.kategori.includes("MINUMAN")) promo = "Segar Banget! 🥤";
                 
                 html += `
-                <div onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="menu-card bg-white rounded-[24px] p-2.5 shadow-sm border-2 transition-all flex flex-col ${q > 0 ? 'border-orange-500 bg-orange-50/20' : 'border-white'}">
+                <div onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="menu-card bg-white rounded-[24px] p-2.5 shadow-sm border-2 transition-all flex flex-col ${q > 0 ? 'border-orange-400 bg-orange-50/40 shadow-[0_0_20px_rgba(249,115,22,0.18)]' : 'border-white'}">
                     
                     <div class="w-full aspect-square overflow-hidden rounded-2xl bg-slate-100 mb-2">
                         <img src="${img}" class="w-full h-full object-cover" loading="lazy">
@@ -609,7 +631,7 @@
     "MAKANAN": "🍛"
 };
             listKategoriTetap.forEach(kt => {
-                const cls = kt === katAktif ? "active-tab" : "bg-white text-slate-400 font-bold rounded-full border border-slate-200";
+                const cls = kt === katAktif ? "active-tab" : "bg-white/80 text-slate-600 backdrop-blur-md font-bold rounded-full border border-slate-200";
                 h += `<button onclick="gantiKat('${kt}')" class="px-4 py-2 text-[9px] uppercase tracking-widest transition-all ${cls}">${iconKategori[kt] || "🍴"} ${kt}</button>`;
             });
             document.getElementById('tabs-kategori').innerHTML = h;
