@@ -119,7 +119,7 @@
     </style>
 </head>
 <body class="bg-gradient-to-b from-slate-950 via-[#140f0f] to-[#1b1515] pb-40 text-slate-900 w-full">
-<div id="toast-add" class="fixed top-5 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-5 py-3 rounded-full shadow-2xl z-[99999] hidden items-center gap-2 text-[11px] font-black uppercase tracking-wider border border-white/10">
+<div id="toast-add" class="fixed top-5 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-5 py-2 rounded-full shadow-2xl z-[99999] hidden items-center gap-2 text-[11px] font-black uppercase tracking-wider border border-white/10">
     <span>✅</span>
     <span id="toast-text">Menu ditambahkan</span>
 </div>
@@ -161,7 +161,7 @@
         </div>
     </div>
 
-    <div id="section-best-seller" class="px-4 py-3 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-900 mb-1 shadow-[0_10px_30px_rgba(15,23,42,0.18)] rounded-b-[28px] border-b border-orange-500/10">
+    <div id="section-best-seller" class="px-4 py-2 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-900 mb-1 shadow-[0_10px_30px_rgba(15,23,42,0.18)] rounded-b-[28px] border-b border-orange-500/10">
         <h2 class="text-[9px] font-black uppercase text-orange-300 mb-2 tracking-[0.2em] flex items-center gap-2">
             <span class="w-2 h-2 bg-red-500 rounded-full animate-ping"></span> Menu Terlaris Pekan Ini
         </h2>
@@ -189,7 +189,7 @@
 
     <div id="bar-keranjang" class="fixed bottom-5 left-1/2 -translate-x-1/2 w-[92%] max-w-md bg-slate-900 text-white p-5 rounded-[24px] shadow-2xl flex justify-between items-center hidden z-50 border border-white/10 backdrop-blur-2xl shadow-[0_-10px_30px_rgba(0,0,0,0.25)]">
         <div id="ringkasan-singkat"></div>
-        <button onclick="munculkanPopup(event)" class="bg-gradient-to-r from-orange-500 to-orange-600 shadow-[0_0_20px_rgba(249,115,22,0.35)] px-6 py-4 rounded-[20px] font-black text-[11px] uppercase animate-order tracking-wider">Lihat Pesanan</button>
+        <button onclick="munculkanPopup(event)" class="bg-gradient-to-r from-orange-500 to-orange-600 shadow-[0_0_20px_rgba(249,115,22,0.35)] px-5 py-4 rounded-[20px] font-black text-[11px] uppercase animate-order tracking-wider">Lihat Pesanan</button>
     </div>
 
     <div id="layar-hitam" onclick="hilangkanPopup()">
@@ -397,7 +397,7 @@
                 const q = dataKeranjang[m.nama]?.qty || 0;
                 const img = m.foto ? `<img src="${m.foto}" class="w-full h-14 object-cover rounded-2xl mb-3 shadow-md">` : `<div class="w-full h-14 bg-orange-50 rounded-2xl mb-3 flex items-center justify-center text-2xl">🍲</div>`;
                 htmlBest += `
-                <div onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="menu-card min-w-[140px] bg-white/95 backdrop-blur-md p-3 rounded-[28px] border-2 transition-all ${q > 0 ? 'border-orange-400 bg-orange-50/40 shadow-[0_0_20px_rgba(249,115,22,0.18)] shadow-lg shadow-orange-100' : 'border-slate-100'} relative active:scale-95 transition-all cursor-pointer shadow-sm">
+                <div onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="menu-card min-w-[140px] bg-gradient-to-b from-[#fffdfb] to-[#f5efea] backdrop-blur-md p-3 rounded-[28px] border-2 transition-all ${q > 0 ? 'border-orange-400 bg-orange-50/40 shadow-[0_0_20px_rgba(249,115,22,0.18)] shadow-lg shadow-orange-100' : 'border-slate-100'} relative active:scale-95 transition-all cursor-pointer shadow-sm">
                     <span class="badge-hot italic tracking-tighter">HOT</span> ${img}
                     <p class="font-black text-slate-800 text-[11px] truncate uppercase italic px-1">${m.nama}</p>
                     <p class="text-orange-600 font-black text-[12px] italic mb-3 px-1">Rp ${m.harga.toLocaleString('id-ID')}</p>
