@@ -55,9 +55,7 @@
         }
         .animate-order { animation: pulse-orange 3s infinite; }
         
-        .menu-card {
-    transition: all 0.2s ease;
-}
+        
 
 .menu-card {
     transition: all 0.2s ease;
@@ -65,6 +63,10 @@
     box-shadow:
         0 4px 10px rgba(0,0,0,0.04),
         inset 0 1px 0 rgba(255,255,255,0.8);
+}
+
+.menu-card:active {
+    transform: scale(0.96);
 }
         .badge-hot {
             position: absolute; top: 6px; left: 6px;
@@ -92,7 +94,7 @@
         
         <div class="relative z-10 flex justify-between items-start mb-6">
             <div class="text-white">
-                <h1 class="text-lg font-black uppercase italic leading-tight tracking-tighter" font-black uppercase italic leading-tight tracking-tighter">Happy Puppy<br><span class="text-orange-500">Citos</span></h1>
+                <h1 class=" font-black uppercase italic leading-tight tracking-tighter">Happy Puppy<br><span class="text-orange-500">Citos</span></h1>
                 <div id="info-room-header" class="mt-2 inline-block bg-white/10 border border-white/20 px-3 py-1 rounded-full text-[9px] font-bold uppercase backdrop-blur-md text-orange-200 tracking-widest">📍 WiFi Connected</div>
             </div>
             <button onclick="bukaBantuan()" class="bg-white/10 border border-white/20 text-white p-3 rounded-[20px] backdrop-blur-md active:scale-90 text-sm font-black uppercase italic">Bantuan</button>
@@ -119,8 +121,8 @@
         </div>
     </div>
 
-    <div id="section-best-seller" class="px-4 py-3 bg-white mb-3 shadow-sm rounded-b-[28px]">
-        <h2 class="text-[11px] font-black uppercase text-slate-400 mb-4 tracking-[0.2em] flex items-center gap-2">
+    <div id="section-best-seller" class="px-4 py-2 bg-white mb-1 shadow-sm rounded-b-[24px]">
+        <h2 class="text-[9px] font-black uppercase text-slate-400 mb-2 tracking-[0.2em] flex items-center gap-2">
             <span class="w-2 h-2 bg-red-500 rounded-full animate-ping"></span> Menu Terlaris Pekan Ini
         </h2>
         <div id="container-best-seller" class="flex gap-4 overflow-x-auto no-scrollbar pb-2"></div>
@@ -129,6 +131,9 @@
     <div class="sticky top-[56px] bg-slate-50/95 backdrop-blur-lg z-40 overflow-x-auto no-scrollbar flex whitespace-nowrap px-4 py-2 gap-2 shadow-sm" id="tabs-kategori"></div>
 
     <div class="px-4 pt-2 pb-5 w-full">
+    <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest italic mb-2">
+        Tap menu untuk tambah pesanan ⚡
+    </p>
         <div id="container-menu" class="space-y-4"></div>
     </div>
 
