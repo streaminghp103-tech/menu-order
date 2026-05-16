@@ -6,6 +6,15 @@
     <title>Menu Happy Puppy Samarinda</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        .cart-bounce {
+    animation: cartBounce 0.35s ease;
+}
+
+@keyframes cartBounce {
+    0% { transform: translateX(-50%) scale(1); }
+    50% { transform: translateX(-50%) scale(1.04); }
+    100% { transform: translateX(-50%) scale(1); }
+}
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
         
         body { 
@@ -434,13 +443,24 @@
         toast.classList.remove('toast-show');
     }, 1200);
 }
+        function animasiKeranjang() {
+    const cart = document.getElementById('bar-keranjang');
+    if (!cart) return;
+
+    cart.classList.remove('cart-bounce');
+    void cart.offsetWidth;
+    cart.classList.add('cart-bounce');
+}
         function ubahQty(nama, d) {
             if (!dataKeranjang[nama]) {
                 const item = databaseMenu.find(x => x.nama === nama);
                 dataKeranjang[nama] = { ...item, qty: 0, catatan: "" };
             }
             dataKeranjang[nama].qty += d;
-            if (d > 0) tampilkanToast(nama);
+            if (d > 0) {
+    tampilkanToast(nama);
+    animasiKeranjang();
+}
             if (dataKeranjang[nama].qty <= 0) delete dataKeranjang[nama];
             renderMenu(); renderBestSeller(); updateBar();
         }
