@@ -214,7 +214,7 @@
             <div class="flex items-center gap-3 mb-4">
                 <div class="flex-[1.5] relative">
                     <select id="input-room-final" onchange="cekRoomStatus()" class="w-full bg-slate-50 border-none p-3.5 rounded-[20px] font-black text-slate-800 outline-none text-[10px] tracking-wider shadow-inner appearance-none">
-                        <option value="" disabled selected>Pilih Room...</option>
+                        <option value="" disabled selected>Pilih Room Karaoke 🎤</option>
                         <optgroup label="LANTAI 1"><option value="101">101</option><option value="102">102</option><option value="103">103</option><option value="104">104</option><option value="105">105</option></optgroup>
                         <optgroup label="LANTAI 2"><option value="201">201</option><option value="202">202</option><option value="203">203</option><option value="205">205</option></optgroup>
                         <optgroup label="SPECIAL"><option value="VIP 1">VIP 1</option><option value="VIP 2">VIP 2</option><option value="SUITE">SUITE</option></optgroup>
@@ -325,6 +325,33 @@
 
         // 3. LOGIKA ROOM & DATA
         function deteksiRoom() {
+            const params = new URLSearchParams(window.location.search);
+            const r = params.get('room');
+            if (r) {
+
+    roomNumber = r.toUpperCase();
+
+    const drop = document.getElementById('input-room-final');
+
+    if(drop) {
+
+        drop.value = roomNumber;
+
+        // LOCK ROOM SELECT
+        drop.disabled = true;
+
+        // STYLE LOCKED
+        drop.classList.add(
+            'bg-orange-50',
+            'text-orange-700',
+            'border',
+            'border-orange-300',
+            'cursor-not-allowed'
+        );
+
+        cekRoomStatus();
+    }
+}
 
         function updateTampilanRoom() {
             document.querySelectorAll('.no-room').forEach(el => el.innerText = roomNumber);
