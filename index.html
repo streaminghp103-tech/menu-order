@@ -328,12 +328,30 @@
             const params = new URLSearchParams(window.location.search);
             const r = params.get('room');
             if (r) {
-                roomNumber = r.toUpperCase();
-                const drop = document.getElementById('input-room-final');
-                if(drop) { drop.value = roomNumber; cekRoomStatus(); }
-            }
-            updateTampilanRoom();
-        }
+
+    roomNumber = r.toUpperCase();
+
+    const drop = document.getElementById('input-room-final');
+
+    if(drop) {
+
+        drop.value = roomNumber;
+
+        // LOCK ROOM SELECT
+        drop.disabled = true;
+
+        // STYLE LOCKED
+        drop.classList.add(
+            'bg-orange-50',
+            'text-orange-700',
+            'border',
+            'border-orange-300',
+            'cursor-not-allowed'
+        );
+
+        cekRoomStatus();
+    }
+}
 
         function updateTampilanRoom() {
             document.querySelectorAll('.no-room').forEach(el => el.innerText = roomNumber);
