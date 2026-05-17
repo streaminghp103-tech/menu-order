@@ -143,7 +143,7 @@
         
         <div class="relative z-10 flex justify-between items-start gap-3">
     <div class="text-white">
-        <h1 class="text-xl font-black uppercase italic leading-tight tracking-tighter drop-shadow-[0_4px_12px_rgba(0,0,0,0.35)]">
+        <h1 class="text-xl font-black uppercase leading-tight tracking-tighter drop-shadow-[0_4px_12px_rgba(0,0,0,0.35)]">
             Happy Puppy<br><span class="text-orange-500">Citos</span>
         </h1>
     </div>
@@ -153,7 +153,7 @@
             📍 WiFi Connected
         </div>
 
-        <button onclick="bukaBantuan()" class="bg-white/10 border border-white/20 text-white px-3 py-1.5 rounded-[14px] active:scale-90 text-[10px] font-black uppercase italic">
+        <button onclick="bukaBantuan()" class="bg-white/10 border border-white/20 text-white px-3 py-1.5 rounded-[14px] active:scale-90 text-[10px] font-black uppercase">
             Bantuan
         </button>
     </div>
@@ -198,7 +198,7 @@
     <p class="text-[#6b3a1f] text-[12px] font-black uppercase tracking-[0.10em] mb-1">
     TAP MENU UNTUK MEMESAN ⚡
 </p>
-        <div id="container-menu" class="space-y-2 text-center py-2 text-slate-300 font-black uppercase italic">
+        <div id="container-menu" class="space-y-2 text-center py-2 text-slate-300 font-black uppercase">
     Memuat Menu...
 </div>
     </div>
@@ -333,7 +333,7 @@
             const start = localStorage.getItem(tag);
             if (!start) { localStorage.setItem(tag, now); return true; }
             if (now - parseInt(start) > DURASI) {
-                document.body.innerHTML = `<div class="h-screen bg-slate-900 text-white flex flex-col items-center justify-center p-10 text-center"><h1 class="text-2xl font-black uppercase italic mb-4">Sesi Habis</h1><p class="text-slate-400 text-sm italic">Akses menu Anda telah berakhir demi keamanan. Silakan scan ulang QR Code di room.</p></div>`;
+                document.body.innerHTML = `<div class="h-screen bg-slate-900 text-white flex flex-col items-center justify-center p-10 text-center"><h1 class="text-2xl font-black uppercase mb-4">Sesi Habis</h1><p class="text-slate-400 text-sm italic">Akses menu Anda telah berakhir demi keamanan. Silakan scan ulang QR Code di room.</p></div>`;
                 return false;
             }
             return true;
@@ -550,7 +550,7 @@
 
             html += `</div>`;
             
-            document.getElementById('container-menu').innerHTML = filtered.length > 0 ? html : `<div class="py-20 text-center font-black uppercase italic text-slate-300 w-full col-span-2">Menu tidak ditemukan</div>`;
+            document.getElementById('container-menu').innerHTML = filtered.length > 0 ? html : `<div class="py-20 text-center font-black uppercase text-slate-300 w-full col-span-2">Menu tidak ditemukan</div>`;
         }
 
         function tampilkanToast(nama) {
@@ -656,7 +656,7 @@
                         <img src="${s.foto || 'https://placehold.co/80x80'}" class="w-10 h-10 object-cover rounded-xl shadow-inner">
                         <div class="min-w-0">
                             <p class="font-black text-slate-700 text-[9px] uppercase truncate italic leading-tight">${s.nama}</p>
-                            <p class="text-orange-600 text-[9px] font-black italic mt-0.5">+ Tambah</p>
+                            <p class="text-orange-600 text-[9px] font-black mt-0.5">+ Tambah</p>
                         </div>
                     </div>
                 `).join('')}
