@@ -145,13 +145,21 @@
         <img src="https://lh3.googleusercontent.com/u/0/d/1VMXIBZSme4siqoboYqcH7hk9UNW1RT7s?w=800" class="absolute inset-0 w-full h-full object-cover opacity-30">
         <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent"></div>
         
-        <div class="relative z-10 flex justify-between items-start mb-1">
-            <div class="text-white">
-                <h1 class="text-2xl font-black uppercase italic leading-tight tracking-tighter">Happy Puppy<br><span class="text-orange-500">Citos</span></h1>
-                <div id="info-room-header" class="mt-2 inline-block bg-white/10 border border-white/20 px-3 py-1 rounded-full text-[9px] font-bold uppercase backdrop-blur-md text-orange-200 tracking-widest">📍 WiFi Connected</div>
-            </div>
-            <button onclick="bukaBantuan()" class="bg-white/10 border border-white/20 text-white px-5 py-3 rounded-[18px] backdrop-blur-md active:scale-90 text-sm font-black uppercase italic">Bantuan</button>
+        <div class="relative z-10 flex flex-col gap-2 mb-1">
+    <div class="flex items-center justify-between gap-3">
+        <h1 class="text-xl font-black uppercase italic leading-none tracking-tighter text-white">
+            Happy Puppy <span class="text-orange-500">Citos</span>
+        </h1>
+
+        <div id="info-room-header" class="bg-white/10 border border-white/20 px-3 py-1 rounded-full text-[9px] font-bold uppercase backdrop-blur-md text-orange-200 tracking-widest whitespace-nowrap">
+            📍 WiFi Connected
         </div>
+    </div>
+
+    <button onclick="bukaBantuan()" class="self-end bg-white/10 border border-white/20 text-white px-4 py-2 rounded-[16px] backdrop-blur-md active:scale-90 text-[11px] font-black uppercase italic">
+        Bantuan
+    </button>
+</div>
 
         
 
