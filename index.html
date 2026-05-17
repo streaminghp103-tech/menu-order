@@ -129,7 +129,7 @@
             <span id="wifi-percentage" class="text-[10px] font-black text-white italic">0%</span>
         </div>
         <div class="w-full h-1 bg-white/10 rounded-full overflow-hidden">
-            <div id="wifi-progress-line" class="h-full bg-orange-500 w-0 transition-all duration-75"></div>
+            <div id="wifi-progress-line" class="h-full bg-orange-500 w-0 transition-all duration-300 active:scale-[0.98]"></div>
         </div>
     </div>
 
@@ -168,7 +168,7 @@
         <div id="container-best-seller" class="flex gap-4 overflow-x-auto no-scrollbar pb-2"></div>
     </div>
 
-    <div id="sticky-order-bar" class="sticky top-0 z-50 bg-slate-950/90 backdrop-blur-2xl shadow-[0_8px_30px_rgba(15,23,42,0.25)] border-b border-orange-500/20 px-4 pt-3 pb-2">
+    <div id="sticky-order-bar" class="sticky top-0 z-40 bg-slate-100/85 backdrop-blur-xl border-b border-white/30 px-4 pt-2 pb-2">
 
     <div class="bg-white/10 border border-white/15 rounded-[20px] flex items-center px-4 mb-2 shadow-sm backdrop-blur-md">
         <span class="mr-2">🔍</span>
@@ -229,7 +229,7 @@
                 </div>
             </div>
 
-            <button type="button" id="btn-kirim-wa" onclick="jalankanKirimWA()" disabled class="w-full bg-slate-200 text-slate-400 py-4 rounded-[22px] font-black text-[11px] uppercase tracking-[0.1em] transition-all duration-300 shadow-sm active:scale-95">
+            <button type="button" id="btn-kirim-wa" onclick="jalankanKirimWA()" disabled class="w-full bg-slate-200 text-slate-400 py-4 rounded-[22px] font-black text-[11px] uppercase tracking-[0.1em] transition-all duration-300 active:scale-[0.98] shadow-sm active:scale-95">
                 Pilih Room Dulu 🎤
             </button>
             
@@ -428,13 +428,13 @@
                 const q = dataKeranjang[m.nama]?.qty || 0;
                 const img = m.foto ? `<img src="${m.foto}" class="w-full h-14 object-cover rounded-2xl mb-3 shadow-md">` : `<div class="w-full h-14 bg-orange-50 rounded-2xl mb-3 flex items-center justify-center text-2xl">🍲</div>`;
                 htmlBest += `
-                <div onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="menu-card min-w-[140px] bg-gradient-to-b from-[#fffdfb] to-[#f5efea] backdrop-blur-md p-3 rounded-[28px] border-2 transition-all ${q > 0 ? 'border-orange-400 bg-orange-50/40 shadow-[0_0_20px_rgba(249,115,22,0.18)] shadow-lg shadow-orange-100' : 'border-slate-100'} relative active:scale-95 transition-all cursor-pointer shadow-sm">
+                <div onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="menu-card min-w-[140px] bg-gradient-to-b from-[#fffdfb] to-[#f5efea] backdrop-blur-md p-3 rounded-[28px] border-2 transition-all duration-300 active:scale-[0.98] ${q > 0 ? 'border-orange-400 bg-orange-50/40 shadow-[0_0_20px_rgba(249,115,22,0.18)] shadow-lg shadow-orange-100' : 'border-slate-100'} relative active:scale-95 transition-all duration-300 active:scale-[0.98] cursor-pointer shadow-sm">
                     <span class="badge-hot italic tracking-tighter">HOT</span> ${img}
                     <p class="font-black text-slate-800 text-[11px] truncate uppercase italic px-1">${m.nama}</p>
                     <p class="text-orange-600 font-black text-[12px] italic mb-3 px-1">Rp ${m.harga.toLocaleString('id-ID')}</p>
                     ${q > 0 ? `
 
-<div class="flex items-center justify-between bg-slate-100 rounded-xl p-1 shadow-inner">
+<div class="flex items-center justify-between bg-orange-50/70 rounded-2xl p-1 shadow-inner">
     <button onclick="event.stopPropagation(); ubahQty('${m.nama.replace(/'/g, "\\'")}', -1)"
         class="bg-white text-red-500 w-8 h-8 rounded-lg font-black shadow-sm">
         −
@@ -445,7 +445,7 @@
     </span>
 
     <button onclick="event.stopPropagation(); ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)"
-        class="bg-orange-500 text-white active:scale-95 transition-all duration-200 w-8 h-8 rounded-lg font-black shadow-md shadow-orange-200">
+        class="bg-orange-500 text-white active:scale-95 transition-all duration-300 active:scale-[0.98] w-8 h-8 rounded-lg font-black shadow-md shadow-orange-200">
         +
     </button>
 </div>
@@ -453,7 +453,7 @@
 ` : `
 
 <button onclick="event.stopPropagation(); ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)"
-    class="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white py-2.5 rounded-xl font-black text-[10px] uppercase tracking-wider shadow-[0_6px_20px_rgba(249,115,22,0.25)] active:scale-95 transition-all">
+    class="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white py-2.5 rounded-xl font-black text-[10px] uppercase tracking-wider shadow-[0_6px_20px_rgba(249,115,22,0.25)] active:scale-95 transition-all duration-300 active:scale-[0.98]">
     + Tambah
 </button>
 
@@ -478,7 +478,7 @@
                 if(m.kategori.includes("DRINK") || m.kategori.includes("MINUMAN")) promo = "Segar Banget! 🥤";
                 
                 html += `
-                <div onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="menu-card bg-white/90 backdrop-blur-md rounded-[24px] p-2.5 shadow-sm border-2 transition-all flex flex-col ${q > 0 ? 'border-orange-400 bg-orange-50/40 shadow-[0_0_20px_rgba(249,115,22,0.18)]' : 'border-white'}">
+                <div onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="menu-card bg-white/95 backdrop-blur-sm rounded-[26px] p-2.5 shadow-sm border-2 transition-all duration-300 active:scale-[0.98] flex flex-col ${q > 0 ? 'border-orange-400 bg-orange-50 shadow-lg shadow-orange-100' : 'border-white'}">
                     
                     <div class="relative w-full aspect-square overflow-hidden rounded-[20px] bg-slate-100 mb-2">
 
@@ -521,7 +521,7 @@
 ` : `
 
 <button onclick="event.stopPropagation(); ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)"
-    class="w-full mt-auto bg-gradient-to-r from-orange-500 to-orange-600 text-white py-2.5 rounded-xl font-black text-[10px] uppercase tracking-wider shadow-[0_6px_20px_rgba(249,115,22,0.25)] active:scale-95 transition-all">
+    class="w-full mt-auto bg-gradient-to-r from-orange-500 to-orange-600 text-white py-2.5 rounded-xl font-black text-[10px] uppercase tracking-wider shadow-[0_6px_20px_rgba(249,115,22,0.25)] active:scale-95 transition-all duration-300 active:scale-[0.98]">
     + Tambah
 </button>
 
@@ -633,7 +633,7 @@
             <p class="text-[9px] font-black text-orange-600 uppercase tracking-widest mb-2 px-1 italic">${teksAjakan}</p>
             <div class="flex gap-3 overflow-x-auto no-scrollbar pb-1">
                 ${saran.map(s => `
-                    <div onclick="ubahQty('${s.nama.replace(/'/g, "\\'")}', 1); munculkanPopup()" class="min-w-[145px] bg-orange-50/50 p-2.5 rounded-[20px] border-2 border-orange-100 flex items-center gap-3 cursor-pointer shadow-sm active:scale-95 transition-all">
+                    <div onclick="ubahQty('${s.nama.replace(/'/g, "\\'")}', 1); munculkanPopup()" class="min-w-[145px] bg-orange-50/50 p-2.5 rounded-[20px] border-2 border-orange-100 flex items-center gap-3 cursor-pointer shadow-sm active:scale-95 transition-all duration-300 active:scale-[0.98]">
                         <img src="${s.foto || 'https://placehold.co/80x80'}" class="w-10 h-10 object-cover rounded-xl shadow-inner">
                         <div class="min-w-0">
                             <p class="font-black text-slate-700 text-[9px] uppercase truncate italic leading-tight">${s.nama}</p>
@@ -711,7 +711,7 @@
 };
             listKategoriTetap.forEach(kt => {
                 const cls = kt === katAktif ? "active-tab" : "bg-white/80 text-slate-600 backdrop-blur-md font-bold rounded-full border border-slate-200";
-                h += `<button onclick="gantiKat('${kt}')" class="px-4 py-2 text-[9px] uppercase tracking-widest transition-all ${cls}">${iconKategori[kt] || "🍴"} ${kt}</button>`;
+                h += `<button onclick="gantiKat('${kt}')" class="px-4 py-2 text-[9px] uppercase tracking-widest transition-all duration-300 active:scale-[0.98] ${cls}">${iconKategori[kt] || "🍴"} ${kt}</button>`;
             });
             document.getElementById('tabs-kategori').innerHTML = h;
         }
