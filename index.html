@@ -72,16 +72,14 @@
         
 
 .menu-card {
-    transition: all 0.25s ease;
-    background: rgba(255,255,255,0.92);
+    transition: transform 0.2s ease;
 
-    backdrop-filter: blur(10px);
+    background: #ffffff;
 
     box-shadow:
-        0 12px 28px rgba(15,23,42,0.08),
-        0 4px 10px rgba(15,23,42,0.05);
+        0 4px 10px rgba(15,23,42,0.06);
 
-    border: 1px solid rgba(255,255,255,0.6);
+    border: 1px solid #f3f4f6;
 }
 .menu-card:active {
     transform: scale(0.96);
@@ -137,11 +135,11 @@
             <span id="wifi-percentage" class="text-[10px] font-black text-white italic">0%</span>
         </div>
         <div class="w-full h-1 bg-white/10 rounded-full overflow-hidden">
-            <div id="wifi-progress-line" class="h-full bg-orange-500 w-0 transition-all duration-300 active:scale-[0.98]"></div>
+            <div id="wifi-progress-line" class="h-full bg-orange-500 w-0 transition-transform duration-200 active:scale-[0.98]"></div>
         </div>
     </div>
 
-    <div id="top-header" class="bg-slate-900 relative z-50 px-4 pt-3 pb-3 rounded-b-[26px] shadow-lg overflow-hidden border-b border-orange-500/30">
+    <div id="top-header" class="bg-slate-900 relative z-50 px-4 pt-3 pb-3 rounded-b-[26px] shadow-sm overflow-hidden border-b border-orange-500/30">
         <img src="https://lh3.googleusercontent.com/u/0/d/1VMXIBZSme4siqoboYqcH7hk9UNW1RT7s?w=800" class="absolute inset-0 w-full h-full object-cover opacity-30">
         <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent"></div>
         
@@ -151,12 +149,12 @@
             Happy Puppy<br><span class="text-orange-500">Citos</span>
         </h1>
 
-        <div id="info-room-header" class="mt-2 inline-block bg-white/10 border border-white/20 px-3 py-1 rounded-full text-[9px] font-bold uppercase backdrop-blur-md text-orange-200 tracking-widest">
+        <div id="info-room-header" class="mt-2 inline-block bg-white/10 border border-white/20 px-3 py-1 rounded-full text-[9px] font-bold uppercase text-orange-200 tracking-widest">
             📍 WiFi Connected
         </div>
     </div>
 
-    <button onclick="bukaBantuan()" class="bg-white/10 border border-white/20 text-white px-4 py-2 rounded-[16px] backdrop-blur-md active:scale-90 text-[11px] font-black uppercase italic">
+    <button onclick="bukaBantuan()" class="bg-white/10 border border-white/20 text-white px-4 py-2 rounded-[16px] active:scale-90 text-[11px] font-black uppercase italic">
         Bantuan
     </button>
 </div>
@@ -164,7 +162,7 @@
         
 
             <div id="widget-pesanan-saya" class="mt-4 hidden animate-fadeIn">
-                <div class="bg-orange-500/20 border border-orange-500/30 backdrop-blur-md rounded-[20px] p-4">
+                <div class="bg-orange-500/20 border border-orange-500/30 rounded-[20px] p-4">
                     <div class="flex justify-between items-center mb-2">
                         <span class="text-[10px] font-black text-orange-400 uppercase tracking-widest flex items-center gap-2">
                             <span class="flex h-2 w-2 rounded-full bg-orange-500 animate-pulse"></span> Sedang Diproses
@@ -184,9 +182,9 @@
         <div id="container-best-seller" class="flex gap-4 overflow-x-auto no-scrollbar pb-1"></div>
     </div>
 
-    <div id="sticky-order-bar" class="sticky top-0 z-40 bg-[#fffaf6]/95 backdrop-blur-xl px-5 pt-2 pb-1">
+    <div id="sticky-order-bar" class="sticky top-0 z-40 bg-[#fffaf6]/95 px-5 pt-2 pb-1">
 
-    <div class="bg-white border border-orange-100 rounded-[28px] flex items-center px-5 mb-1 shadow-[0_12px_32px_rgba(249,115,22,0.12)] backdrop-blur-md">
+    <div class="bg-white border border-orange-100 rounded-[28px] flex items-center px-5 mb-1 shadow-[0_12px_32px_rgba(249,115,22,0.12)]">
         <span class="mr-2">🔍</span>
         <input type="text" id="input-cari-sticky" oninput="cekInputCariSticky()" placeholder="Cari menu favorit..." class="w-full py-3 bg-transparent text-sm outline-none font-medium text-slate-700 placeholder:text-slate-400 italic">
         <button id="btn-reset-cari-sticky" onclick="resetCariSticky()" class="hidden text-slate-400 p-2 text-lg">✕</button>
@@ -205,7 +203,7 @@
 </div>
     </div>
 
-    <div id="bar-keranjang" class="fixed bottom-5 left-1/2 -translate-x-1/2 w-[92%] max-w-md bg-slate-900 text-white p-5 rounded-[24px] shadow-2xl flex justify-between items-center hidden z-50 border border-white/10 backdrop-blur-2xl shadow-[0_-10px_30px_rgba(0,0,0,0.25)]">
+    <div id="bar-keranjang" class="fixed bottom-5 left-1/2 -translate-x-1/2 w-[92%] max-w-md bg-slate-900 text-white p-5 rounded-[24px] shadow-2xl flex justify-between items-center hidden z-50 border border-white/10 shadow-[0_-10px_30px_rgba(0,0,0,0.25)]">
         <div id="ringkasan-singkat"></div>
         <button onclick="munculkanPopup(event)" class="bg-gradient-to-r from-[#ff7b00] to-[#ff5e00] shadow-[0_0_20px_rgba(249,115,22,0.35)] px-5 py-4 rounded-[20px] font-black text-[11px] uppercase animate-order tracking-wider">Lihat Pesanan</button>
     </div>
@@ -247,7 +245,7 @@
                 </div>
             </div>
 
-            <button type="button" id="btn-kirim-wa" onclick="jalankanKirimWA()" disabled class="w-full bg-slate-200 text-slate-400 py-4 rounded-[22px] font-black text-[11px] uppercase tracking-[0.1em] transition-all duration-300 active:scale-[0.98] shadow-sm">
+            <button type="button" id="btn-kirim-wa" onclick="jalankanKirimWA()" disabled class="w-full bg-slate-200 text-slate-400 py-4 rounded-[22px] font-black text-[11px] uppercase tracking-[0.1em] transition-transform duration-200 active:scale-[0.98] shadow-sm">
                 Pilih Room Dulu 🎤
             </button>
             
@@ -446,7 +444,7 @@
                 const q = dataKeranjang[m.nama]?.qty || 0;
                 const img = m.foto ? `<img src="${m.foto}" class="menu-image w-full h-24 object-cover rounded-2xl mb-2 shadow-md">` : `<div class="w-full h-12 bg-orange-50 rounded-2xl mb-3 flex items-center justify-center text-2xl">🍲</div>`;
                 htmlBest += `
-                <div onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="menu-card min-w-[155px] bg-gradient-to-b from-[#fffdfb] to-[#f5efea] backdrop-blur-md p-3 rounded-[26px] border-2 transition-all duration-300 hover:-translate-y-1 active:scale-[0.98] ${q > 0 ? 'border-orange-400 bg-orange-50/40 shadow-[0_0_20px_rgba(249,115,22,0.18)] shadow-lg shadow-orange-100' : 'border-slate-100'} relative cursor-pointer shadow-sm">
+                <div onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="menu-card min-w-[155px] bg-gradient-to-b from-[#fffdfb] to-[#f5efea] p-3 rounded-[26px] border-2 transition-transform duration-200 hover:-translate-y-1 active:scale-[0.98] ${q > 0 ? 'border-orange-400 bg-orange-50/40 shadow-[0_0_20px_rgba(249,115,22,0.18)] shadow-sm shadow-orange-100' : 'border-slate-100'} relative cursor-pointer shadow-sm">
                     <span class="badge-hot italic tracking-tighter">HOT</span> ${img}
                     <p class="font-black text-slate-800 text-[11px] truncate uppercase italic px-1">${m.nama}</p>
                     <p class="text-orange-600 font-black text-[12px] italic mb-1 px-1">Rp ${m.harga.toLocaleString('id-ID')}</p>
@@ -463,7 +461,7 @@
     </span>
 
     <button onclick="event.stopPropagation(); ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)"
-        class="bg-orange-500 text-white transition-all duration-300 active:scale-[0.98] w-8 h-8 rounded-lg font-black shadow-md shadow-orange-200">
+        class="bg-orange-500 text-white transition-transform duration-200 active:scale-[0.98] w-8 h-8 rounded-lg font-black shadow-md shadow-orange-200">
         +
     </button>
 </div>
@@ -471,7 +469,7 @@
 ` : `
 
 <button onclick="event.stopPropagation(); ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)"
-    class="w-full bg-gradient-to-r from-[#ff7b00] to-[#ff5e00] text-white py-3 rounded-[18px] font-black text-[10px] uppercase tracking-wider shadow-[0_6px_20px_rgba(249,115,22,0.25)] transition-all duration-300 active:scale-[0.98]">
+    class="w-full bg-gradient-to-r from-[#ff7b00] to-[#ff5e00] text-white py-3 rounded-[18px] font-black text-[10px] uppercase tracking-wider shadow-[0_6px_20px_rgba(249,115,22,0.25)] transition-transform duration-200 active:scale-[0.98]">
     + Tambah
 </button>
 
@@ -496,14 +494,14 @@
                 if(m.kategori.includes("DRINK") || m.kategori.includes("MINUMAN")) promo = "Segar Banget! 🥤";
                 
                 html += `
-                <div onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="menu-card bg-white/95 backdrop-blur-sm rounded-[28px] p-3 shadow-sm border-2 transition-all duration-300 hover:-translate-y-1 active:scale-[0.98] flex flex-col ${q > 0 ? 'border-orange-400 bg-orange-50/40 shadow-lg shadow-orange-100' : 'border-white'}">
+                <div onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="menu-card bg-white/95 rounded-[28px] p-3 shadow-sm border-2 transition-transform duration-200 hover:-translate-y-1 active:scale-[0.98] flex flex-col ${q > 0 ? 'border-orange-400 bg-orange-50/40 shadow-sm shadow-orange-100' : 'border-white'}">
                     
                     <div class="relative w-full aspect-square overflow-hidden rounded-[20px] bg-slate-100 mb-2">
-                    <div class="absolute top-2 right-2 w-8 h-8 rounded-full bg-white/90 backdrop-blur-md flex items-center justify-center text-slate-500 shadow-md">
+                    <div class="absolute top-2 right-2 w-8 h-8 rounded-full bg-white/90 flex items-center justify-center text-slate-500 shadow-md">
     ♡
 </div>
 
-    <img src="${img}" onerror="this.src='https://placehold.co/300x300?text=Menu'" class="menu-image w-full h-full object-cover">
+    <img src="${img}" onerror="this.src='https://placehold.co/300x300?text=Menu'" class="menu-image w-full h-full object-cover loading="lazy">
 
     <div class="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-white/10"></div>
 
@@ -521,7 +519,7 @@
 
                     ${q > 0 ? `
 
-<div class="flex items-center justify-between bg-orange-50/60 rounded-2xl backdrop-blur-sm p-1 mt-auto">
+<div class="flex items-center justify-between bg-orange-50/60 rounded-2xl p-1 mt-auto">
     
     <button onclick="event.stopPropagation(); ubahQty('${m.nama.replace(/'/g, "\\'")}', -1)"
         class="w-9 h-9 flex items-center justify-center bg-white text-orange-500 rounded-lg text-sm font-black shadow-sm">
@@ -542,7 +540,7 @@
 ` : `
 
 <button onclick="event.stopPropagation(); ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)"
-    class="w-full mt-auto bg-gradient-to-r from-[#ff7b00] to-[#ff5e00] hover:brightness-110 text-white py-3 rounded-[18px] font-black text-[10px] uppercase tracking-wider shadow-[0_6px_20px_rgba(249,115,22,0.25)] transition-all duration-300 active:scale-[0.98]">
+    class="w-full mt-auto bg-gradient-to-r from-[#ff7b00] to-[#ff5e00] hover:brightness-110 text-white py-3 rounded-[18px] font-black text-[10px] uppercase tracking-wider shadow-[0_6px_20px_rgba(249,115,22,0.25)] transition-transform duration-200 active:scale-[0.98]">
     + Tambah
 </button>
 
@@ -654,7 +652,7 @@
             <p class="text-[9px] font-black text-orange-600 uppercase tracking-widest mb-2 px-1 italic">${teksAjakan}</p>
             <div class="flex gap-3 overflow-x-auto no-scrollbar pb-1">
                 ${saran.map(s => `
-                    <div onclick="ubahQty('${s.nama.replace(/'/g, "\\'")}', 1); munculkanPopup()" class="min-w-[145px] bg-orange-50/50 p-2.5 rounded-[20px] border-2 border-orange-100 flex items-center gap-3 cursor-pointer shadow-sm transition-all duration-300 active:scale-[0.98]">
+                    <div onclick="ubahQty('${s.nama.replace(/'/g, "\\'")}', 1); munculkanPopup()" class="min-w-[145px] bg-orange-50/50 p-2.5 rounded-[20px] border-2 border-orange-100 flex items-center gap-3 cursor-pointer shadow-sm transition-transform duration-200 active:scale-[0.98]">
                         <img src="${s.foto || 'https://placehold.co/80x80'}" class="w-10 h-10 object-cover rounded-xl shadow-inner">
                         <div class="min-w-0">
                             <p class="font-black text-slate-700 text-[9px] uppercase truncate italic leading-tight">${s.nama}</p>
@@ -734,8 +732,8 @@ btn.innerText = "Mengirim...";
     "MAKANAN": "🍛"
 };
             listKategoriTetap.forEach(kt => {
-                const cls = kt === katAktif ? "active-tab" : "bg-white/80 text-slate-600 backdrop-blur-md font-bold rounded-full border border-slate-200";
-                h += `<button onclick="gantiKat('${kt}')" class="px-4 py-1.5 text-[9px] uppercase tracking-widest transition-all duration-300 active:scale-[0.98] ${cls}">${iconKategori[kt] || "🍴"} ${kt}</button>`;
+                const cls = kt === katAktif ? "active-tab" : "bg-white/80 text-slate-600 font-bold rounded-full border border-slate-200";
+                h += `<button onclick="gantiKat('${kt}')" class="px-4 py-1.5 text-[9px] uppercase tracking-widest transition-transform duration-200 active:scale-[0.98] ${cls}">${iconKategori[kt] || "🍴"} ${kt}</button>`;
             });
             document.getElementById('tabs-kategori').innerHTML = h;
         }
