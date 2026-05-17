@@ -147,7 +147,7 @@
         
         <div class="relative z-10 flex justify-between items-start mb-1">
             <div class="text-white">
-                <h1 class=" font-black uppercase italic leading-tight tracking-tighter">Happy Puppy<br><span class="text-orange-500">Citos</span></h1>
+                <h1 class="text-2xl font-black uppercase italic leading-tight tracking-tighter">Happy Puppy<br><span class="text-orange-500">Citos</span></h1>
                 <div id="info-room-header" class="mt-2 inline-block bg-white/10 border border-white/20 px-3 py-1 rounded-full text-[9px] font-bold uppercase backdrop-blur-md text-orange-200 tracking-widest">📍 WiFi Connected</div>
             </div>
             <button onclick="bukaBantuan()" class="bg-white/10 border border-white/20 text-white px-5 py-3 rounded-[18px] backdrop-blur-md active:scale-90 text-sm font-black uppercase italic">Bantuan</button>
@@ -237,7 +237,7 @@
                 </div>
             </div>
 
-            <button type="button" id="btn-kirim-wa" onclick="jalankanKirimWA()" disabled class="w-full bg-slate-200 text-slate-400 py-4 rounded-[22px] font-black text-[11px] uppercase tracking-[0.1em] transition-all duration-300 active:scale-[0.98] shadow-sm active:scale-95">
+            <button type="button" id="btn-kirim-wa" onclick="jalankanKirimWA()" disabled class="w-full bg-slate-200 text-slate-400 py-4 rounded-[22px] font-black text-[11px] uppercase tracking-[0.1em] transition-all duration-300 active:scale-[0.98] shadow-sm">
                 Pilih Room Dulu 🎤
             </button>
             
@@ -434,9 +434,9 @@
             let htmlBest = "";
             databaseMenu.slice(0, 6).forEach(m => {
                 const q = dataKeranjang[m.nama]?.qty || 0;
-                const img = m.foto ? `<img src="${m.foto}" class="w-full h-12 object-cover rounded-2xl mb-3 shadow-md">` : `<div class="w-full h-12 bg-orange-50 rounded-2xl mb-3 flex items-center justify-center text-2xl">🍲</div>`;
+                const img = m.foto ? `<img src="${m.foto}" class="menu-image w-full h-12 object-cover rounded-2xl mb-3 shadow-md">` : `<div class="w-full h-12 bg-orange-50 rounded-2xl mb-3 flex items-center justify-center text-2xl">🍲</div>`;
                 htmlBest += `
-                <div onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="menu-card min-w-[125px] bg-gradient-to-b from-[#fffdfb] to-[#f5efea] backdrop-blur-md p-3 rounded-[28px] border-2 transition-all duration-300 hover:-translate-y-1 active:scale-[0.98] ${q > 0 ? 'border-orange-400 bg-orange-50/40 shadow-[0_0_20px_rgba(249,115,22,0.18)] shadow-lg shadow-orange-100' : 'border-slate-100'} relative active:scale-95 transition-all duration-300 active:scale-[0.98] cursor-pointer shadow-sm">
+                <div onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="menu-card min-w-[125px] bg-gradient-to-b from-[#fffdfb] to-[#f5efea] backdrop-blur-md p-3 rounded-[28px] border-2 transition-all duration-300 hover:-translate-y-1 active:scale-[0.98] ${q > 0 ? 'border-orange-400 bg-orange-50/40 shadow-[0_0_20px_rgba(249,115,22,0.18)] shadow-lg shadow-orange-100' : 'border-slate-100'} relative cursor-pointer shadow-sm">
                     <span class="badge-hot italic tracking-tighter">HOT</span> ${img}
                     <p class="font-black text-slate-800 text-[11px] truncate uppercase italic px-1">${m.nama}</p>
                     <p class="text-orange-600 font-black text-[12px] italic mb-3 px-1">Rp ${m.harga.toLocaleString('id-ID')}</p>
@@ -728,9 +728,7 @@
 
     const br = document.getElementById('btn-reset-cari-sticky');
     const bs = document.getElementById('section-best-seller');
-    const inputUtama = document.getElementById('input-cari');
-
-    if (inputUtama) inputUtama.value = queryCari;
+    
 
     if (queryCari.length > 0) {
         br.classList.remove('hidden');
