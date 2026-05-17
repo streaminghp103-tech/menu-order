@@ -25,8 +25,8 @@
     scroll-behavior: smooth;
 
     background:
-        radial-gradient(circle at top, rgba(249,115,22,0.12), transparent 35%),
-        linear-gradient(to bottom, #f8fafc, #eef2ff);
+    radial-gradient(circle at top left, rgba(255,120,20,0.13), transparent 30%),
+    linear-gradient(to bottom, #fff7ef 0%, #fffaf5 45%, #f8efe6 100%);
 }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         
@@ -141,7 +141,7 @@
         </div>
     </div>
 
-    <div id="top-header" class="bg-slate-900 relative z-50 px-4 pt-2 pb-1 rounded-b-[20px] shadow-lg overflow-hidden border-b border-orange-500/30">
+    <div id="top-header" class="bg-slate-900 relative z-50 px-5 pt-4 pb-4 rounded-b-[36px] shadow-[0_18px_35px_rgba(0,0,0,0.25)] overflow-hidden border-b border-orange-500/40">
         <img src="https://lh3.googleusercontent.com/u/0/d/1VMXIBZSme4siqoboYqcH7hk9UNW1RT7s?w=800" class="absolute inset-0 w-full h-full object-cover opacity-30">
         <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent"></div>
         
@@ -177,18 +177,18 @@
         </div>
     </div>
 
-    <div id="section-best-seller" class="px-4 pt-0 pb-0 bg-gradient-to-b from-[#f5efea] to-[#fff8f1]">
-        <h2 class="text-[9px] font-black uppercase text-orange-300 mb-0.5 tracking-[0.2em] flex items-center gap-2">
+    <div id="section-best-seller" class="px-5 pt-5 pb-3 bg-[#fff7ef]">
+        <h2 class="text-[15px] font-black uppercase text-orange-500 mb-3 tracking-[0.16em] flex items-center gap-2 italic">
             <span class="w-2 h-2 bg-red-500 rounded-full animate-ping"></span> Menu Terlaris Pekan Ini
         </h2>
         <div id="container-best-seller" class="flex gap-4 overflow-x-auto no-scrollbar pb-1"></div>
     </div>
 
-    <div id="sticky-order-bar" class="sticky top-0 z-40 bg-transparent backdrop-blur-xl px-2 pt-2 pb-1 ">
+    <div id="sticky-order-bar" class="sticky top-0 z-40 bg-[#fff7ef]/95 backdrop-blur-xl px-5 pt-3 pb-3">
 
-    <div class="bg-white/70 border border-orange-100 rounded-[16px] flex items-center px-4 mb-1 shadow-sm backdrop-blur-md">
+    <div class="bg-white border border-orange-100 rounded-[24px] flex items-center px-5 mb-3 shadow-[0_8px_24px_rgba(249,115,22,0.08)] backdrop-blur-md">
         <span class="mr-2">🔍</span>
-        <input type="text" id="input-cari-sticky" oninput="cekInputCariSticky()" placeholder="Cari menu favorit..." class="w-full py-1.5 bg-transparent text-sm outline-none font-medium text-slate-700 placeholder:text-slate-400 italic">
+        <input type="text" id="input-cari-sticky" oninput="cekInputCariSticky()" placeholder="Cari menu favorit..." class="w-full py-3 bg-transparent text-sm outline-none font-medium text-slate-700 placeholder:text-slate-400 italic">
         <button id="btn-reset-cari-sticky" onclick="resetCariSticky()" class="hidden text-slate-400 p-2 text-lg">✕</button>
     </div>
 
@@ -196,8 +196,8 @@
 
 </div>
 
-    <div class="px-4 pt-1 pb-2 w-full bg-gradient-to-b from-[#f5efea] to-[#fff8f1] relative z-10">
-    <p class="text-slate-500 text-[10px] font-black uppercase italic tracking-widest mb-1">
+    <div class="px-5 pt-3 pb-5 w-full bg-[#fff7ef] relative z-10">
+    <p class="text-[#6b3a1f] text-[12px] font-black uppercase tracking-[0.18em] mb-4">
     TAP MENU UNTUK TAMBAH PESANAN ⚡
 </p>
         <div id="container-menu" class="space-y-2 text-center py-2 text-slate-300 font-black uppercase italic">
@@ -444,9 +444,9 @@
             let htmlBest = "";
             databaseMenu.slice(0, 6).forEach(m => {
                 const q = dataKeranjang[m.nama]?.qty || 0;
-                const img = m.foto ? `<img src="${m.foto}" class="menu-image w-full h-10 object-cover rounded-2xl mb-2 shadow-md">` : `<div class="w-full h-12 bg-orange-50 rounded-2xl mb-3 flex items-center justify-center text-2xl">🍲</div>`;
+                const img = m.foto ? `<img src="${m.foto}" class="menu-image w-full h-24 object-cover rounded-2xl mb-2 shadow-md">` : `<div class="w-full h-12 bg-orange-50 rounded-2xl mb-3 flex items-center justify-center text-2xl">🍲</div>`;
                 htmlBest += `
-                <div onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="menu-card min-w-[118px] bg-gradient-to-b from-[#fffdfb] to-[#f5efea] backdrop-blur-md p-1.5 rounded-[22px] border-2 transition-all duration-300 hover:-translate-y-1 active:scale-[0.98] ${q > 0 ? 'border-orange-400 bg-orange-50/40 shadow-[0_0_20px_rgba(249,115,22,0.18)] shadow-lg shadow-orange-100' : 'border-slate-100'} relative cursor-pointer shadow-sm">
+                <div onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="menu-card min-w-[155px] bg-gradient-to-b from-[#fffdfb] to-[#f5efea] backdrop-blur-md p-3 rounded-[26px] border-2 transition-all duration-300 hover:-translate-y-1 active:scale-[0.98] ${q > 0 ? 'border-orange-400 bg-orange-50/40 shadow-[0_0_20px_rgba(249,115,22,0.18)] shadow-lg shadow-orange-100' : 'border-slate-100'} relative cursor-pointer shadow-sm">
                     <span class="badge-hot italic tracking-tighter">HOT</span> ${img}
                     <p class="font-black text-slate-800 text-[11px] truncate uppercase italic px-1">${m.nama}</p>
                     <p class="text-orange-600 font-black text-[12px] italic mb-1 px-1">Rp ${m.harga.toLocaleString('id-ID')}</p>
@@ -471,7 +471,7 @@
 ` : `
 
 <button onclick="event.stopPropagation(); ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)"
-    class="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white py-2 rounded-xl font-black text-[10px] uppercase tracking-wider shadow-[0_6px_20px_rgba(249,115,22,0.25)] transition-all duration-300 active:scale-[0.98]">
+    class="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3 rounded-[18px] font-black text-[10px] uppercase tracking-wider shadow-[0_6px_20px_rgba(249,115,22,0.25)] transition-all duration-300 active:scale-[0.98]">
     + Tambah
 </button>
 
@@ -486,7 +486,7 @@
             const filtered = databaseMenu.filter(m => (katAktif === "SEMUA" || m.kategori === katAktif) && m.nama.toLowerCase().includes(queryCari));
             
             // Grid 2 Kolom dengan gap yang pas
-            html = `<div class="grid grid-cols-2 gap-2">`;
+            html = `<div class="grid grid-cols-2 gap-4">`;
 
             filtered.forEach(m => {
                 const q = dataKeranjang[m.nama]?.qty || 0;
@@ -496,7 +496,7 @@
                 if(m.kategori.includes("DRINK") || m.kategori.includes("MINUMAN")) promo = "Segar Banget! 🥤";
                 
                 html += `
-                <div onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="menu-card bg-white/95 backdrop-blur-sm rounded-[26px] p-2.5 shadow-sm border-2 transition-all duration-300 hover:-translate-y-1 active:scale-[0.98] flex flex-col ${q > 0 ? 'border-orange-400 bg-orange-50/40 shadow-lg shadow-orange-100' : 'border-white'}">
+                <div onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="menu-card bg-white/95 backdrop-blur-sm rounded-[28px] p-3 shadow-sm border-2 transition-all duration-300 hover:-translate-y-1 active:scale-[0.98] flex flex-col ${q > 0 ? 'border-orange-400 bg-orange-50/40 shadow-lg shadow-orange-100' : 'border-white'}">
                     
                     <div class="relative w-full aspect-square overflow-hidden rounded-[20px] bg-slate-100 mb-2">
 
@@ -539,7 +539,7 @@
 ` : `
 
 <button onclick="event.stopPropagation(); ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)"
-    class="w-full mt-auto bg-gradient-to-r from-orange-500 to-orange-600 text-white py-2 rounded-xl font-black text-[10px] uppercase tracking-wider shadow-[0_6px_20px_rgba(249,115,22,0.25)] transition-all duration-300 active:scale-[0.98]">
+    class="w-full mt-auto bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3 rounded-[18px] font-black text-[10px] uppercase tracking-wider shadow-[0_6px_20px_rgba(249,115,22,0.25)] transition-all duration-300 active:scale-[0.98]">
     + Tambah
 </button>
 
