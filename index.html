@@ -501,7 +501,12 @@
     ♡
 </div>
 
-    <img src="${img}" onerror="this.src='https://placehold.co/300x300?text=Menu'" class="menu-image w-full h-full object-cover loading="lazy">
+    <img 
+src="${img}" 
+loading="lazy"
+decoding="async"
+onerror="this.src='https://placehold.co/300x300?text=Menu'" 
+class="menu-image w-full h-full object-cover">
 
     
 
@@ -509,10 +514,10 @@
 
                     <div class="flex flex-col flex-1 px-1 mb-1">
                         <p class="text-[7px] font-black text-orange-500 uppercase italic tracking-tighter leading-none mb-1">${promo}</p>
-                        <h3 class="font-black text-slate-800 text-[12px] uppercase italic leading-tight line-clamp-2 h-7 mb-0.5">
+                        <h3 class="font-black text-slate-800 text-[12px] uppercase leading-tight line-clamp-2 h-7 mb-0.5">
                             ${m.nama}
                         </h3>
-                        <p class="font-black text-slate-900 text-[11px] italic">
+                        <p class="font-black text-slate-900 text-[11px]">
                             Rp ${m.harga.toLocaleString('id-ID')}
                         </p>
                     </div>
