@@ -50,7 +50,7 @@
             position: relative;
             background: white; width: 100%; border-radius: 32px 32px 0 0;
             padding: 24px; transform: translateY(100%);
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+            transition: transform 0.25s ease;
             max-height: 90vh; display: flex; flex-direction: column;
         }
         #layar-hitam.tampil .konten-putih, #layar-bantuan.tampil .konten-putih, #notif-sukses.tampil .konten-putih { transform: translateY(0); }
@@ -80,7 +80,7 @@
     border: 1px solid #f3f4f6;
 }
 .menu-card:active {
-    transform: scale(0.96);
+    transform: scale(0.985);
 }
         .toast-show {
     display: flex !important;
@@ -186,7 +186,7 @@
 
     <div class="bg-[#fffaf5] border border-orange-100 rounded-[28px] flex items-center px-4 mb-1 shadow-sm">
         <span class="mr-2">🔍</span>
-        <input type="text" id="input-cari-sticky" oninput="cekInputCariSticky()" placeholder="Cari menu favorit..." class="w-full py-2 bg-transparent text-sm outline-none font-medium text-slate-700 placeholder:text-slate-400 italic">
+        <input type="text" id="input-cari-sticky" oninput="cekInputCariSticky()" placeholder="Cari menu favorit..." class="w-full py-2 bg-transparent text-sm outline-none font-medium text-slate-700 placeholder:text-slate-400">
         <button id="btn-reset-cari-sticky" onclick="resetCariSticky()" class="hidden text-slate-400 p-2 text-lg">✕</button>
     </div>
 
@@ -442,12 +442,17 @@
             let htmlBest = "";
             databaseMenu.slice(0, 6).forEach(m => {
                 const q = dataKeranjang[m.nama]?.qty || 0;
-                const img = m.foto ? `<img src="${m.foto}" class="menu-image w-full h-24 object-cover rounded-2xl mb-2 shadow-md">` : `<div class="w-full h-12 bg-orange-50 rounded-2xl mb-1 flex items-center justify-center text-2xl">🍲</div>`;
+                const img = m.foto ? `<img 
+src="${m.foto}" 
+loading="lazy"
+decoding="async"
+class="menu-image w-full h-24 object-cover rounded-2xl mb-2 shadow-none">` : `<div class="w-full h-12 bg-orange-50 rounded-2xl mb-1 flex items-center justify-center text-2xl">🍲</div>`;
                 htmlBest += `
                 <div onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="menu-card min-w-[155px] bg-gradient-to-b from-[#fffaf5] to-[#fff0e3] p-3 rounded-[26px] border-2 transition-transform duration-200 active:scale-[0.98] ${q > 0 ? 'border-orange-400 bg-orange-50/40 shadow-[0_0_20px_rgba(249,115,22,0.18)] shadow-sm shadow-orange-100' : 'border-slate-100'} relative cursor-pointer shadow-sm">
                     <span class="badge-hot italic tracking-tighter">HOT</span> ${img}
                     <p class="font-black text-slate-800 text-[11px] truncate uppercase italic px-1">${m.nama}</p>
-                    <p class="text-orange-600 font-black text-[12px] italic mb-1 px-1">Rp ${m.harga.toLocaleString('id-ID')}</p>
+                    <p class="text-orange-600 font-black text-[12px]
+                    mb-1 px-1">Rp ${m.harga.toLocaleString('id-ID')}</p>
                     ${q > 0 ? `
 
 <div class="flex items-center justify-between bg-orange-50/70 rounded-2xl p-1 shadow-inner">
@@ -469,7 +474,7 @@
 ` : `
 
 <button onclick="event.stopPropagation(); ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)"
-    class="w-full bg-gradient-to-r from-[#ff7b00] to-[#ff5e00] text-white py-3 rounded-[18px] font-black text-[10px] uppercase tracking-wider shadow-sm transition-transform duration-200 active:scale-[0.98]">
+    class="w-full bg-gradient-to-r from-[#ff7b00] to-[#ff5e00] text-white py-2.5 rounded-[18px] font-black text-[10px] uppercase tracking-wider shadow-sm transition-transform duration-200 active:scale-[0.98]">
     + Tambah
 </button>
 
@@ -497,7 +502,7 @@
                 <div onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="menu-card bg-white/95 rounded-[24px] p-2.5 shadow-sm border-2 transition-transform duration-200 active:scale-[0.98] flex flex-col ${q > 0 ? 'border-orange-400 bg-orange-50/40 shadow-sm shadow-orange-100' : 'border-white'}">
                     
                     <div class="relative w-full aspect-square overflow-hidden rounded-[20px] bg-slate-100 mb-1">
-                    <div class="absolute top-2 right-2 w-8 h-8 rounded-full bg-white/90 flex items-center justify-center text-slate-500 shadow-md">
+                    <div class="absolute top-2 right-2 w-8 h-8 rounded-full bg-white flex items-center justify-center text-slate-500 shadow-sm">
     ♡
 </div>
 
@@ -545,7 +550,7 @@ class="menu-image w-full h-full object-cover">
 ` : `
 
 <button onclick="event.stopPropagation(); ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)"
-    class="w-full mt-auto bg-gradient-to-r from-[#ff7b00] to-[#ff5e00] hover:brightness-110 text-white py-3 rounded-[18px] font-black text-[10px] uppercase tracking-wider shadow-sm transition-transform duration-200 active:scale-[0.98]">
+    class="w-full mt-auto bg-gradient-to-r from-[#ff7b00] to-[#ff5e00] hover:brightness-110 text-white py-2.5 rounded-[18px] font-black text-[10px] uppercase tracking-wider shadow-sm transition-transform duration-200 active:scale-[0.98]">
     + Tambah
 </button>
 
