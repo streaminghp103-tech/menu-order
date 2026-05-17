@@ -325,32 +325,45 @@
 
         // 3. LOGIKA ROOM & DATA
         function deteksiRoom() {
-            const params = new URLSearchParams(window.location.search);
-            const r = params.get('room');
-            if (r) {
 
-    roomNumber = r.toUpperCase();
+    const params = new URLSearchParams(window.location.search);
+    const r = params.get('room');
 
     const drop = document.getElementById('input-room-final');
 
-    if(drop) {
+    if (r) {
 
-        drop.value = roomNumber;
+        roomNumber = r.toUpperCase();
 
-        // LOCK ROOM SELECT
-        drop.disabled = true;
+        if (drop) {
 
-        // STYLE LOCKED
-        drop.classList.add(
-            'bg-orange-50',
-            'text-orange-700',
-            'border',
-            'border-orange-300',
-            'cursor-not-allowed'
-        );
+            drop.value = roomNumber;
 
-        cekRoomStatus();
+            // LOCK ROOM
+            drop.disabled = true;
+
+            // STYLE ROOM LOCK
+            drop.classList.add(
+                'bg-orange-50',
+                'text-orange-700',
+                'border',
+                'border-orange-300',
+                'cursor-not-allowed'
+            );
+        }
+
+    } else {
+
+        roomNumber = "--";
+
+        if (drop) {
+            drop.disabled = false;
+            drop.value = "";
+        }
     }
+
+    updateTampilanRoom();
+    cekRoomStatus();
 }
 
         function updateTampilanRoom() {
