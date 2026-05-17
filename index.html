@@ -177,18 +177,18 @@
         </div>
     </div>
 
-    <div id="section-best-seller" class="px-5 pt-2 pb-1 bg-[#fffaf6]">
-        <h2 class="text-[15px] font-black uppercase text-orange-500 mb-0.5 tracking-[0.16em] flex items-center gap-2 italic">
+    <div id="section-best-seller" class="px-4 pt-1 pb-0 bg-[#fffaf6]">
+        <h2 class="text-[12px] font-black uppercase text-orange-500 mb-0 tracking-[0.16em] flex items-center gap-2 italic">
             <span class="w-2 h-2 bg-red-500 rounded-full animate-ping"></span> Menu Terlaris Pekan Ini
         </h2>
         <div id="container-best-seller" class="flex gap-4 overflow-x-auto no-scrollbar pb-1"></div>
     </div>
 
-    <div id="sticky-order-bar" class="sticky top-0 z-40 bg-[#fffaf6]/95 px-5 pt-2 pb-1">
+    <div id="sticky-order-bar" class="sticky top-0 z-40 bg-[#fffaf6]/95 px-4 pt-1 pb-1">
 
-    <div class="bg-white border border-orange-100 rounded-[28px] flex items-center px-5 mb-1 shadow-[0_12px_32px_rgba(249,115,22,0.12)]">
+    <div class="bg-white border border-orange-100 rounded-[28px] flex items-center px-4 mb-1 shadow-[0_12px_32px_rgba(249,115,22,0.12)]">
         <span class="mr-2">🔍</span>
-        <input type="text" id="input-cari-sticky" oninput="cekInputCariSticky()" placeholder="Cari menu favorit..." class="w-full py-3 bg-transparent text-sm outline-none font-medium text-slate-700 placeholder:text-slate-400 italic">
+        <input type="text" id="input-cari-sticky" oninput="cekInputCariSticky()" placeholder="Cari menu favorit..." class="w-full py-2 bg-transparent text-sm outline-none font-medium text-slate-700 placeholder:text-slate-400 italic">
         <button id="btn-reset-cari-sticky" onclick="resetCariSticky()" class="hidden text-slate-400 p-2 text-lg">✕</button>
     </div>
 
@@ -196,7 +196,7 @@
 
 </div>
 
-    <div class="px-5 pt-1 pb-2 w-full bg-[#fffaf6] relative z-10">
+    <div class="px-4 pt-0 pb-2 w-full bg-[#fffaf6] relative z-10">
     <p class="text-[#6b3a1f] text-[12px] font-black uppercase tracking-[0.18em] mb-1">
     TAP MENU UNTUK MEMESAN ⚡
 </p>
@@ -444,7 +444,7 @@
             let htmlBest = "";
             databaseMenu.slice(0, 6).forEach(m => {
                 const q = dataKeranjang[m.nama]?.qty || 0;
-                const img = m.foto ? `<img src="${m.foto}" class="menu-image w-full h-24 object-cover rounded-2xl mb-2 shadow-md">` : `<div class="w-full h-12 bg-orange-50 rounded-2xl mb-3 flex items-center justify-center text-2xl">🍲</div>`;
+                const img = m.foto ? `<img src="${m.foto}" class="menu-image w-full h-24 object-cover rounded-2xl mb-2 shadow-md">` : `<div class="w-full h-12 bg-orange-50 rounded-2xl mb-1 flex items-center justify-center text-2xl">🍲</div>`;
                 htmlBest += `
                 <div onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="menu-card min-w-[155px] bg-gradient-to-b from-[#fffdfb] to-[#f5efea] p-3 rounded-[26px] border-2 transition-transform duration-200 hover:-translate-y-1 active:scale-[0.98] ${q > 0 ? 'border-orange-400 bg-orange-50/40 shadow-[0_0_20px_rgba(249,115,22,0.18)] shadow-sm shadow-orange-100' : 'border-slate-100'} relative cursor-pointer shadow-sm">
                     <span class="badge-hot italic tracking-tighter">HOT</span> ${img}
