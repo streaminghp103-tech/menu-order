@@ -210,7 +210,7 @@
         <span class="text-[9px] font-bold text-slate-400 uppercase italic mt-1">Happy Puppy citos</span>
     </div>
     <div class="flex items-center gap-2">
-        <button onclick="resetKeranjang()" class="text-red-500 text-[9px] font-black uppercase bg-red-50 px-3 py-2 rounded-xl italic">Reset</button>
+        <button onclick="resetKeranjang()" class="text-orange-500 text-[9px] font-black uppercase bg-orange-50 px-3 py-2 rounded-xl italic">Reset</button>
         <button onclick="hilangkanPopup()" class="w-8 h-8 flex items-center justify-center bg-slate-100 text-slate-500 rounded-full font-bold text-sm">✕</button>
     </div>
 </div>
@@ -434,7 +434,7 @@
             let htmlBest = "";
             databaseMenu.slice(0, 6).forEach(m => {
                 const q = dataKeranjang[m.nama]?.qty || 0;
-                const img = m.foto ? `<img src="${m.foto}" class="menu-image w-full h-12 object-cover rounded-2xl mb-3 shadow-md">` : `<div class="w-full h-12 bg-orange-50 rounded-2xl mb-3 flex items-center justify-center text-2xl">🍲</div>`;
+                const img = m.foto ? `<img src="${m.foto}" class="menu-image w-full h-14 object-cover rounded-2xl mb-3 shadow-md">` : `<div class="w-full h-12 bg-orange-50 rounded-2xl mb-3 flex items-center justify-center text-2xl">🍲</div>`;
                 htmlBest += `
                 <div onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="menu-card min-w-[125px] bg-gradient-to-b from-[#fffdfb] to-[#f5efea] backdrop-blur-md p-3 rounded-[28px] border-2 transition-all duration-300 hover:-translate-y-1 active:scale-[0.98] ${q > 0 ? 'border-orange-400 bg-orange-50/40 shadow-[0_0_20px_rgba(249,115,22,0.18)] shadow-lg shadow-orange-100' : 'border-slate-100'} relative cursor-pointer shadow-sm">
                     <span class="badge-hot italic tracking-tighter">HOT</span> ${img}
@@ -444,7 +444,7 @@
 
 <div class="flex items-center justify-between bg-orange-50/70 rounded-2xl p-1 shadow-inner">
     <button onclick="event.stopPropagation(); ubahQty('${m.nama.replace(/'/g, "\\'")}', -1)"
-        class="bg-white text-red-500 w-8 h-8 rounded-lg font-black shadow-sm">
+        class="bg-white text-orange-500 w-8 h-8 rounded-lg font-black shadow-sm">
         −
     </button>
 
@@ -490,7 +490,7 @@
                     
                     <div class="relative w-full aspect-square overflow-hidden rounded-[20px] bg-slate-100 mb-2">
 
-    <img src="${img}" class="menu-image w-full h-full object-cover" loading="lazy">
+    <img src="${img}" onerror="this.src='https://placehold.co/300x300?text=Menu'" class="menu-image w-full h-full object-cover">
 
     <div class="absolute inset-0 bg-gradient-to-t from-black/45 via-black/5 to-transparent"></div>
 
@@ -511,7 +511,7 @@
 <div class="flex items-center justify-between bg-orange-50/60 rounded-2xl backdrop-blur-sm p-1 mt-auto">
     
     <button onclick="event.stopPropagation(); ubahQty('${m.nama.replace(/'/g, "\\'")}', -1)"
-        class="w-9 h-9 flex items-center justify-center bg-white text-red-500 rounded-lg text-sm font-black shadow-sm">
+        class="w-9 h-9 flex items-center justify-center bg-white text-orange-500 rounded-lg text-sm font-black shadow-sm">
         −
     </button>
 
@@ -606,7 +606,7 @@
                     <div class="flex items-center gap-2.5">
                         <span class="font-black text-slate-800 text-[11px]">Rp ${s.toLocaleString('id-ID')}</span>
                         <div class="flex items-center gap-2 bg-white border border-slate-200 rounded-lg px-1.5 py-0.5">
-                            <button onclick="ubahQty('${i.nama.replace(/'/g, "\\'")}', -1); munculkanPopup()" class="text-red-500 font-bold text-xs px-1">-</button>
+                            <button onclick="ubahQty('${i.nama.replace(/'/g, "\\'")}', -1); munculkanPopup()" class="text-orange-500 font-bold text-xs px-1">-</button>
                             <span class="text-[10px] font-black w-3 text-center">${i.qty}</span>
                             <button onclick="ubahQty('${i.nama.replace(/'/g, "\\'")}', 1); munculkanPopup()" class="text-green-500 font-bold text-xs px-1">+</button>
                         </div>
@@ -664,6 +664,9 @@
         // 6. FINISHING ORDER
         function jalankanKirimWA() {
             const arr = Object.values(dataKeranjang);
+            const btn = document.getElementById('btn-kirim-wa');
+btn.disabled = true;
+btn.innerText = "Mengirim...";
             if (arr.length === 0) return;
             const finalRoom = document.getElementById('input-room-final').value;
             const t = arr.reduce((a, b) => a + (b.harga * b.qty), 0);
