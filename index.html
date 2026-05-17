@@ -176,11 +176,11 @@
         <div id="container-best-seller" class="flex gap-4 overflow-x-auto no-scrollbar pb-1"></div>
     </div>
 
-    <div id="sticky-order-bar" class="sticky top-0 z-40 bg-[#f6f2ee]/95 backdrop-blur-xl border-b border-orange-100/60 px-2 pt-2 pb-1 shadow-[0_8px_24px_rgba(15,23,42,0.06)]">
+    <div id="sticky-order-bar" class="sticky top-0 z-40 bg-transparent backdrop-blur-xl px-2 pt-2 pb-1 ">
 
-    <div class="bg-white/70 border border-orange-100 rounded-[20px] flex items-center px-4 mb-1 shadow-sm backdrop-blur-md">
+    <div class="bg-white/70 border border-orange-100 rounded-[16px] flex items-center px-4 mb-1 shadow-sm backdrop-blur-md">
         <span class="mr-2">🔍</span>
-        <input type="text" id="input-cari-sticky" oninput="cekInputCariSticky()" placeholder="Cari menu favorit..." class="w-full py-2 bg-transparent text-sm outline-none font-medium text-slate-700 placeholder:text-slate-400 italic">
+        <input type="text" id="input-cari-sticky" oninput="cekInputCariSticky()" placeholder="Cari menu favorit..." class="w-full py-1.5 bg-transparent text-sm outline-none font-medium text-slate-700 placeholder:text-slate-400 italic">
         <button id="btn-reset-cari-sticky" onclick="resetCariSticky()" class="hidden text-slate-400 p-2 text-lg">✕</button>
     </div>
 
@@ -188,7 +188,7 @@
 
 </div>
 
-    <div class="px-4 pt-1 pb-5 w-full bg-gradient-to-b from-[#f5efea] to-[#fff8f1] relative z-10">
+    <div class="px-4 pt-1 pb-2 w-full bg-gradient-to-b from-[#f5efea] to-[#fff8f1] relative z-10">
     <p class="text-slate-500 text-[10px] font-black uppercase italic tracking-widest mb-2">
     TAP MENU UNTUK TAMBAH PESANAN ⚡
 </p>
@@ -724,7 +724,7 @@ btn.innerText = "Mengirim...";
 };
             listKategoriTetap.forEach(kt => {
                 const cls = kt === katAktif ? "active-tab" : "bg-white/80 text-slate-600 backdrop-blur-md font-bold rounded-full border border-slate-200";
-                h += `<button onclick="gantiKat('${kt}')" class="px-4 py-2 text-[9px] uppercase tracking-widest transition-all duration-300 active:scale-[0.98] ${cls}">${iconKategori[kt] || "🍴"} ${kt}</button>`;
+                h += `<button onclick="gantiKat('${kt}')" class="px-4 py-1.5 text-[9px] uppercase tracking-widest transition-all duration-300 active:scale-[0.98] ${cls}">${iconKategori[kt] || "🍴"} ${kt}</button>`;
             });
             document.getElementById('tabs-kategori').innerHTML = h;
         }
