@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Menu Happy Puppy Samarinda</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    .menu-image {
+    transition: transform 0.4s ease;
+}
+
+.menu-card:active .menu-image {
+    transform: scale(0.97);
+}
     <style>
         .cart-bounce {
     animation: cartBounce 0.35s ease;
@@ -168,7 +175,7 @@
         <div id="container-best-seller" class="flex gap-4 overflow-x-auto no-scrollbar pb-1"></div>
     </div>
 
-    <div id="sticky-order-bar" class="sticky top-0 z-40 bg-[#f6f2ee] border-b border-orange-100/60 px-4 pt-4 pb-3 -mt-1">
+    <div id="sticky-order-bar" class="sticky top-0 z-40 bg-[#f6f2ee]/95 backdrop-blur-xl border-b border-orange-100/60 px-4 pt-4 pb-3 shadow-[0_8px_24px_rgba(15,23,42,0.06)]">
 
     <div class="bg-white/70 border border-orange-100 rounded-[20px] flex items-center px-4 mb-2 shadow-sm backdrop-blur-md">
         <span class="mr-2">🔍</span>
@@ -428,7 +435,7 @@
                 const q = dataKeranjang[m.nama]?.qty || 0;
                 const img = m.foto ? `<img src="${m.foto}" class="w-full h-12 object-cover rounded-2xl mb-3 shadow-md">` : `<div class="w-full h-12 bg-orange-50 rounded-2xl mb-3 flex items-center justify-center text-2xl">🍲</div>`;
                 htmlBest += `
-                <div onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="menu-card min-w-[125px] bg-gradient-to-b from-[#fffdfb] to-[#f5efea] backdrop-blur-md p-3 rounded-[28px] border-2 transition-all duration-300 active:scale-[0.98] ${q > 0 ? 'border-orange-400 bg-orange-50/40 shadow-[0_0_20px_rgba(249,115,22,0.18)] shadow-lg shadow-orange-100' : 'border-slate-100'} relative active:scale-95 transition-all duration-300 active:scale-[0.98] cursor-pointer shadow-sm">
+                <div onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="menu-card min-w-[125px] bg-gradient-to-b from-[#fffdfb] to-[#f5efea] backdrop-blur-md p-3 rounded-[28px] border-2 transition-all duration-300 hover:-translate-y-1 active:scale-[0.98] ${q > 0 ? 'border-orange-400 bg-orange-50/40 shadow-[0_0_20px_rgba(249,115,22,0.18)] shadow-lg shadow-orange-100' : 'border-slate-100'} relative active:scale-95 transition-all duration-300 active:scale-[0.98] cursor-pointer shadow-sm">
                     <span class="badge-hot italic tracking-tighter">HOT</span> ${img}
                     <p class="font-black text-slate-800 text-[11px] truncate uppercase italic px-1">${m.nama}</p>
                     <p class="text-orange-600 font-black text-[12px] italic mb-3 px-1">Rp ${m.harga.toLocaleString('id-ID')}</p>
@@ -478,11 +485,11 @@
                 if(m.kategori.includes("DRINK") || m.kategori.includes("MINUMAN")) promo = "Segar Banget! 🥤";
                 
                 html += `
-                <div onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="menu-card bg-white/95 backdrop-blur-sm rounded-[26px] p-2.5 shadow-sm border-2 transition-all duration-300 active:scale-[0.98] flex flex-col ${q > 0 ? 'border-orange-400 bg-orange-50/40 shadow-lg shadow-orange-100' : 'border-white'}">
+                <div onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="menu-card bg-white/95 backdrop-blur-sm rounded-[26px] p-2.5 shadow-sm border-2 transition-all duration-300 hover:-translate-y-1 active:scale-[0.98] flex flex-col ${q > 0 ? 'border-orange-400 bg-orange-50/40 shadow-lg shadow-orange-100' : 'border-white'}">
                     
                     <div class="relative w-full aspect-square overflow-hidden rounded-[20px] bg-slate-100 mb-2">
 
-    <img src="${img}" class="w-full h-full object-cover" loading="lazy">
+    <img src="${img}" class="menu image w-full h-full object-cover" loading="lazy">
 
     <div class="absolute inset-0 bg-gradient-to-t from-black/45 via-black/5 to-transparent"></div>
 
