@@ -467,7 +467,7 @@ const WA_NUMBER = "6281255763976";
         // 4. RENDERING TAMPILAN
         function renderBestSeller() {
             let htmlBest = "";
-            databaseMenu.slice(0, 6).forEach(m => {
+            databaseMenu.filter(m => m.best_seller).slice(0, 6).forEach(m => {
                 const q = dataKeranjang[m.nama]?.qty || 0;
                 const img = m.foto ? `<img 
 src="${m.foto}" 
