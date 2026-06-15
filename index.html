@@ -229,7 +229,7 @@
 
     <div class="px-4 pt-0 pb-2 w-full bg-[#fff4e8] relative z-10">
     <p class="text-[#6b3a1f] text-[12px] font-black uppercase tracking-[0.10em] mb-1">
-    TAP MENU UNTUK MEMESAN ⚡
+    ☰ SEMUA MENU
 </p>
         <div id="container-menu" class="space-y-2 text-center py-2 text-slate-300 font-black uppercase">
     Memuat Menu...
@@ -560,7 +560,7 @@ loading="lazy"
 decoding="async"
 class="menu-image w-full h-24 object-cover rounded-2xl mb-2 shadow-none">` : `<div class="w-full h-12 bg-orange-50 rounded-2xl mb-1 flex items-center justify-center text-2xl">🍲</div>`;
                 htmlBest += `
-                <div onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="menu-card min-w-[155px] bg-gradient-to-b from-[#fffaf5] to-[#fff0e3] p-3 rounded-[26px] border-2 transition-transform duration-200 active:scale-[0.98] ${q > 0 ? 'border-orange-400 bg-orange-50/40 shadow-sm shadow-orange-100' : 'border-slate-100'} relative cursor-pointer shadow-sm">
+                <div onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="menu-card min-w-[220px] bg-gradient-to-b from-[#fffaf5] to-[#fff0e3] p-3 rounded-[26px] border-2 transition-transform duration-200 active:scale-[0.98] ${q > 0 ? 'border-orange-400 bg-orange-50/40 shadow-sm shadow-orange-100' : 'border-slate-100'} relative cursor-pointer shadow-sm">
                     <span class="badge-hot italic tracking-tighter">${badgeFavorit}</span> ${img}
                     <p class="font-black text-slate-800 text-[11px] truncate uppercase italic px-1">${m.nama}</p>
                     <p class="text-orange-600 font-black text-[12px]
@@ -616,9 +616,7 @@ else if (m.best_seller) labelMenu = "⭐ BEST SELLER";
                 <div onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="menu-card bg-white/95 rounded-[24px] p-2.5 shadow-sm border-2 transition-transform duration-200 active:scale-[0.98] flex flex-col ${q > 0 ? 'border-orange-400 bg-orange-50/40 shadow-sm shadow-orange-100' : 'border-white'}">
                     
                     <div class="relative w-full aspect-square overflow-hidden rounded-[20px] bg-slate-100 mb-1">
-                    <div class="absolute top-2 right-2 w-8 h-8 rounded-full bg-white flex items-center justify-center text-slate-500 shadow-sm">
-    ♡
-</div>
+                    
 
     <img 
 src="${img}" 
