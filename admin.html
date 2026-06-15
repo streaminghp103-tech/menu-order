@@ -20,11 +20,20 @@
 
       <input id="harga" type="number" class="w-full bg-slate-100 rounded-2xl p-4 text-sm font-bold outline-none" placeholder="Harga">
 
-      <select id="kategori" class="w-full bg-slate-100 rounded-2xl p-4 text-sm font-bold outline-none">
-        <option value="FOOD">FOOD</option>
-        <option value="SNACK">SNACK</option>
-        <option value="MINUMAN">MINUMAN</option>
-      </select>
+      <input
+id="kategori"
+list="kategori-list"
+class="w-full bg-slate-100 rounded-2xl p-4 text-sm font-bold outline-none"
+placeholder="Kategori">
+
+<datalist id="kategori-list">
+  <option value="FOOD">
+  <option value="SNACK">
+  <option value="HOT SNACK">
+  <option value="MINUMAN">
+  <option value="ROKOK">
+  <option value="KOREK">
+</datalist>
 
       <textarea id="deskripsi" class="w-full bg-slate-100 rounded-2xl p-4 text-sm font-bold outline-none" placeholder="Deskripsi menu"></textarea>
 
