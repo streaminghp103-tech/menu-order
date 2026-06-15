@@ -747,20 +747,27 @@ listKategoriTetap = ["SEMUA", ...kategoriUrut];
     arr.forEach((i) => {
         const s = i.harga * i.qty; t += s;
         if(i.kategori.includes("DRINK") || i.kategori.includes("MINUMAN")) jMinum += i.qty; else jMakan += i.qty;
-        h += `<div class="bg-slate-50 p-2.5 rounded-[18px] border border-slate-100 flex flex-col gap-1.5 mb-1.5 shadow-sm">
-                <div class="flex justify-between items-center">
-                    <p class="font-black text-slate-800 text-[11px] uppercase italic flex-1 pr-3 leading-none truncate">${i.nama}</p>
-                    <div class="flex items-center gap-2.5">
-                        <span class="font-black text-slate-800 text-[11px]">Rp ${s.toLocaleString('id-ID')}</span>
-                        <div class="flex items-center gap-2 bg-white border border-slate-200 rounded-lg px-1.5 py-0.5">
-                            <button onclick="ubahQty('${i.nama.replace(/'/g, "\\'")}', -1); munculkanPopup()" class="text-orange-500 font-bold text-xs px-1">-</button>
-                            <span class="text-[10px] font-black w-3 text-center">${i.qty}</span>
-                            <button onclick="ubahQty('${i.nama.replace(/'/g, "\\'")}', 1); munculkanPopup()" class="text-green-500 font-bold text-xs px-1">+</button>
-                        </div>
-                    </div>
-                </div>
-                <input type="text" onchange="updateCatatanItem('${i.nama.replace(/'/g, "\\'")}', this.value)" value="${i.catatan || ''}" placeholder="Catatan (opsional)..." class="w-full bg-white border border-slate-100 rounded-lg py-1 px-3 text-[10px] italic focus:border-orange-500 outline-none">
-            </div>`;
+        h += `
+<div class="bg-white p-3 rounded-[22px] border border-orange-50 flex flex-col gap-2 mb-2 shadow-sm">
+    <div class="flex justify-between items-start gap-3">
+        <div class="min-w-0 flex-1">
+            <p class="font-black text-slate-900 text-[12px] uppercase leading-tight truncate">${i.nama}</p>
+            <p class="text-orange-600 font-black text-[12px] mt-1">Rp ${s.toLocaleString('id-ID')}</p>
+        </div>
+
+        <div class="flex items-center gap-2 bg-orange-50 rounded-full px-2 py-1">
+            <button onclick="ubahQty('${i.nama.replace(/'/g, "\\'")}', -1); munculkanPopup()" class="w-7 h-7 rounded-full bg-white text-orange-500 font-black shadow-sm">−</button>
+            <span class="text-[11px] font-black w-4 text-center">${i.qty}</span>
+            <button onclick="ubahQty('${i.nama.replace(/'/g, "\\'")}', 1); munculkanPopup()" class="w-7 h-7 rounded-full bg-orange-500 text-white font-black shadow-sm">+</button>
+        </div>
+    </div>
+
+    <input type="text"
+        onchange="updateCatatanItem('${i.nama.replace(/'/g, "\\'")}', this.value)"
+        value="${i.catatan || ''}"
+        placeholder="Catatan opsional, contoh: jangan pedas..."
+        class="w-full bg-orange-50/50 border border-orange-100 rounded-[14px] py-2 px-3 text-[10px] italic focus:border-orange-500 outline-none">
+</div>`;
     });
 
     // 2. LOGIKA CROSS SELLING DENGAN KALIMAT DINAMIS
