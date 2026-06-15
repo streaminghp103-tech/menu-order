@@ -178,7 +178,7 @@
 
     <div id="section-best-seller" class="px-4 pt-1 pb-0 bg-[#fff4e8]">
         <h2 class="text-[12px] font-black uppercase text-orange-500 mb-0 tracking-[0.08em] flex items-center gap-2 italic">
-            <span class="w-2 h-2 bg-red-500 rounded-full animate-ping"></span> Menu Terlaris Pekan Ini
+            <span class="w-2 h-2 bg-red-500 rounded-full animate-ping"></span> ⭐ Menu Favorit
         </h2>
         <div id="container-best-seller" class="flex gap-2 overflow-x-auto no-scrollbar pb-1"></div>
     </div>
@@ -468,7 +468,9 @@ promo: m.promo || false
         // 4. RENDERING TAMPILAN
         function renderBestSeller() {
     const section = document.getElementById('section-best-seller');
-    const bestSellerList = databaseMenu.filter(m => m.best_seller);
+    const bestSellerList = databaseMenu.filter(m =>
+    m.best_seller || m.promo || m.kategori === "PAKET"
+);
 
     if (bestSellerList.length === 0) {
         section.style.display = "none";
