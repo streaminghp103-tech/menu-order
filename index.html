@@ -533,7 +533,7 @@ listKategoriTetap = ["SEMUA", ...kategoriUrut];
 }
 
         // 4. RENDERING TAMPILAN
-        function function renderBestSeller() {
+        function renderBestSeller() {
     const section = document.getElementById('section-best-seller');
     const bestSellerList = databaseMenu.filter(m =>
         m.best_seller || m.promo || m.kategori === "PAKET"
@@ -599,7 +599,7 @@ listKategoriTetap = ["SEMUA", ...kategoriUrut];
     document.getElementById('container-best-seller').innerHTML = htmlBest;
 }
 
-        function function renderMenu() {
+       function renderMenu() {
     let html = "";
     const filtered = databaseMenu.filter(m =>
         (katAktif === "SEMUA" || m.kategori === katAktif) &&
