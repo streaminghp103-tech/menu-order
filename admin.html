@@ -13,6 +13,8 @@
     <h1 class="text-xl font-black uppercase text-slate-900 mb-1">Admin Menu</h1>
     <p class="text-xs font-bold text-slate-400 mb-5">Happy Puppy Panjaitan Samarinda</p>
 
+    <input id="edit_id" type="hidden">
+
     <div class="space-y-3">
       <input id="nama" class="w-full bg-slate-100 rounded-2xl p-4 text-sm font-bold outline-none" placeholder="Nama menu">
 
@@ -36,9 +38,18 @@
       <button onclick="simpanMenu()" id="btn-simpan" class="w-full bg-orange-500 text-white rounded-2xl py-4 font-black uppercase">
         Simpan Menu
       </button>
+
+      <button onclick="resetForm()" class="w-full bg-slate-200 text-slate-700 rounded-2xl py-3 font-black uppercase">
+        Reset Form
+      </button>
     </div>
 
     <div id="status" class="mt-4 text-sm font-bold text-center"></div>
+
+    <div class="mt-6 border-t pt-5">
+      <h2 class="text-lg font-black uppercase text-slate-900 mb-3">Daftar Menu</h2>
+      <div id="list-menu" class="space-y-3"></div>
+    </div>
   </div>
 
   <script>
@@ -47,10 +58,28 @@
 
     const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+    async function uploadFoto(file, nama) {
+      if (!file) return null;
+
+      const fileExt = file.name.split(".").pop();
+      const fileName = `${Date.now()}-${nama.toLowerCase().replaceAll(" ", "-")}.${fileExt}`;
+
+      const upload = await client.storage
+        .from("menu-images")
+        .upload(fileName, file);
+
+      if (upload.error) throw upload.error;
+
+      return client.storage
+        .from("menu-images")
+        .getPublicUrl(fileName).data.publicUrl;
+    }
+
     async function simpanMenu() {
       const btn = document.getElementById("btn-simpan");
       const status = document.getElementById("status");
 
+      const editId = document.getElementById("edit_id").value;
       const nama = document.getElementById("nama").value.trim();
       const harga = parseInt(document.getElementById("harga").value);
       const kategori = document.getElementById("kategori").value;
@@ -58,62 +87,167 @@
       const file = document.getElementById("foto").files[0];
       const bestSeller = document.getElementById("best_seller").checked;
 
-      if (!nama || !harga || !kategori || !file) {
-        status.innerText = "Nama, harga, kategori, dan foto wajib diisi.";
+      if (!nama || !harga || !kategori) {
+        status.innerText = "Nama, harga, dan kategori wajib diisi.";
+        status.className = "mt-4 text-sm font-bold text-center text-red-500";
+        return;
+      }
+
+      if (!editId && !file) {
+        status.innerText = "Foto wajib diisi untuk menu baru.";
         status.className = "mt-4 text-sm font-bold text-center text-red-500";
         return;
       }
 
       btn.disabled = true;
-      btn.innerText = "Menyimpan...";
+      btn.innerText = editId ? "Mengupdate..." : "Menyimpan...";
       status.innerText = "";
 
       try {
-        const fileExt = file.name.split(".").pop();
-        const fileName = `${Date.now()}-${nama.toLowerCase().replaceAll(" ", "-")}.${fileExt}`;
+        let fotoUrl = await uploadFoto(file, nama);
 
-        const upload = await client.storage
-          .from("menu-images")
-          .upload(fileName, file);
+        const payload = {
+          nama,
+          harga,
+          kategori,
+          deskripsi,
+          aktif: true,
+          best_seller: bestSeller
+        };
 
-        if (upload.error) throw upload.error;
+        if (fotoUrl) payload.foto_url = fotoUrl;
 
-        const publicUrl = client.storage
-          .from("menu-images")
-          .getPublicUrl(fileName).data.publicUrl;
+        let result;
 
-        const insert = await client
-          .from("menus")
-          .insert({
-            nama: nama,
-            harga: harga,
-            kategori: kategori,
-            deskripsi: deskripsi,
-            foto_url: publicUrl,
-            aktif: true,
-            best_seller: bestSeller
-          });
+        if (editId) {
+          result = await client
+            .from("menus")
+            .update(payload)
+            .eq("id", editId);
+        } else {
+          result = await client
+            .from("menus")
+            .insert(payload);
+        }
 
-        if (insert.error) throw insert.error;
+        if (result.error) throw result.error;
 
-        status.innerText = "Menu berhasil disimpan.";
+        status.innerText = editId ? "Menu berhasil diupdate." : "Menu berhasil disimpan.";
         status.className = "mt-4 text-sm font-bold text-center text-green-600";
 
-        document.getElementById("nama").value = "";
-        document.getElementById("harga").value = "";
-        document.getElementById("deskripsi").value = "";
-        document.getElementById("foto").value = "";
-        document.getElementById("best_seller").checked = false;
+        resetForm();
+        loadMenu();
 
       } catch (err) {
         console.error(err);
-        status.innerText = "Gagal simpan: " + err.message;
+        status.innerText = "Gagal: " + err.message;
         status.className = "mt-4 text-sm font-bold text-center text-red-500";
       }
 
       btn.disabled = false;
       btn.innerText = "Simpan Menu";
     }
+
+    async function loadMenu() {
+      const list = document.getElementById("list-menu");
+      list.innerHTML = `<p class="text-sm font-bold text-slate-400">Memuat menu...</p>`;
+
+      const { data, error } = await client
+        .from("menus")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        list.innerHTML = `<p class="text-sm font-bold text-red-500">Gagal memuat menu: ${error.message}</p>`;
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        list.innerHTML = `<p class="text-sm font-bold text-slate-400">Belum ada menu.</p>`;
+        return;
+      }
+
+      list.innerHTML = data.map(m => `
+        <div class="bg-slate-50 rounded-2xl p-3 border ${m.aktif ? 'border-slate-100' : 'border-red-200 opacity-60'}">
+          <div class="flex gap-3">
+            <img src="${m.foto_url || 'https://placehold.co/100x100?text=Menu'}" class="w-16 h-16 rounded-xl object-cover bg-slate-200">
+            <div class="flex-1 min-w-0">
+              <p class="font-black text-sm text-slate-900 uppercase truncate">${m.nama}</p>
+              <p class="text-xs font-bold text-orange-600">Rp ${Number(m.harga).toLocaleString('id-ID')}</p>
+              <p class="text-[10px] font-black text-slate-400 uppercase">${m.kategori}</p>
+              <p class="text-[10px] font-bold ${m.aktif ? 'text-green-600' : 'text-red-500'}">
+                ${m.aktif ? 'Aktif' : 'Nonaktif'} ${m.best_seller ? '• Best Seller' : ''}
+              </p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-3 gap-2 mt-3">
+            <button onclick='editMenu(${JSON.stringify(m)})' class="bg-blue-500 text-white rounded-xl py-2 text-[10px] font-black uppercase">Edit</button>
+
+            <button onclick="toggleAktif('${m.id}', ${!m.aktif})" class="${m.aktif ? 'bg-red-500' : 'bg-green-500'} text-white rounded-xl py-2 text-[10px] font-black uppercase">
+              ${m.aktif ? 'Nonaktif' : 'Aktifkan'}
+            </button>
+
+            <button onclick="toggleBestSeller('${m.id}', ${!m.best_seller})" class="bg-orange-500 text-white rounded-xl py-2 text-[10px] font-black uppercase">
+              Best
+            </button>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function editMenu(menu) {
+      document.getElementById("edit_id").value = menu.id;
+      document.getElementById("nama").value = menu.nama || "";
+      document.getElementById("harga").value = menu.harga || "";
+      document.getElementById("kategori").value = menu.kategori || "FOOD";
+      document.getElementById("deskripsi").value = menu.deskripsi || "";
+      document.getElementById("best_seller").checked = menu.best_seller || false;
+
+      document.getElementById("btn-simpan").innerText = "Update Menu";
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    async function toggleAktif(id, value) {
+      const { error } = await client
+        .from("menus")
+        .update({ aktif: value })
+        .eq("id", id);
+
+      if (error) {
+        alert("Gagal update status: " + error.message);
+        return;
+      }
+
+      loadMenu();
+    }
+
+    async function toggleBestSeller(id, value) {
+      const { error } = await client
+        .from("menus")
+        .update({ best_seller: value })
+        .eq("id", id);
+
+      if (error) {
+        alert("Gagal update best seller: " + error.message);
+        return;
+      }
+
+      loadMenu();
+    }
+
+    function resetForm() {
+      document.getElementById("edit_id").value = "";
+      document.getElementById("nama").value = "";
+      document.getElementById("harga").value = "";
+      document.getElementById("kategori").value = "FOOD";
+      document.getElementById("deskripsi").value = "";
+      document.getElementById("foto").value = "";
+      document.getElementById("best_seller").checked = false;
+      document.getElementById("btn-simpan").innerText = "Simpan Menu";
+    }
+
+    loadMenu();
   </script>
 </body>
 </html>
