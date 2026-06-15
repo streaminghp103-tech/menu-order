@@ -170,43 +170,44 @@
         </div>
     </div>
 
-    <div id="top-header" class="bg-slate-900 relative z-50 px-4 pt-1 pb-1 rounded-b-[18px] shadow-sm overflow-hidden border-b border-orange-500/30">
-        <img src="https://lh3.googleusercontent.com/u/0/d/1VMXIBZSme4siqoboYqcH7hk9UNW1RT7s?w=800" class="absolute inset-0 w-full h-full object-cover opacity-30">
-        <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent"></div>
-        
-        <div class="relative z-10 flex justify-between items-start gap-3">
-    <div class="text-white">
-        <h1 class="text-lg font-black uppercase leading-tight tracking-tighter drop-shadow-[0_4px_12px_rgba(0,0,0,0.35)]">
-            Happy Puppy<br><span class="text-orange-500">Citos</span>
-        </h1>
-    </div>
+    <div id="top-header" class="bg-slate-950 relative z-50 px-5 pt-5 pb-5 rounded-b-[30px] shadow-xl overflow-hidden border-b border-orange-500/30">
+    <img src="https://lh3.googleusercontent.com/u/0/d/1VMXIBZSme4siqoboYqcH7hk9UNW1RT7s?w=800"
+        class="absolute inset-0 w-full h-full object-cover opacity-25">
+    <div class="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/80 to-slate-900/40"></div>
 
-    <div class="flex flex-col items-end gap-1">
-        <div id="info-room-header" class="bg-white/10 border border-white/20 px-3 py-1 rounded-full text-[8px] font-bold uppercase text-orange-200 tracking-widest">
-            📍 WiFi Connected
+    <div class="relative z-10">
+        <div class="flex justify-between items-start gap-3">
+            <div>
+                <h1 class="text-3xl font-black uppercase leading-none tracking-tighter text-white drop-shadow-lg">
+                    Happy Puppy<br>
+                    <span class="text-orange-500">Panjaitan</span>
+                </h1>
+
+                <div id="info-room-header"
+                    class="mt-4 inline-flex items-center gap-2 bg-white/10 border border-white/25 px-4 py-2 rounded-[18px] text-[11px] font-black uppercase text-white tracking-wide">
+                    📍 WiFi Connected
+                </div>
+            </div>
+
+            <button onclick="bukaBantuan()"
+                class="bg-white/10 border border-white/25 text-white px-4 py-3 rounded-[18px] active:scale-95 text-[11px] font-black uppercase shadow-sm">
+                🎧 Bantuan
+            </button>
         </div>
 
-        <button onclick="bukaBantuan()" class="bg-white/10 border border-white/20 text-white px-3 py-1.5 rounded-[14px] active:scale-90 text-[10px] font-black uppercase">
-            Bantuan
-        </button>
-    </div>
-</div>
-
-        
-
-            <div id="widget-pesanan-saya" class="mt-4 hidden animate-fadeIn">
-                <div class="bg-orange-500/20 border border-orange-500/30 rounded-[20px] p-4">
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-[10px] font-black text-orange-400 uppercase tracking-widest flex items-center gap-2">
-                            <span class="flex h-2 w-2 rounded-full bg-orange-500 animate-pulse"></span> Sedang Diproses
-                        </span>
-                        <span id="jumlah-riwayat" class="bg-orange-500 text-white text-[9px] font-black px-2 py-0.5 rounded-full">0</span>
-                    </div>
-                    <div id="list-riwayat-luar" class="flex gap-2 overflow-x-auto no-scrollbar"></div>
+        <div id="widget-pesanan-saya" class="mt-4 hidden animate-fadeIn">
+            <div class="bg-slate-900/70 border border-orange-500/40 rounded-[24px] p-4">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-[11px] font-black text-orange-400 uppercase tracking-widest flex items-center gap-2">
+                        🔔 Sedang Diproses
+                    </span>
+                    <span id="jumlah-riwayat" class="bg-orange-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full">0</span>
                 </div>
+                <div id="list-riwayat-luar" class="flex gap-2 overflow-x-auto no-scrollbar"></div>
             </div>
         </div>
     </div>
+</div>
 
     <div id="section-best-seller" class="px-4 pt-1 pb-0 bg-[#fff4e8]">
         <h2 class="text-[12px] font-black uppercase text-orange-500 mb-0 tracking-[0.08em] flex items-center gap-2 italic">
@@ -215,7 +216,7 @@
         <div id="container-best-seller" class="flex gap-2 overflow-x-auto no-scrollbar pb-1"></div>
     </div>
 
-    <div id="sticky-order-bar" class="sticky top-0 z-40 bg-[#fff4e8]/95 px-4 pt-1 pb-1">
+    <div id="sticky-order-bar" class="sticky top-0 z-40 bg-[#fff4e8]/95 px-4 pt-4 pb-2">
 
     <div class="bg-[#fffaf5] border border-orange-100 rounded-[28px] flex items-center px-4 mb-1 shadow-sm">
         <span class="mr-2">🔍</span>
