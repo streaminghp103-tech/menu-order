@@ -12,10 +12,18 @@
   <div class="max-w-md mx-auto bg-white rounded-3xl p-5 shadow-xl">
     <h1 class="text-xl font-black uppercase text-slate-900 mb-1">Admin Menu</h1>
     <p class="text-xs font-bold text-slate-400 mb-5">Happy Puppy Panjaitan Samarinda</p>
+    <div class="grid grid-cols-2 gap-2 mb-5">
+  <button onclick="showTab('form')" id="tabForm" class="bg-orange-500 text-white rounded-2xl py-3 font-black text-xs uppercase">
+    Tambah / Edit
+  </button>
+  <button onclick="showTab('list')" id="tabList" class="bg-slate-200 text-slate-700 rounded-2xl py-3 font-black text-xs uppercase">
+    Kelola Menu
+  </button>
+</div>
 
     <input id="edit_id" type="hidden">
 
-    <div class="space-y-3">
+    <div id="panelForm" class="space-y-3">
       <input id="nama" class="w-full bg-slate-100 rounded-2xl p-4 text-sm font-bold outline-none" placeholder="Nama menu">
 
       <input id="harga" type="number" class="w-full bg-slate-100 rounded-2xl p-4 text-sm font-bold outline-none" placeholder="Harga">
@@ -64,7 +72,7 @@ placeholder="Kategori">
 
     <div id="status" class="mt-4 text-sm font-bold text-center"></div>
 
-    <div class="mt-6 border-t pt-5">
+    <div id="panelList" class="hidden mt-6 border-t pt-5">
       <h2 class="text-lg font-black uppercase text-slate-900 mb-3">Daftar Menu</h2>
 
 <input id="searchAdmin" oninput="loadMenu()" 
@@ -282,6 +290,7 @@ class="${m.best_seller ? 'bg-yellow-500 text-slate-900' : 'bg-slate-300 text-sla
 
 
       document.getElementById("btn-simpan").innerText = "Update Menu";
+      showTab("form");
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
     
@@ -340,6 +349,28 @@ class="${m.best_seller ? 'bg-yellow-500 text-slate-900' : 'bg-slate-300 text-sla
       document.getElementById("previewFoto").src = "";
       document.getElementById("promo").checked = false;
     }
+    function showTab(tab) {
+  const panelForm = document.getElementById("panelForm");
+  const panelList = document.getElementById("panelList");
+  const tabForm = document.getElementById("tabForm");
+  const tabList = document.getElementById("tabList");
+
+  if (tab === "form") {
+    panelForm.classList.remove("hidden");
+    panelList.classList.add("hidden");
+
+    tabForm.className = "bg-orange-500 text-white rounded-2xl py-3 font-black text-xs uppercase";
+    tabList.className = "bg-slate-200 text-slate-700 rounded-2xl py-3 font-black text-xs uppercase";
+  } else {
+    panelForm.classList.add("hidden");
+    panelList.classList.remove("hidden");
+
+    tabForm.className = "bg-slate-200 text-slate-700 rounded-2xl py-3 font-black text-xs uppercase";
+    tabList.className = "bg-orange-500 text-white rounded-2xl py-3 font-black text-xs uppercase";
+
+    loadMenu();
+  }
+}
 
     loadMenu();
   </script>
