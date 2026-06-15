@@ -138,13 +138,13 @@
         </div>
     </div>
 
-    <div id="top-header" class="bg-slate-900 relative z-50 px-4 pt-1 pb-1 rounded-b-[22px] shadow-sm overflow-hidden border-b border-orange-500/30">
+    <div id="top-header" class="bg-slate-900 relative z-50 px-4 pt-1 pb-1 rounded-b-[18px] shadow-sm overflow-hidden border-b border-orange-500/30">
         <img src="https://lh3.googleusercontent.com/u/0/d/1VMXIBZSme4siqoboYqcH7hk9UNW1RT7s?w=800" class="absolute inset-0 w-full h-full object-cover opacity-30">
         <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent"></div>
         
         <div class="relative z-10 flex justify-between items-start gap-3">
     <div class="text-white">
-        <h1 class="text-xl font-black uppercase leading-tight tracking-tighter drop-shadow-[0_4px_12px_rgba(0,0,0,0.35)]">
+        <h1 class="text-lg font-black uppercase leading-tight tracking-tighter drop-shadow-[0_4px_12px_rgba(0,0,0,0.35)]">
             Happy Puppy<br><span class="text-orange-500">Citos</span>
         </h1>
     </div>
@@ -450,7 +450,16 @@ promo: m.promo || false
             }
         });
 
-        listKategoriTetap = ["SEMUA", ...Array.from(setKategori).sort()];
+        const urutanKategori = ["FOOD", "HOT SNACK", "SNACK", "MINUMAN", "PAKET", "ROKOK", "KOREK"];
+
+const kategoriAda = Array.from(setKategori);
+
+const kategoriUrut = [
+    ...urutanKategori.filter(k => kategoriAda.includes(k)),
+    ...kategoriAda.filter(k => !urutanKategori.includes(k)).sort()
+];
+
+listKategoriTetap = ["SEMUA", ...kategoriUrut];
 
         renderTabs();
         renderBestSeller();
@@ -483,7 +492,9 @@ promo: m.promo || false
     let htmlBest = "";
 
     bestSellerList.slice(0, 6).forEach(m => {
-                const q = dataKeranjang[m.nama]?.qty || 0;
+                let badgeFavorit = "⭐ BEST";
+if (m.promo) badgeFavorit = "🔥 PROMO";
+if (m.kategori === "PAKET") badgeFavorit = "🎁 PAKET";
                 const img = m.foto ? `<img 
 src="${m.foto}" 
 loading="lazy"
@@ -491,7 +502,7 @@ decoding="async"
 class="menu-image w-full h-24 object-cover rounded-2xl mb-2 shadow-none">` : `<div class="w-full h-12 bg-orange-50 rounded-2xl mb-1 flex items-center justify-center text-2xl">🍲</div>`;
                 htmlBest += `
                 <div onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="menu-card min-w-[155px] bg-gradient-to-b from-[#fffaf5] to-[#fff0e3] p-3 rounded-[26px] border-2 transition-transform duration-200 active:scale-[0.98] ${q > 0 ? 'border-orange-400 bg-orange-50/40 shadow-sm shadow-orange-100' : 'border-slate-100'} relative cursor-pointer shadow-sm">
-                    <span class="badge-hot italic tracking-tighter">HOT</span> ${img}
+                    <span class="badge-hot italic tracking-tighter">${badgeFavorit}</span> ${img}
                     <p class="font-black text-slate-800 text-[11px] truncate uppercase italic px-1">${m.nama}</p>
                     <p class="text-orange-600 font-black text-[12px]
                     mb-1 px-1">Rp ${m.harga.toLocaleString('id-ID')}</p>
@@ -574,8 +585,8 @@ class="menu-image w-full h-full object-cover">
                             Rp ${m.harga.toLocaleString('id-ID')}
                         </p>
                         ${m.deskripsi ? `
-<p class="text-[10px] text-slate-500 line-clamp-2 mt-1">
-    ${m.deskripsi}
+<p class="text-[10px] font-bold text-slate-500 line-clamp-2 mt-1 leading-tight">
+    ${m.kategori === "PAKET" ? "🎁 " : ""}${m.deskripsi}
 </p>
 ` : ''}
                     </div>
