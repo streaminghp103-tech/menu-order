@@ -237,9 +237,9 @@
 </div>
     </div>
 
-    <div id="bar-keranjang" class="fixed bottom-20 left-1/2 -translate-x-1/2 w-[92%] max-w-md bg-slate-900 text-white p-5 rounded-[20px] shadow-2xl flex justify-between items-center hidden z-50 border border-white/10 shadow-[0_-10px_30px_rgba(0,0,0,0.25)]">
+    <div id="bar-keranjang" class="fixed bottom-20 left-1/2 -translate-x-1/2 w-[92%] max-w-md bg-slate-950 text-white p-4 rounded-[24px] shadow-2xl flex justify-between items-center hidden z-50 border border-white/10"> left-1/2 -translate-x-1/2 w-[92%] max-w-md bg-slate-900 text-white p-5 rounded-[20px] shadow-2xl flex justify-between items-center hidden z-50 border border-white/10 shadow-[0_-10px_30px_rgba(0,0,0,0.25)]">
         <div id="ringkasan-singkat"></div>
-        <button onclick="munculkanPopup(event)" class="bg-gradient-to-r from-[#ff7b00] to-[#ff5e00] shadow-[0_0_20px_rgba(249,115,22,0.35)] px-5 py-4 rounded-[20px] font-black text-[11px] uppercase animate-order tracking-wider">Lihat Pesanan</button>
+        <button onclick="munculkanPopup(event)" class="bg-gradient-to-r from-[#ff7b00] to-[#ff5e00] shadow-[0_0_20px_rgba(249,115,22,0.35)] px-5 py-4 rounded-[20px] font-black text-[11px] uppercase animate-order tracking-wider">Lihat Keranjang →</button>
     </div>
 
     <div id="layar-hitam" onclick="hilangkanPopup()">
@@ -310,27 +310,27 @@
         </div>
     </div>
     <div class="bottom-nav">
-  <button class="active" onclick="window.scrollTo({top:0, behavior:'smooth'})">
+  <button id="nav-beranda" class="active" onclick="setActiveNav('beranda'); window.scrollTo({top:0, behavior:'smooth'})">
     <span>⌂</span>
     Beranda
   </button>
 
-  <button onclick="document.getElementById('sticky-order-bar').scrollIntoView({behavior:'smooth'})">
+  <button id="nav-menu" onclick="setActiveNav('menu'); document.getElementById('sticky-order-bar').scrollIntoView({behavior:'smooth'})">
     <span>🍽️</span>
     Menu
   </button>
 
-  <button onclick="gantiKat('PAKET')">
+  <button id="nav-paket" onclick="setActiveNav('paket'); gantiKat('PAKET'); document.getElementById('sticky-order-bar').scrollIntoView({behavior:'smooth'})">
     <span>🎁</span>
     Paket
   </button>
 
-  <button onclick="document.getElementById('widget-pesanan-saya').scrollIntoView({behavior:'smooth'})">
+  <button id="nav-pesanan" onclick="setActiveNav('pesanan'); document.getElementById('widget-pesanan-saya').scrollIntoView({behavior:'smooth'})">
     <span>🧾</span>
     Pesanan
   </button>
 
-  <button onclick="bukaBantuan()">
+  <button id="nav-bantuan" onclick="setActiveNav('bantuan'); bukaBantuan()">
     <span>🙋</span>
     Bantuan
   </button>
@@ -929,6 +929,14 @@ function resetCariSticky() {
             </p>
         </div>`;
     }, DURASI);
+}
+        function setActiveNav(menu) {
+    document.querySelectorAll('.bottom-nav button').forEach(btn => {
+        btn.classList.remove('active');
+    });
+
+    const aktif = document.getElementById('nav-' + menu);
+    if (aktif) aktif.classList.add('active');
 }
         // INIT EXECUTION
         window.onload = () => {
