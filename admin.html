@@ -184,13 +184,14 @@
           <div class="grid grid-cols-3 gap-2 mt-3">
             <button onclick='editMenu(${JSON.stringify(m)})' class="bg-blue-500 text-white rounded-xl py-2 text-[10px] font-black uppercase">Edit</button>
 
-            <button onclick="toggleAktif('${m.id}', ${!m.aktif})" class="${m.aktif ? 'bg-red-500' : 'bg-green-500'} text-white rounded-xl py-2 text-[10px] font-black uppercase">
-              ${m.aktif ? 'Nonaktif' : 'Aktifkan'}
-            </button>
-
-            <button onclick="toggleBestSeller('${m.id}', ${!m.best_seller})" class="bg-orange-500 text-white rounded-xl py-2 text-[10px] font-black uppercase">
-              Best
-            </button>
+            <button onclick="toggleAktif('${m.id}', ${!m.aktif})" 
+class="${m.aktif ? 'bg-green-500' : 'bg-red-500'} text-white rounded-xl py-2 text-[10px] font-black uppercase">
+  ${m.aktif ? 'Aktif ✓' : 'Nonaktif ✕'}
+</button>
+            <button onclick="toggleBestSeller('${m.id}', ${!m.best_seller})" 
+class="${m.best_seller ? 'bg-yellow-500 text-slate-900' : 'bg-slate-300 text-slate-700'} rounded-xl py-2 text-[10px] font-black uppercase">
+  ${m.best_seller ? '★ Best On' : 'Best Off'}
+</button>
           </div>
         </div>
       `).join("");
