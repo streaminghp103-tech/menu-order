@@ -44,10 +44,10 @@ placeholder="Kategori">
   Kosongkan foto jika tidak ingin mengganti foto lama.
 </p>
 
-      <label class="flex items-center gap-2 text-sm font-bold">
-        <input id="best_seller" type="checkbox">
-        Best Seller
-      </label>
+      <label class="flex items-center gap-2 text-sm font-bold"><label class="flex items-center gap-2 text-sm font-bold">
+  <input id="promo" type="checkbox">
+  Promo
+</label>
 
       <button onclick="simpanMenu()" id="btn-simpan" class="w-full bg-orange-500 text-white rounded-2xl py-4 font-black uppercase">
         Simpan Menu
@@ -113,6 +113,7 @@ class="w-full bg-slate-100 rounded-2xl p-4 text-sm font-bold outline-none mb-3">
       const deskripsi = document.getElementById("deskripsi").value.trim();
       const file = document.getElementById("foto").files[0];
       const bestSeller = document.getElementById("best_seller").checked;
+      const promo = document.getElementById("promo").checked;
 
       if (!nama || !harga || !kategori) {
         status.innerText = "Nama, harga, dan kategori wajib diisi.";
@@ -139,7 +140,8 @@ class="w-full bg-slate-100 rounded-2xl p-4 text-sm font-bold outline-none mb-3">
           kategori,
           deskripsi,
           aktif: true,
-          best_seller: bestSeller
+          best_seller: bestSeller,
+promo: promo
         };
 
         if (fotoUrl) payload.foto_url = fotoUrl;
@@ -233,6 +235,11 @@ ${m.best_seller ? `
 ⭐ BEST SELLER
 </span>
 ` : ''}
+${m.promo ? `
+<span class="text-[10px] font-black px-2 py-1 rounded-full bg-orange-100 text-orange-700">
+🔥 PROMO
+</span>
+` : ''}
 
 </div>
             </div>
@@ -262,10 +269,15 @@ class="${m.best_seller ? 'bg-yellow-500 text-slate-900' : 'bg-slate-300 text-sla
       document.getElementById("deskripsi").value = menu.deskripsi || "";
       document.getElementById("best_seller").checked = menu.best_seller || false;
       document.getElementById("fotoHint").classList.remove("hidden");
+      document.getElementById("promo").checked = menu.promo || false;
 
       document.getElementById("btn-simpan").innerText = "Update Menu";
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
+    if (menu.foto_url) {
+  document.getElementById("previewFoto").src = menu.foto_url;
+  document.getElementById("previewFoto").classList.remove("hidden");
+}
 
     async function toggleAktif(id, value) {
       const { error } = await client
@@ -319,7 +331,8 @@ class="${m.best_seller ? 'bg-yellow-500 text-slate-900' : 'bg-slate-300 text-sla
       document.getElementById("btn-simpan").innerText = "Simpan Menu";
       document.getElementById("fotoHint").classList.add("hidden");
       document.getElementById("previewFoto").classList.add("hidden");
-document.getElementById("previewFoto").src = "";
+      document.getElementById("previewFoto").src = "";
+      document.getElementById("promo").checked = false;
     }
 
     loadMenu();
