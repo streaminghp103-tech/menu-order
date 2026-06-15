@@ -851,7 +851,7 @@ function resetCariSticky() {
         function tutupNotifSelesai() { document.getElementById('notif-sukses').classList.remove('tampil'); window.scrollTo({ top: 0, behavior: 'smooth' }); }
 
         function mulaiAutoExpired() {
-    const DURASI_TEST = 2 * 60 * 1000; // 2 menit
+    const DURASI_TEST = 3 * 60 * 60 * 1000; // 3 jam
 
     setTimeout(() => {
         dataKeranjang = {};
