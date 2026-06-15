@@ -537,11 +537,10 @@ class="menu-image w-full h-24 object-cover rounded-2xl mb-2 shadow-none">` : `<d
                 const q = dataKeranjang[m.nama]?.qty || 0;
                 const img = m.foto ? m.foto : 'https://placehold.co/200x200?text=Food';
                 
-                let labelMenu = m.kategori;
+                let labelMenu = "";
 
 if (m.promo) labelMenu = "🔥 PROMO";
 else if (m.best_seller) labelMenu = "⭐ BEST SELLER";
-else if (m.kategori.includes("DRINK") || m.kategori.includes("MINUMAN")) labelMenu = "SEGAR BANGET 🥤";
                 
                 html += `
                 <div onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)" class="menu-card bg-white/95 rounded-[24px] p-2.5 shadow-sm border-2 transition-transform duration-200 active:scale-[0.98] flex flex-col ${q > 0 ? 'border-orange-400 bg-orange-50/40 shadow-sm shadow-orange-100' : 'border-white'}">
@@ -563,7 +562,11 @@ class="menu-image w-full h-full object-cover">
 </div>
 
                     <div class="flex flex-col flex-1 px-1 mb-1">
-                        <p class="text-[7px] font-black text-orange-500 uppercase italic tracking-tighter leading-none mb-1">${labelMenu}</p>
+                        ${labelMenu ? `
+<p class="text-[7px] font-black text-orange-500 uppercase italic tracking-tighter leading-none mb-1">
+    ${labelMenu}
+</p>
+` : ''}
                         <h3 class="font-black text-slate-800 text-[12px] uppercase leading-tight line-clamp-2 h-7 mb-0.5">
                             ${m.nama}
                         </h3>
