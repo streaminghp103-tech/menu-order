@@ -39,6 +39,10 @@ placeholder="Kategori">
 
       <input id="foto" type="file" accept="image/*" class="w-full bg-slate-100 rounded-2xl p-4 text-sm font-bold">
 
+<p id="fotoHint" class="hidden text-xs font-bold text-orange-600">
+  Kosongkan foto jika tidak ingin mengganti foto lama.
+</p>
+
       <label class="flex items-center gap-2 text-sm font-bold">
         <input id="best_seller" type="checkbox">
         Best Seller
@@ -256,6 +260,7 @@ class="${m.best_seller ? 'bg-yellow-500 text-slate-900' : 'bg-slate-300 text-sla
       document.getElementById("kategori").value = menu.kategori || "FOOD";
       document.getElementById("deskripsi").value = menu.deskripsi || "";
       document.getElementById("best_seller").checked = menu.best_seller || false;
+      document.getElementById("fotoHint").classList.remove("hidden");
 
       document.getElementById("btn-simpan").innerText = "Update Menu";
       window.scrollTo({ top: 0, behavior: "smooth" });
@@ -298,6 +303,7 @@ class="${m.best_seller ? 'bg-yellow-500 text-slate-900' : 'bg-slate-300 text-sla
       document.getElementById("foto").value = "";
       document.getElementById("best_seller").checked = false;
       document.getElementById("btn-simpan").innerText = "Simpan Menu";
+      document.getElementById("fotoHint").classList.add("hidden");
     }
 
     loadMenu();
