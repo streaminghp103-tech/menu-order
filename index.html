@@ -492,6 +492,7 @@ listKategoriTetap = ["SEMUA", ...kategoriUrut];
     let htmlBest = "";
 
     bestSellerList.slice(0, 6).forEach(m => {
+        const q = dataKeranjang[m.nama]?.qty || 0;
                 let badgeFavorit = "⭐ BEST";
 if (m.promo) badgeFavorit = "🔥 PROMO";
 if (m.kategori === "PAKET") badgeFavorit = "🎁 PAKET";
