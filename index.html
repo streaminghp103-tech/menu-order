@@ -806,6 +806,7 @@ class="menu-image w-full h-full object-cover">
     "WHISKY": "🥃",
     "VAPE": "💨",
     "MAKANAN": "🍛"
+    "PAKET": "🎁",           
 };
             listKategoriTetap.forEach(kt => {
                 const cls = kt === katAktif ? "active-tab" : "bg-white/80 text-slate-600 font-bold rounded-full border border-slate-200";
@@ -851,7 +852,7 @@ function resetCariSticky() {
         function tutupNotifSelesai() { document.getElementById('notif-sukses').classList.remove('tampil'); window.scrollTo({ top: 0, behavior: 'smooth' }); }
 
         function mulaiAutoExpired() {
-    const DURASI_TEST = 3 * 60 * 60 * 1000; // 3 jam
+    const DURASI = 3 * 60 * 60 * 1000; // 3 jam
 
     setTimeout(() => {
         dataKeranjang = {};
@@ -864,7 +865,7 @@ function resetCariSticky() {
                 Silakan scan ulang QR Code di room untuk memesan kembali.
             </p>
         </div>`;
-    }, DURASI_TEST);
+    }, DURASI);
 }
         // INIT EXECUTION
         window.onload = () => {
