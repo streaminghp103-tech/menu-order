@@ -37,8 +37,9 @@ placeholder="Kategori">
 
       <textarea id="deskripsi" class="w-full bg-slate-100 rounded-2xl p-4 text-sm font-bold outline-none" placeholder="Deskripsi menu"></textarea>
 
-      <input id="foto" type="file" accept="image/*" class="w-full bg-slate-100 rounded-2xl p-4 text-sm font-bold">
+      <input id="foto" type="file" accept="image/*" onchange="previewFoto()" class="w-full bg-slate-100 rounded-2xl p-4 text-sm font-bold">
 
+<img id="previewFoto" class="hidden w-full h-48 object-cover rounded-2xl bg-slate-100">
 <p id="fotoHint" class="hidden text-xs font-bold text-orange-600">
   Kosongkan foto jika tidak ingin mengganti foto lama.
 </p>
@@ -293,6 +294,19 @@ class="${m.best_seller ? 'bg-yellow-500 text-slate-900' : 'bg-slate-300 text-sla
 
       loadMenu();
     }
+    function previewFoto() {
+  const file = document.getElementById("foto").files[0];
+  const preview = document.getElementById("previewFoto");
+
+  if (!file) {
+    preview.classList.add("hidden");
+    preview.src = "";
+    return;
+  }
+
+  preview.src = URL.createObjectURL(file);
+  preview.classList.remove("hidden");
+}
 
     function resetForm() {
       document.getElementById("edit_id").value = "";
@@ -304,6 +318,8 @@ class="${m.best_seller ? 'bg-yellow-500 text-slate-900' : 'bg-slate-300 text-sla
       document.getElementById("best_seller").checked = false;
       document.getElementById("btn-simpan").innerText = "Simpan Menu";
       document.getElementById("fotoHint").classList.add("hidden");
+      document.getElementById("previewFoto").classList.add("hidden");
+document.getElementById("previewFoto").src = "";
     }
 
     loadMenu();
