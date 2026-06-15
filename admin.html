@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Menu HP103</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+
+<body class="bg-orange-50 min-h-screen p-4 font-sans">
+  <div class="max-w-md mx-auto bg-white rounded-3xl p-5 shadow-xl">
+    <h1 class="text-xl font-black uppercase text-slate-900 mb-1">Admin Menu</h1>
+    <p class="text-xs font-bold text-slate-400 mb-5">Happy Puppy Panjaitan Samarinda</p>
+
+    <div class="space-y-3">
+      <input id="nama" class="w-full bg-slate-100 rounded-2xl p-4 text-sm font-bold outline-none" placeholder="Nama menu">
+
+      <input id="harga" type="number" class="w-full bg-slate-100 rounded-2xl p-4 text-sm font-bold outline-none" placeholder="Harga">
+
+      <select id="kategori" class="w-full bg-slate-100 rounded-2xl p-4 text-sm font-bold outline-none">
+        <option value="FOOD">FOOD</option>
+        <option value="SNACK">SNACK</option>
+        <option value="MINUMAN">MINUMAN</option>
+      </select>
+
+      <textarea id="deskripsi" class="w-full bg-slate-100 rounded-2xl p-4 text-sm font-bold outline-none" placeholder="Deskripsi menu"></textarea>
+
+      <input id="foto" type="file" accept="image/*" class="w-full bg-slate-100 rounded-2xl p-4 text-sm font-bold">
+
+      <label class="flex items-center gap-2 text-sm font-bold">
+        <input id="best_seller" type="checkbox">
+        Best Seller
+      </label>
+
+      <button onclick="simpanMenu()" id="btn-simpan" class="w-full bg-orange-500 text-white rounded-2xl py-4 font-black uppercase">
+        Simpan Menu
+      </button>
+    </div>
+
+    <div id="status" class="mt-4 text-sm font-bold text-center"></div>
+  </div>
+
+  <script>
+    const SUPABASE_URL = "https://sytpztzuohaxseqdcnwa.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_uEpaY5r4PqrbW7Gw-QMumQ_wIKrP3Cg";
+
+    const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    async function simpanMenu() {
+      const btn = document.getElementById("btn-simpan");
+      const status = document.getElementById("status");
+
+      const nama = document.getElementById("nama").value.trim();
+      const harga = parseInt(document.getElementById("harga").value);
+      const kategori = document.getElementById("kategori").value;
+      const deskripsi = document.getElementById("deskripsi").value.trim();
+      const file = document.getElementById("foto").files[0];
+      const bestSeller = document.getElementById("best_seller").checked;
+
+      if (!nama || !harga || !kategori || !file) {
+        status.innerText = "Nama, harga, kategori, dan foto wajib diisi.";
+        status.className = "mt-4 text-sm font-bold text-center text-red-500";
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerText = "Menyimpan...";
+      status.innerText = "";
+
+      try {
+        const fileExt = file.name.split(".").pop();
+        const fileName = `${Date.now()}-${nama.toLowerCase().replaceAll(" ", "-")}.${fileExt}`;
+
+        const upload = await client.storage
+          .from("menu-images")
+          .upload(fileName, file);
+
+        if (upload.error) throw upload.error;
+
+        const publicUrl = client.storage
+          .from("menu-images")
+          .getPublicUrl(fileName).data.publicUrl;
+
+        const insert = await client
+          .from("menus")
+          .insert({
+            nama: nama,
+            harga: harga,
+            kategori: kategori,
+            deskripsi: deskripsi,
+            foto_url: publicUrl,
+            aktif: true,
+            best_seller: bestSeller
+          });
+
+        if (insert.error) throw insert.error;
+
+        status.innerText = "Menu berhasil disimpan.";
+        status.className = "mt-4 text-sm font-bold text-center text-green-600";
+
+        document.getElementById("nama").value = "";
+        document.getElementById("harga").value = "";
+        document.getElementById("deskripsi").value = "";
+        document.getElementById("foto").value = "";
+        document.getElementById("best_seller").checked = false;
+
+      } catch (err) {
+        console.error(err);
+        status.innerText = "Gagal simpan: " + err.message;
+        status.className = "mt-4 text-sm font-bold text-center text-red-500";
+      }
+
+      btn.disabled = false;
+      btn.innerText = "Simpan Menu";
+    }
+  </script>
+</body>
+</html>
