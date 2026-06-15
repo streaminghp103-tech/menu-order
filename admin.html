@@ -175,9 +175,24 @@
               <p class="font-black text-sm text-slate-900 uppercase truncate">${m.nama}</p>
               <p class="text-xs font-bold text-orange-600">Rp ${Number(m.harga).toLocaleString('id-ID')}</p>
               <p class="text-[10px] font-black text-slate-400 uppercase">${m.kategori}</p>
-              <p class="text-[10px] font-bold ${m.aktif ? 'text-green-600' : 'text-red-500'}">
-                ${m.aktif ? 'Aktif' : 'Nonaktif'} ${m.best_seller ? '• Best Seller' : ''}
-              </p>
+              <div class="flex gap-2 mt-1 flex-wrap">
+
+<span class="text-[10px] font-black px-2 py-1 rounded-full
+${m.aktif
+ ? 'bg-green-100 text-green-700'
+ : 'bg-red-100 text-red-700'}">
+
+${m.aktif ? '🟢 AKTIF' : '🔴 NONAKTIF'}
+
+</span>
+
+${m.best_seller ? `
+<span class="text-[10px] font-black px-2 py-1 rounded-full bg-yellow-100 text-yellow-700">
+⭐ BEST SELLER
+</span>
+` : ''}
+
+</div>
             </div>
           </div>
 
@@ -185,12 +200,12 @@
             <button onclick='editMenu(${JSON.stringify(m)})' class="bg-blue-500 text-white rounded-xl py-2 text-[10px] font-black uppercase">Edit</button>
 
             <button onclick="toggleAktif('${m.id}', ${!m.aktif})" 
-class="${m.aktif ? 'bg-green-500' : 'bg-red-500'} text-white rounded-xl py-2 text-[10px] font-black uppercase">
-  ${m.aktif ? 'Aktif ✓' : 'Nonaktif ✕'}
+class="${m.aktif ? 'bg-red-500' : 'bg-green-500'} text-white rounded-xl py-2 text-[10px] font-black uppercase">
+  ${m.aktif ? 'NONAKTIFKAN' : 'AKTIFKAN'}
 </button>
             <button onclick="toggleBestSeller('${m.id}', ${!m.best_seller})" 
 class="${m.best_seller ? 'bg-yellow-500 text-slate-900' : 'bg-slate-300 text-slate-700'} rounded-xl py-2 text-[10px] font-black uppercase">
-  ${m.best_seller ? '★ Best On' : 'Best Off'}
+  ${m.best_seller ? 'HAPUS BEST' : 'JADIKAN BEST'}
 </button>
           </div>
         </div>
