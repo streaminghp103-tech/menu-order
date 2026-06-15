@@ -48,7 +48,20 @@
 
     <div class="mt-6 border-t pt-5">
       <h2 class="text-lg font-black uppercase text-slate-900 mb-3">Daftar Menu</h2>
-      <div id="list-menu" class="space-y-3"></div>
+
+<input id="searchAdmin" oninput="loadMenu()" 
+class="w-full bg-slate-100 rounded-2xl p-4 text-sm font-bold outline-none mb-3" 
+placeholder="Cari menu...">
+
+<select id="filterAdmin" onchange="loadMenu()" 
+class="w-full bg-slate-100 rounded-2xl p-4 text-sm font-bold outline-none mb-3">
+  <option value="SEMUA">Semua Menu</option>
+  <option value="AKTIF">Aktif</option>
+  <option value="NONAKTIF">Nonaktif</option>
+  <option value="BEST">Best Seller</option>
+</select>
+
+<div id="list-menu" class="space-y-3"></div>
     </div>
   </div>
 
@@ -166,8 +179,23 @@
         list.innerHTML = `<p class="text-sm font-bold text-slate-400">Belum ada menu.</p>`;
         return;
       }
+      const keyword = document.getElementById("searchAdmin")?.value.toLowerCase() || "";
+const filter = document.getElementById("filterAdmin")?.value || "SEMUA";
 
-      list.innerHTML = data.map(m => `
+let hasil = data.filter(m => {
+  const cocokNama = (m.nama || "").toLowerCase().includes(keyword);
+  const cocokKategori = (m.kategori || "").toLowerCase().includes(keyword);
+
+  const cocokSearch = cocokNama || cocokKategori;
+
+  if (filter === "AKTIF") return cocokSearch && m.aktif;
+  if (filter === "NONAKTIF") return cocokSearch && !m.aktif;
+  if (filter === "BEST") return cocokSearch && m.best_seller;
+
+  return cocokSearch;
+});
+
+      list.innerHTML = hasil.map(m => `
         <div class="bg-slate-50 rounded-2xl p-3 border ${m.aktif ? 'border-slate-100' : 'border-red-200 opacity-60'}">
           <div class="flex gap-3">
             <img src="${m.foto_url || 'https://placehold.co/100x100?text=Menu'}" class="w-16 h-16 rounded-xl object-cover bg-slate-200">
