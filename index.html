@@ -850,11 +850,28 @@ function resetCariSticky() {
         function kirimBantuan(j) { const r = document.getElementById('input-room-final').value || roomNumber; window.open(`https://wa.me/${WA_NUMBER}?text=Halo Happy Puppy Samarinda,%0ASaya tamu dari *ROOM ${r}*%0A*MINTA BANTUAN:* ${j}.`, '_blank'); tutupBantuan(); }
         function tutupNotifSelesai() { document.getElementById('notif-sukses').classList.remove('tampil'); window.scrollTo({ top: 0, behavior: 'smooth' }); }
 
+        function mulaiAutoExpired() {
+    const DURASI_TEST = 2 * 60 * 1000; // 2 menit
+
+    setTimeout(() => {
+        dataKeranjang = {};
+        riwayatPesananLokal = [];
+
+        document.body.innerHTML = `
+        <div class="h-screen bg-slate-900 text-white flex flex-col items-center justify-center p-10 text-center">
+            <h1 class="text-2xl font-black uppercase mb-4">Sesi Berakhir</h1>
+            <p class="text-slate-400 text-sm italic">
+                Silakan scan ulang QR Code di room untuk memesan kembali.
+            </p>
+        </div>`;
+    }, DURASI_TEST);
+}
         // INIT EXECUTION
         window.onload = () => {
     inisialisasiWiFi();
     deteksiRoom(); 
-    ambilData(); 
+    ambilData();
+    mulaiAutoExpired();
 };
     </script>
 </body>
