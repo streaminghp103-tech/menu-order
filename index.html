@@ -568,6 +568,11 @@ class="menu-image w-full h-full object-cover">
                         <p class="font-black text-slate-900 text-[11px]">
                             Rp ${m.harga.toLocaleString('id-ID')}
                         </p>
+                        ${m.deskripsi ? `
+<p class="text-[10px] text-slate-500 line-clamp-2 mt-1">
+    ${m.deskripsi}
+</p>
+` : ''}
                     </div>
 
                     ${q > 0 ? `
