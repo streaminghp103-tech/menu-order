@@ -229,7 +229,7 @@
 </div>
 
     <div class="px-4 pt-0 pb-2 w-full bg-[#fff4e8] relative z-10">
-    <p class="text-[#6b3a1f] text-[12px] font-black uppercase tracking-[0.10em] mb-1">
+    <p id="judul-kategori-menu" class="text-[#6b3a1f] text-[12px] font-black uppercase tracking-[0.10em] mb-1">
     ☰ SEMUA MENU
 </p>
         <div id="container-menu" class="space-y-2 text-center py-2 text-slate-300 font-black uppercase">
@@ -251,7 +251,7 @@
         <div class="flex justify-between items-center mb-4 px-1">
     <div class="flex flex-col">
         <h2 class="font-black text-xl text-slate-800 uppercase italic tracking-tighter leading-none">Keranjang</h2>
-        <span class="text-[9px] font-bold text-slate-400 uppercase italic mt-1">Happy Puppy citos</span>
+        <span class="text-[9px] font-bold text-slate-400 uppercase italic mt-1">Happy Puppy Panjaitan</span>
     </div>
     <div class="flex items-center gap-2">
         <button onclick="resetKeranjang()" class="text-orange-500 text-[9px] font-black uppercase bg-orange-50 px-3 py-2 rounded-xl italic">Reset</button>
@@ -312,7 +312,7 @@
         </div>
     </div>
     <div class="bottom-nav">
-  <button id="nav-beranda" class="active" onclick="setActiveNav('beranda'); window.scrollTo({top:0, behavior:'smooth'})">
+  <button id="nav-beranda" class="active" onclick="setActiveNav('beranda'); gantiKat('SEMUA'); window.scrollTo({top:0, behavior:'smooth'})">
     <span>⌂</span>
     Beranda
   </button>
@@ -853,7 +853,17 @@ listKategoriTetap = ["SEMUA", ...kategoriUrut];
         function updateCatatanItem(nama, val) { if (dataKeranjang[nama]) dataKeranjang[nama].catatan = val; }
         function hilangkanPopup() { document.getElementById('layar-hitam').classList.remove('tampil'); }
         function resetKeranjang() { if (confirm("Hapus semua item di keranjang?")) { dataKeranjang = {}; hilangkanPopup(); renderMenu(); renderBestSeller(); updateBar(); } }
-        function gantiKat(k) { katAktif = k; renderMenu(); renderTabs(); }
+        function gantiKat(k) {
+    katAktif = k;
+
+    const judul = document.getElementById("judul-kategori-menu");
+    if (judul) {
+        judul.innerText = k === "SEMUA" ? "☰ SEMUA MENU" : "☰ " + k;
+    }
+
+    renderMenu();
+    renderTabs();
+}
         function renderTabs() {
             let h = "";
             const iconKategori = {
