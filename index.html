@@ -467,8 +467,20 @@ promo: m.promo || false
 
         // 4. RENDERING TAMPILAN
         function renderBestSeller() {
-            let htmlBest = "";
-            databaseMenu.filter(m => m.best_seller).slice(0, 6).forEach(m => {
+    const section = document.getElementById('section-best-seller');
+    const bestSellerList = databaseMenu.filter(m => m.best_seller);
+
+    if (bestSellerList.length === 0) {
+        section.style.display = "none";
+        document.getElementById('container-best-seller').innerHTML = "";
+        return;
+    }
+
+    section.style.display = "block";
+
+    let htmlBest = "";
+
+    bestSellerList.slice(0, 6).forEach(m => {
                 const q = dataKeranjang[m.nama]?.qty || 0;
                 const img = m.foto ? `<img 
 src="${m.foto}" 
@@ -728,11 +740,16 @@ class="menu-image w-full h-full object-cover">
 
         // 6. FINISHING ORDER
         function jalankanKirimWA() {
-            const arr = Object.values(dataKeranjang);
-            const btn = document.getElementById('btn-kirim-wa');
-btn.disabled = true;
-btn.innerText = "Mengirim...";
-            if (arr.length === 0) return;
+    const arr = Object.values(dataKeranjang);
+
+    if (arr.length === 0) {
+        alert("Keranjang masih kosong.");
+        return;
+    }
+
+    const btn = document.getElementById('btn-kirim-wa');
+    btn.disabled = true;
+    btn.innerText = "Mengirim...";
             const finalRoom = document.getElementById('input-room-final').value;
             const t = arr.reduce((a, b) => a + (b.harga * b.qty), 0);
             let msg = `*Hallo kak, Saya dari ROOM ${finalRoom} Ingin memesan:*%0A%0A`;
