@@ -557,47 +557,31 @@ listKategoriTetap = ["SEMUA", ...kategoriUrut];
 
     bestSellerList.slice(0, 8).forEach(m => {
         const q = dataKeranjang[m.nama]?.qty || 0;
+        const img = m.foto || 'https://placehold.co/400x400?text=Menu';
 
         let badgeFavorit = "⭐ BEST SELLER";
         if (m.promo) badgeFavorit = "🔥 PROMO";
         if (m.kategori === "PAKET") badgeFavorit = "🎁 PAKET";
 
-        const img = m.foto || 'https://placehold.co/400x400?text=Menu';
-
         htmlBest += `
         <div onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)"
-            class="min-w-[170px] bg-white rounded-[26px] overflow-hidden shadow-sm border border-orange-50 relative active:scale-[0.98] transition-transform">
-            
-            <div class="relative h-[110px] bg-slate-100">
-                <span class="absolute top-3 left-3 z-10 bg-orange-500 text-white text-[9px] font-black px-3 py-1 rounded-full shadow-md">
+            class="min-w-[48%] bg-white rounded-[24px] overflow-hidden shadow-md border border-orange-50 relative active:scale-[0.98] transition-transform">
+
+            <div class="relative h-[130px] bg-slate-100">
+                <img src="${img}" class="w-full h-full object-cover">
+                <span class="absolute top-3 left-3 bg-orange-500 text-white text-[10px] font-black px-3 py-1.5 rounded-full shadow-md">
                     ${badgeFavorit}
                 </span>
-
-                <img src="${img}"
-                    loading="lazy"
-                    decoding="async"
-                    onerror="this.src='https://placehold.co/400x400?text=Menu'"
-                    class="w-full h-full object-cover">
             </div>
 
-            <div class="p-3 relative">
-                <p class="font-black text-slate-900 text-[12px] uppercase truncate pr-8">${m.nama}</p>
-                <p class="font-black text-slate-900 text-[13px] mt-1">Rp ${m.harga.toLocaleString('id-ID')}</p>
+            <div class="p-3 relative min-h-[82px]">
+                <p class="font-black text-slate-900 text-[13px] uppercase truncate pr-10">${m.nama}</p>
+                <p class="font-black text-slate-900 text-[16px] mt-2">Rp ${m.harga.toLocaleString('id-ID')}</p>
 
-                ${q > 0 ? `
-                <div class="absolute right-3 bottom-3 flex items-center gap-2">
-                    <button onclick="event.stopPropagation(); ubahQty('${m.nama.replace(/'/g, "\\'")}', -1)"
-                        class="w-7 h-7 rounded-full bg-orange-100 text-orange-600 font-black">−</button>
-                    <span class="text-[11px] font-black">${q}</span>
-                    <button onclick="event.stopPropagation(); ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)"
-                        class="w-7 h-7 rounded-full bg-orange-500 text-white font-black">+</button>
-                </div>
-                ` : `
                 <button onclick="event.stopPropagation(); ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)"
-                    class="absolute right-3 bottom-3 w-9 h-9 rounded-full bg-orange-500 text-white text-xl font-black shadow-md">
+                    class="absolute right-3 bottom-3 w-11 h-11 rounded-full bg-orange-500 text-white text-2xl font-black shadow-lg">
                     +
                 </button>
-                `}
             </div>
         </div>`;
     });
@@ -606,16 +590,14 @@ listKategoriTetap = ["SEMUA", ...kategoriUrut];
 }
 
        function renderMenu() {
-    let html = "";
     const filtered = databaseMenu.filter(m =>
         (katAktif === "SEMUA" || m.kategori === katAktif) &&
         m.nama.toLowerCase().includes(queryCari)
     );
 
-    html = `<div class="grid grid-cols-2 gap-2">`;
+    let html = `<div class="grid grid-cols-2 gap-2">`;
 
     filtered.forEach(m => {
-        const q = dataKeranjang[m.nama]?.qty || 0;
         const img = m.foto || 'https://placehold.co/300x300?text=Menu';
 
         let labelMenu = "";
@@ -625,55 +607,42 @@ listKategoriTetap = ["SEMUA", ...kategoriUrut];
 
         html += `
         <div onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)"
-            class="bg-white rounded-[22px] p-3 shadow-sm border border-orange-50 min-h-[170px] relative active:scale-[0.98] transition-transform overflow-hidden">
+            class="bg-white rounded-[24px] p-3 shadow-sm border border-orange-50 min-h-[205px] relative overflow-hidden active:scale-[0.98] transition-transform">
 
-            <div class="flex gap-2 items-start">
+            <div class="flex gap-3 items-start">
                 <img src="${img}"
-                    loading="lazy"
-                    decoding="async"
-                    onerror="this.src='https://placehold.co/300x300?text=Menu'"
-                    class="w-[68px] h-[68px] object-cover rounded-[18px] bg-slate-100 flex-shrink-0">
+                    class="w-[82px] h-[82px] object-cover rounded-[18px] bg-slate-100 flex-shrink-0">
 
                 <div class="flex-1 min-w-0 text-left">
-                    <h3 class="font-black text-slate-900 text-[13px] uppercase leading-tight line-clamp-2">
+                    <h3 class="font-black text-slate-900 text-[15px] uppercase leading-tight line-clamp-2">
                         ${m.nama}
                     </h3>
 
                     ${labelMenu ? `
-                    <p class="inline-block mt-2 bg-orange-100 text-orange-600 text-[10px] font-black px-2 py-1 rounded-full uppercase">
+                    <div class="inline-block mt-3 bg-orange-100 text-orange-600 text-[10px] font-black px-3 py-1.5 rounded-full uppercase leading-tight">
                         ${labelMenu}
-                    </p>
+                    </div>
                     ` : ''}
                 </div>
             </div>
 
             ${m.deskripsi ? `
-            <p class="text-[11px] text-slate-500 font-semibold leading-tight mt-3 line-clamp-2 normal-case text-left">
-                ${m.kategori === "PAKET" ? "🎁 " : ""}${m.deskripsi}
+            <p class="text-[10px] text-slate-500 font-semibold leading-tight mt-3 line-clamp-2 text-left">
+                ${m.deskripsi}
             </p>
             ` : ''}
 
             <div class="absolute left-3 bottom-4">
                 <p class="font-black text-slate-900 text-[13px] uppercase leading-tight">Rp</p>
-                <p class="font-black text-slate-900 text-[17px] leading-tight">
+                <p class="font-black text-slate-900 text-[18px] leading-tight">
                     ${m.harga.toLocaleString('id-ID')}
                 </p>
             </div>
 
-            ${q > 0 ? `
-            <div class="absolute right-3 bottom-3 flex items-center gap-1 bg-orange-50 rounded-full p-1">
-                <button onclick="event.stopPropagation(); ubahQty('${m.nama.replace(/'/g, "\\'")}', -1)"
-                    class="w-7 h-7 rounded-full bg-white text-orange-500 font-black">−</button>
-                <span class="text-[11px] font-black">${q}</span>
-                <button onclick="event.stopPropagation(); ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)"
-                    class="w-7 h-7 rounded-full bg-orange-500 text-white font-black">+</button>
-            </div>
-            ` : `
             <button onclick="event.stopPropagation(); ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)"
-                class="absolute right-3 bottom-3 w-10 h-10 rounded-full bg-orange-500 text-white text-2xl font-black shadow-md">
+                class="absolute right-3 bottom-3 w-11 h-11 rounded-full bg-orange-500 text-white text-2xl font-black shadow-lg">
                 +
             </button>
-            `}
         </div>`;
     });
 
@@ -681,7 +650,7 @@ listKategoriTetap = ["SEMUA", ...kategoriUrut];
 
     document.getElementById('container-menu').innerHTML =
         filtered.length > 0 ? html :
-        `<div class="py-20 text-center font-black uppercase text-slate-300 w-full col-span-2">Menu tidak ditemukan</div>`;
+        `<div class="py-20 text-center font-black uppercase text-slate-300">Menu tidak ditemukan</div>`;
 }
 
         function tampilkanToast(nama) {
