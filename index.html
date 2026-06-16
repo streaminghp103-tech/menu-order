@@ -475,6 +475,9 @@ const WA_NUMBER = "6281255763976";
         btn.innerText = "Pilih Room Dulu 🎤";
     }
 }
+        function nilaiAktif(value) {
+    return value === true || value === "true" || value === 1 || value === "1";
+}
 
         async function ambilData() {
     try {
@@ -503,8 +506,8 @@ const WA_NUMBER = "6281255763976";
                     kategori,
                     foto,
                     deskripsi,
-                    best_seller: m.best_seller || false,
-promo: m.promo || false
+                    best_seller: nilaiAktif(m.best_seller),
+promo: nilaiAktif(m.promo)
                 });
 
                 setKategori.add(kategori);
@@ -563,6 +566,11 @@ listKategoriTetap = ["SEMUA", ...kategoriUrut];
 
         htmlBest += `
         <div onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)"
+        ${labelMenu ? `
+<span class="absolute top-2 left-2 z-10 bg-orange-500 text-white text-[8px] font-black px-2 py-1 rounded-full shadow-md">
+    ${labelMenu}
+</span>
+` : ''}
             class="min-w-[210px] bg-white rounded-[26px] overflow-hidden shadow-sm border border-orange-50 relative active:scale-[0.98] transition-transform">
             
             <div class="relative h-[135px] bg-slate-100">
