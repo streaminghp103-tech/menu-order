@@ -1029,12 +1029,21 @@ function bukaRiwayatPesanan() {
     widget.classList.remove('hidden');
     widget.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
+        function sembunyikanBarBrowserAwal() {
+    setTimeout(() => {
+        window.scrollTo({
+            top: 1,
+            behavior: "smooth"
+        });
+    }, 500);
+}
         // INIT EXECUTION
         window.onload = () => {
     inisialisasiWiFi();
     deteksiRoom(); 
     ambilData();
     mulaiAutoExpired();
+    sembunyikanBarBrowserAwal();
 };
     </script>
 </body>
