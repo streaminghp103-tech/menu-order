@@ -191,17 +191,17 @@
         </div>
     </div>
 </div>
-        <div id="widget-pesanan-saya" class="mt-4 hidden animate-fadeIn">
-            <div class="bg-slate-900/70 border border-orange-500/40 rounded-[24px] p-4">
-                <div class="flex justify-between items-center mb-2">
-                    <span class="text-[11px] font-black text-orange-400 uppercase tracking-widest flex items-center gap-2">
-                        🔔 Sedang Diproses
-                    </span>
-                    <span id="jumlah-riwayat" class="bg-orange-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full">0</span>
-                </div>
-                <div id="list-riwayat-luar" class="flex gap-2 overflow-x-auto no-scrollbar"></div>
-            </div>
+       </div>
+
+<div id="widget-pesanan-saya" class="mx-2 mt-2 hidden animate-fadeIn">
+    <div class="bg-slate-900/70 border border-orange-500/40 rounded-[24px] p-4">
+        <div class="flex justify-between items-center mb-2">
+            <span class="text-[11px] font-black text-orange-400 uppercase tracking-widest flex items-center gap-2">
+                🔔 Sedang Diproses
+            </span>
+            <span id="jumlah-riwayat" class="bg-orange-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full">0</span>
         </div>
+        <div id="list-riwayat-luar" class="flex gap-2 overflow-x-auto no-scrollbar"></div>
     </div>
 </div>
 
@@ -323,10 +323,10 @@
     Paket
   </button>
 
-  <button id="nav-pesanan" onclick="setActiveNav('pesanan'); document.getElementById('widget-pesanan-saya').scrollIntoView({behavior:'smooth'})">
+  <button id="nav-pesanan" onclick="bukaRiwayatPesanan()">
     <span>🧾</span>
     Pesanan
-  </button>
+</button>
 
   <button id="nav-bantuan" onclick="setActiveNav('bantuan'); bukaBantuan()">
     <span>🙋</span>
@@ -918,6 +918,19 @@ function resetCariSticky() {
     document.querySelectorAll('.bottom-nav button').forEach(btn => {
         btn.classList.remove('active');
     });
+            function bukaRiwayatPesanan() {
+    setActiveNav('pesanan');
+
+    const widget = document.getElementById('widget-pesanan-saya');
+
+    if (!widget || riwayatPesananLokal.length === 0) {
+        tampilkanToast("Belum ada pesanan");
+        return;
+    }
+
+    widget.classList.remove('hidden');
+    widget.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
 
     const aktif = document.getElementById('nav-' + menu);
     if (aktif) aktif.classList.add('active');
