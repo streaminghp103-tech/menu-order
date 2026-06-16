@@ -170,7 +170,7 @@
         </div>
     </div>
 
-    <div id="top-header" class="bg-slate-950 relative z-50 px-5 pt-5 pb-5 rounded-b-[30px] shadow-xl overflow-hidden border-b border-orange-500/30">
+    <div id="top-header" class="bg-slate-950 relative z-50 px-4 pt-4 pb-4 rounded-b-[30px] shadow-xl overflow-hidden border-b border-orange-500/30">
     <img src="https://lh3.googleusercontent.com/u/0/d/1VMXIBZSme4siqoboYqcH7hk9UNW1RT7s?w=800"
         class="absolute inset-0 w-full h-full object-cover opacity-25">
     <div class="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/80 to-slate-900/40"></div>
@@ -184,13 +184,13 @@
                 </h1>
 
                 <div id="info-room-header"
-                    class="mt-4 inline-flex items-center gap-2 bg-white/10 border border-white/25 px-4 py-2 rounded-[18px] text-[11px] font-black uppercase text-white tracking-wide">
+                    class="mt-4 inline-flex items-center gap-2 bg-white/10 border border-white/25 px-2 py-2 rounded-[18px] text-[11px] font-black uppercase text-white tracking-wide">
                     📍 WiFi Connected
                 </div>
             </div>
 
             <button onclick="bukaBantuan()"
-                class="bg-white/10 border border-white/25 text-white px-4 py-3 rounded-[18px] active:scale-95 text-[11px] font-black uppercase shadow-sm">
+                class="bg-white/10 border border-white/25 text-white px-2 py-3 rounded-[18px] active:scale-95 text-[11px] font-black uppercase shadow-sm">
                 🎧 Bantuan
             </button>
         </div>
@@ -218,7 +218,7 @@
 
     <div id="sticky-order-bar" class="sticky top-0 z-40 bg-[#fff4e8]/95 px-2 pt-4 pb-2">
 
-    <div class="bg-[#fffaf5] border border-orange-100 rounded-[28px] flex items-center px-4 mb-1 shadow-sm">
+    <div class="bg-[#fffaf5] border border-orange-100 rounded-[28px] flex items-center px-2 mb-1 shadow-sm">
         <span class="mr-2">🔍</span>
         <input type="text" id="input-cari-sticky" oninput="cekInputCariSticky()" placeholder="Cari menu favorit..." class="w-full py-2 bg-transparent text-sm outline-none font-medium text-slate-700 placeholder:text-slate-400">
         <button id="btn-reset-cari-sticky" onclick="resetCariSticky()" class="hidden text-slate-400 p-2 text-lg">✕</button>
@@ -625,47 +625,52 @@ listKategoriTetap = ["SEMUA", ...kategoriUrut];
 
         html += `
         <div onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)"
-            class="bg-white rounded-[16px] p-2 shadow-sm border border-orange-50 flex gap-2 min-h-[122px] active:scale-[0.98] transition-transform relative">
-            
-            <img src="${img}"
-                loading="lazy"
-                decoding="async"
-                onerror="this.src='https://placehold.co/300x300?text=Menu'"
-                class="w-[65px] h-[65px] object-cover rounded-[18px] bg-slate-100 flex-shrink-0">
+            class="bg-white rounded-[22px] p-3 shadow-sm border border-orange-50 min-h-[170px] relative active:scale-[0.98] transition-transform overflow-hidden">
 
-            <div class="flex-1 min-w-0 text-left pr-7">
-                <h3 class="font-black text-slate-900 text-[11px] uppercase leading-tight line-clamp-2">
-                    ${m.nama}
-                </h3>
+            <div class="flex gap-2 items-start">
+                <img src="${img}"
+                    loading="lazy"
+                    decoding="async"
+                    onerror="this.src='https://placehold.co/300x300?text=Menu'"
+                    class="w-[68px] h-[68px] object-cover rounded-[18px] bg-slate-100 flex-shrink-0">
 
-                ${m.deskripsi ? `
-                <p class="text-[10px] text-slate-500 font-semibold leading-tight mt-1 line-clamp-2 normal-case">
-                    ${m.kategori === "PAKET" ? "🎁 " : ""}${m.deskripsi}
-                </p>
-                ` : ''}
+                <div class="flex-1 min-w-0 text-left">
+                    <h3 class="font-black text-slate-900 text-[13px] uppercase leading-tight line-clamp-2">
+                        ${m.nama}
+                    </h3>
 
-                ${labelMenu ? `
-                <p class="inline-block mt-2 bg-orange-100 text-orange-600 text-[8px] font-black px-2 py-1 rounded-full uppercase">
-                    ${labelMenu}
-                </p>
-                ` : ''}
+                    ${labelMenu ? `
+                    <p class="inline-block mt-2 bg-orange-100 text-orange-600 text-[10px] font-black px-2 py-1 rounded-full uppercase">
+                        ${labelMenu}
+                    </p>
+                    ` : ''}
+                </div>
+            </div>
 
-                <p class="font-black text-slate-900 text-[12px] mt-2">
-                    Rp ${m.harga.toLocaleString('id-ID')}
+            ${m.deskripsi ? `
+            <p class="text-[11px] text-slate-500 font-semibold leading-tight mt-3 line-clamp-2 normal-case text-left">
+                ${m.kategori === "PAKET" ? "🎁 " : ""}${m.deskripsi}
+            </p>
+            ` : ''}
+
+            <div class="absolute left-3 bottom-4">
+                <p class="font-black text-slate-900 text-[13px] uppercase leading-tight">Rp</p>
+                <p class="font-black text-slate-900 text-[17px] leading-tight">
+                    ${m.harga.toLocaleString('id-ID')}
                 </p>
             </div>
 
             ${q > 0 ? `
-            <div class="absolute right-2 bottom-2 flex items-center gap-1 bg-orange-50 rounded-full p-1">
+            <div class="absolute right-3 bottom-3 flex items-center gap-1 bg-orange-50 rounded-full p-1">
                 <button onclick="event.stopPropagation(); ubahQty('${m.nama.replace(/'/g, "\\'")}', -1)"
-                    class="w-6 h-6 rounded-full bg-white text-orange-500 font-black">−</button>
-                <span class="text-[10px] font-black">${q}</span>
+                    class="w-7 h-7 rounded-full bg-white text-orange-500 font-black">−</button>
+                <span class="text-[11px] font-black">${q}</span>
                 <button onclick="event.stopPropagation(); ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)"
-                    class="w-6 h-6 rounded-full bg-orange-500 text-white font-black">+</button>
+                    class="w-7 h-7 rounded-full bg-orange-500 text-white font-black">+</button>
             </div>
             ` : `
             <button onclick="event.stopPropagation(); ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)"
-                class="absolute right-2 bottom-2 w-8 h-8 rounded-full bg-orange-500 text-white text-lg font-black shadow-md">
+                class="absolute right-3 bottom-3 w-10 h-10 rounded-full bg-orange-500 text-white text-2xl font-black shadow-md">
                 +
             </button>
             `}
@@ -895,7 +900,7 @@ listKategoriTetap = ["SEMUA", ...kategoriUrut];
 };
             listKategoriTetap.forEach(kt => {
                 const cls = kt === katAktif ? "active-tab" : "bg-white/80 text-slate-600 font-bold rounded-full border border-slate-200";
-                h += `<button onclick="gantiKat('${kt}')" class="px-4 py-1.5 text-[9px] uppercase tracking-widest transition-transform duration-200 active:scale-[0.98] ${cls}">${iconKategori[kt] || "🍴"} ${kt}</button>`;
+                h += `<button onclick="gantiKat('${kt}')" class="px-2 py-1.5 text-[9px] uppercase tracking-widest transition-transform duration-200 active:scale-[0.98] ${cls}">${iconKategori[kt] || "🍴"} ${kt}</button>`;
             });
             document.getElementById('tabs-kategori').innerHTML = h;
         }
