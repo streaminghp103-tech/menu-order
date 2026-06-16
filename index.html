@@ -170,16 +170,29 @@
         </div>
     </div>
 
-    <div id="top-header" class="bg-slate-950 relative z-50 px-4 pt-4 pb-5 rounded-b-[26px] shadow-xl overflow-hidden border-b border-orange-500/30">
+    <div id="<div id="top-header" class="bg-slate-950 relative z-50 px-5 py-4 shadow-xl overflow-hidden">
     <img src="https://lh3.googleusercontent.com/u/0/d/1VMXIBZSme4siqoboYqcH7hk9UNW1RT7s?w=800"
         class="absolute inset-0 w-full h-full object-cover opacity-25">
-    <div class="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/85 to-slate-900/50"></div>
+    <div class="absolute inset-0 bg-gradient-to-r from-black via-slate-950/90 to-slate-900/70"></div>
 
-    <div class="relative z-10 min-h-[118px]">
+    <div class="relative z-10 flex items-center justify-between min-h-[96px]">
+        <div class="flex items-center gap-3">
+            <div class="w-16 h-16 rounded-full bg-orange-500/15 border border-orange-400/40 flex items-center justify-center text-4xl">
+                🐶
+            </div>
+
+            <h1 class="text-[28px] font-black uppercase leading-[0.95] tracking-tighter text-white">
+                Happy Puppy<br>
+                <span class="text-orange-500">Panjaitan</span>
+            </h1>
+        </div>
+
         <div id="info-room-header"
-            class="absolute top-0 right-0 bg-white/10 border border-white/25 px-3 py-2 rounded-[16px] text-[10px] font-black uppercase text-white tracking-wide">
+            class="bg-white/10 border border-white/25 px-4 py-3 rounded-full text-[12px] font-black uppercase text-white">
             📍 Room
         </div>
+    </div>
+</div>
 
         <h1 class="pt-7 text-[32px] font-black uppercase leading-[0.95] tracking-tighter text-white drop-shadow-lg">
             Happy Puppy<br>
@@ -188,11 +201,6 @@
     </div>
 </div>
 
-            <button onclick="bukaBantuan()"
-                class="bg-white/10 border border-white/25 text-white px-2 py-3 rounded-[18px] active:scale-95 text-[11px] font-black uppercase shadow-sm">
-                🎧 Bantuan
-            </button>
-        </div>
 
         <div id="widget-pesanan-saya" class="mt-4 hidden animate-fadeIn">
             <div class="bg-slate-900/70 border border-orange-500/40 rounded-[24px] p-4">
@@ -540,9 +548,7 @@ listKategoriTetap = ["SEMUA", ...kategoriUrut];
         // 4. RENDERING TAMPILAN
         function renderBestSeller() {
     const section = document.getElementById('section-best-seller');
-    const bestSellerList = databaseMenu.filter(m =>
-        m.best_seller || m.promo || m.kategori === "PAKET"
-    );
+    const bestSellerList = databaseMenu.filter(m => m.best_seller || m.promo || m.kategori === "PAKET");
 
     if (bestSellerList.length === 0) {
         section.style.display = "none";
@@ -553,32 +559,27 @@ listKategoriTetap = ["SEMUA", ...kategoriUrut];
     section.style.display = "block";
 
     let htmlBest = "";
-
     bestSellerList.slice(0, 8).forEach(m => {
-        const q = dataKeranjang[m.nama]?.qty || 0;
         const img = m.foto || 'https://placehold.co/400x400?text=Menu';
-
-        let badgeFavorit = "⭐ BEST SELLER";
-        if (m.promo) badgeFavorit = "🔥 PROMO";
-        if (m.kategori === "PAKET") badgeFavorit = "🎁 PAKET";
+        let badge = m.promo ? "🔥 PROMO" : m.kategori === "PAKET" ? "🎁 PAKET" : "⭐ BEST SELLER";
 
         htmlBest += `
         <div onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)"
-            class="min-w-[44%] bg-white rounded-[24px] overflow-hidden shadow-md border border-orange-50 relative active:scale-[0.98] transition-transform">
+            class="min-w-[38%] bg-white rounded-[20px] overflow-hidden shadow-sm border border-orange-50 relative active:scale-[0.98] transition-transform">
 
-            <div class="relative h-[95px] bg-slate-100">
+            <div class="relative h-[88px] bg-slate-100">
                 <img src="${img}" class="w-full h-full object-cover">
-                <span class="absolute top-3 left-3 bg-orange-500 text-white text-[10px] font-black px-3 py-1.5 rounded-full shadow-md">
-                    ${badgeFavorit}
+                <span class="absolute top-2 left-2 bg-orange-500 text-white text-[8px] font-black px-2 py-1 rounded-full">
+                    ${badge}
                 </span>
             </div>
 
-            <div class="p-3 relative min-h-[64px]">
-                <p class="font-black text-slate-900 text-[13px] uppercase truncate pr-10">${m.nama}</p>
-                <p class="font-black text-slate-900 text-[16px] mt-2">Rp ${m.harga.toLocaleString('id-ID')}</p>
+            <div class="p-2.5 relative min-h-[62px]">
+                <p class="font-black text-slate-900 text-[11px] uppercase truncate pr-8">${m.nama}</p>
+                <p class="font-black text-orange-600 text-[13px] mt-1">Rp ${m.harga.toLocaleString('id-ID')}</p>
 
                 <button onclick="event.stopPropagation(); ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)"
-                    class="absolute right-3 bottom-3 w-9 h-9 rounded-full bg-orange-500 text-white text-2xl font-black shadow-lg">
+                    class="absolute right-2 bottom-2 w-8 h-8 rounded-full bg-orange-500 text-white text-xl font-black shadow-md">
                     +
                 </button>
             </div>
@@ -599,47 +600,44 @@ listKategoriTetap = ["SEMUA", ...kategoriUrut];
     filtered.forEach(m => {
         const img = m.foto || 'https://placehold.co/300x300?text=Menu';
 
-        let labelMenu = "";
-        if (m.promo) labelMenu = "🔥 PROMO";
-        else if (m.best_seller) labelMenu = "⭐ BEST SELLER";
-        else if (m.kategori === "PAKET") labelMenu = "🎁 PAKET";
+        let label = "";
+        if (m.promo) label = "🔥 PROMO";
+        else if (m.best_seller) label = "⭐ BEST SELLER";
+        else if (m.kategori === "PAKET") label = "🎁 PAKET";
 
         html += `
         <div onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)"
-            class="bg-white rounded-[24px] p-3 shadow-sm border border-orange-50 min-h-[150px] relative overflow-hidden active:scale-[0.98] transition-transform">
+            class="bg-white rounded-[20px] p-2.5 shadow-sm border border-orange-50 min-h-[132px] relative overflow-hidden active:scale-[0.98] transition-transform">
 
-            <div class="flex gap-3 items-start">
+            <div class="flex gap-2">
                 <img src="${img}"
-                    class="w-[60px] h-[60px] object-cover rounded-[18px] bg-slate-100 flex-shrink-0">
+                    class="w-[64px] h-[64px] object-cover rounded-[16px] bg-slate-100 flex-shrink-0">
 
                 <div class="flex-1 min-w-0 text-left">
                     <h3 class="font-black text-slate-900 text-[12px] uppercase leading-tight line-clamp-2">
                         ${m.nama}
                     </h3>
 
-                    ${labelMenu ? `
-                    <div class="inline-block mt-3 bg-orange-100 text-orange-600 text-[10px] font-black px-3 py-1.5 rounded-full uppercase leading-tight">
-                        ${labelMenu}
+                    ${m.deskripsi ? `
+                    <p class="text-[9px] text-slate-500 font-semibold leading-tight mt-1 line-clamp-2">
+                        ${m.deskripsi}
+                    </p>
+                    ` : ''}
+
+                    ${label ? `
+                    <div class="inline-block mt-1 bg-orange-100 text-orange-600 text-[8px] font-black px-2 py-1 rounded-full uppercase">
+                        ${label}
                     </div>
                     ` : ''}
                 </div>
             </div>
 
-            ${m.deskripsi ? `
-            <p class="text-[10px] text-slate-500 font-semibold leading-tight mt-3 line-clamp-2 text-left">
-                ${m.deskripsi}
+            <p class="absolute left-3 bottom-3 font-black text-orange-600 text-[12px]">
+                Rp ${m.harga.toLocaleString('id-ID')}
             </p>
-            ` : ''}
-
-            <div class="absolute left-3 bottom-4">
-                <p class="font-black text-slate-900 text-[13px] uppercase leading-tight">Rp</p>
-                <p class="font-black text-slate-900 text-[15px] leading-tight">
-                    ${m.harga.toLocaleString('id-ID')}
-                </p>
-            </div>
 
             <button onclick="event.stopPropagation(); ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)"
-                class="absolute right-3 bottom-3 w-9 h-9 rounded-full bg-orange-500 text-white text-2xl font-black shadow-lg">
+                class="absolute right-3 bottom-2.5 w-8 h-8 rounded-full bg-orange-500 text-white text-xl font-black shadow-md">
                 +
             </button>
         </div>`;
