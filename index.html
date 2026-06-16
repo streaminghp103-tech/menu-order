@@ -541,8 +541,6 @@ function escapeJS(value) {
         .replace(/\r/g, " ");
 }
 
-// 4. RENDERING TAMPILAN
-function renderBestSeller() {
 
         // 4. RENDERING TAMPILAN
         function renderBestSeller() {
@@ -790,7 +788,7 @@ function renderBestSeller() {
             jMakan += i.qty;
         }
 
-        const namaAman = i.nama.replace(/\\/g, "\\\\").replace(/'/g, "\\'").replace(/"/g, "&quot;");
+        const namaAman = i.nama.replace(/\\/g, "\\\\").replace(/'/g, "\\'").replace(/"/g, '\\"');
 
         h += `
 <div class="bg-white p-3 rounded-[22px] border border-orange-50 flex flex-col gap-2 mb-2 shadow-sm">
@@ -838,7 +836,7 @@ function renderBestSeller() {
             <p class="text-[9px] font-black text-orange-600 uppercase tracking-widest mb-2 px-1 italic">${teksAjakan}</p>
             <div class="flex gap-3 overflow-x-auto no-scrollbar pb-1">
                 ${saran.map(s => {
-                    const namaSaran = s.nama.replace(/\\/g, "\\\\").replace(/'/g, "\\'").replace(/"/g, "&quot;");
+                    const namaSaran = s.nama.replace(/\\/g, "\\\\").replace(/'/g, "\\'").replace(/"/g, '\\"');
                     return `
                     <div onclick="ubahQty('${namaSaran}', 1); munculkanPopup()" class="min-w-[145px] bg-orange-50/50 p-2.5 rounded-[20px] border-2 border-orange-100 flex items-center gap-3 cursor-pointer shadow-sm transition-transform duration-200 active:scale-[0.98]">
                         <img src="${s.foto || 'https://placehold.co/80x80'}" class="w-10 h-10 object-cover rounded-xl shadow-inner">
