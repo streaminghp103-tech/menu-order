@@ -212,7 +212,7 @@
         <div id="container-best-seller" class="flex gap-2 overflow-x-auto no-scrollbar pb-1"></div>
     </div>
 
-    <div id="sticky-order-bar" class="sticky top-0 z-40 bg-[#fff4e8]/95 px-2 pt-4 pb-2">
+    <div id="sticky-order-bar" class="sticky top-0 z-40 bg-[#fff4e8]/95 px-2 pt-2 pb-1">
 
     <div class="bg-[#fffaf5] border border-orange-100 rounded-[28px] flex items-center px-2 mb-1 shadow-sm">
         <span class="mr-2">🔍</span>
@@ -228,7 +228,7 @@
     <p id="judul-kategori-menu" class="text-[#6b3a1f] text-[12px] font-black uppercase tracking-[0.10em] mb-1">
     ☰ SEMUA MENU
 </p>
-        <div id="container-menu" class="space-y-2 text-center py-2 text-slate-300 font-black uppercase">
+        <div id="container-menu" class="space-y-1 text-center py-1 text-slate-300 font-black uppercase">
     Memuat Menu...
 </div>
     </div>
@@ -596,13 +596,22 @@ listKategoriTetap = ["SEMUA", ...kategoriUrut];
 
         html += `
         <div onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)"
-            class="bg-white rounded-[20px] p-2.5 shadow-sm border border-orange-50 min-h-[132px] relative overflow-hidden active:scale-[0.98] transition-transform">
+            class="bg-white rounded-[20px] p-2 shadow-sm border border-orange-50 min-h-[124px] relative overflow-hidden active:scale-[0.98] transition-transform">
 
             <div class="flex gap-2">
-                <img src="${img}"
-                    class="w-[64px] h-[64px] object-cover rounded-[16px] bg-slate-100 flex-shrink-0">
 
-                <div class="flex-1 min-w-0 text-left">
+                <div class="w-[64px] flex-shrink-0">
+                    <img src="${img}"
+                        class="w-[64px] h-[64px] object-cover rounded-[16px] bg-slate-100">
+
+                    ${label ? `
+                    <div class="mt-1 w-full bg-orange-100 text-orange-600 text-[7px] font-black px-1 py-1 rounded-full uppercase leading-tight text-center">
+                        ${label}
+                    </div>
+                    ` : ''}
+                </div>
+
+                <div class="flex-1 min-w-0 text-left pr-7">
                     <h3 class="font-black text-slate-900 text-[12px] uppercase leading-tight line-clamp-2">
                         ${m.nama}
                     </h3>
@@ -611,12 +620,6 @@ listKategoriTetap = ["SEMUA", ...kategoriUrut];
                     <p class="text-[9px] text-slate-500 font-semibold leading-tight mt-1 line-clamp-2">
                         ${m.deskripsi}
                     </p>
-                    ` : ''}
-
-                    ${label ? `
-                    <div class="inline-block mt-1 bg-orange-100 text-orange-600 text-[8px] font-black px-2 py-1 rounded-full uppercase">
-                        ${label}
-                    </div>
                     ` : ''}
                 </div>
             </div>
@@ -638,7 +641,6 @@ listKategoriTetap = ["SEMUA", ...kategoriUrut];
         filtered.length > 0 ? html :
         `<div class="py-20 text-center font-black uppercase text-slate-300">Menu tidak ditemukan</div>`;
 }
-
         function tampilkanToast(nama) {
     const toast = document.getElementById('toast-add');
     const text = document.getElementById('toast-text');
