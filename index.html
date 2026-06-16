@@ -855,9 +855,7 @@ function escapeJS(value) {
         </div>`;
     }
 
-    document.getElementById('list-checkout').innerHTML = crossHtml + `
-<div>${h}</div>
-document.getElementById('list-checkout').innerHTML = crossHtml + `<div>${h}</div>`;
+    document.getElementById('list-checkout').innerHTML = crossHtml + `<div>${h}</div>`;
     document.getElementById('harga-akhir').innerText = `Rp ${t.toLocaleString('id-ID')}`;
     document.getElementById('subtotal-angka').innerText = `Rp ${t.toLocaleString('id-ID')}`;
     document.getElementById('layar-hitam').classList.add('tampil');
