@@ -524,14 +524,16 @@ listKategoriTetap = ["SEMUA", ...kategoriUrut];
         renderBestSeller();
         renderMenu();
 
-    } catch (e) {
+        } catch (e) {
         console.error(e);
         document.getElementById("container-menu").innerHTML =
             `<div class="py-20 text-center font-black uppercase text-red-400">
                 Gagal memuat menu dari Supabase
             </div>`;
     }
-            function escapeJS(value) {
+}
+
+function escapeJS(value) { function escapeJS(value) {
     return String(value || "")
         .replace(/\\/g, "\\\\")
         .replace(/'/g, "\\'")
