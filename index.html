@@ -533,14 +533,16 @@ listKategoriTetap = ["SEMUA", ...kategoriUrut];
     }
 }
 
-function escapeJS(value) { function escapeJS(value) {
+function escapeJS(value) {
     return String(value || "")
         .replace(/\\/g, "\\\\")
         .replace(/'/g, "\\'")
-        .replace(/"/g, "&quot;")
         .replace(/\n/g, " ")
         .replace(/\r/g, " ");
 }
+
+// 4. RENDERING TAMPILAN
+function renderBestSeller() {
 
         // 4. RENDERING TAMPILAN
         function renderBestSeller() {
