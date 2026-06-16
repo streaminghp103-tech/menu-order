@@ -531,6 +531,13 @@ listKategoriTetap = ["SEMUA", ...kategoriUrut];
                 Gagal memuat menu dari Supabase
             </div>`;
     }
+            function escapeJS(value) {
+    return String(value || "")
+        .replace(/\\/g, "\\\\")
+        .replace(/'/g, "\\'")
+        .replace(/"/g, "&quot;")
+        .replace(/\n/g, " ")
+        .replace(/\r/g, " ");
 }
 
         // 4. RENDERING TAMPILAN
@@ -551,12 +558,12 @@ listKategoriTetap = ["SEMUA", ...kategoriUrut];
     bestSellerList.slice(0, 8).forEach(m => {
         const img = m.foto || 'https://placehold.co/400x400?text=Menu';
         const qty = dataKeranjang[m.nama]?.qty || 0;
-        const namaAman = m.nama.replace(/'/g, "\\'");
+        const namaAman = escapeJS(m.nama);
 
         let badge = m.promo ? "🔥 PROMO" : m.kategori === "PAKET" ? "🎁 PAKET" : "⭐ BEST SELLER";
 
         const tombolQty = qty > 0 ? `
-            <div class="absolute right-2 bottom-2 flex items-center gap-1 bg-orange-50 border border-orange-100 rounded-full px-1 py-1 shadow-sm">
+            <div onclick="event.stopPropagation()" class="absolute right-2 bottom-2 flex items-center gap-1 bg-orange-50 border border-orange-100 rounded-full px-1 py-1 shadow-sm">
                 <button onclick="event.stopPropagation(); ubahQty('${namaAman}', -1)"
                     class="w-7 h-7 rounded-full bg-white text-orange-500 text-lg font-black shadow-sm flex items-center justify-center">
                     −
@@ -615,7 +622,7 @@ listKategoriTetap = ["SEMUA", ...kategoriUrut];
     filtered.forEach(m => {
         const img = m.foto || 'https://placehold.co/300x300?text=Menu';
         const qty = dataKeranjang[m.nama]?.qty || 0;
-        const namaAman = m.nama.replace(/'/g, "\\'");
+        const namaAman = escapeJS(m.nama);
 
         let label = "";
         if (m.promo) label = "🔥 PROMO";
@@ -623,7 +630,7 @@ listKategoriTetap = ["SEMUA", ...kategoriUrut];
         else if (m.kategori === "PAKET") label = "🎁 PAKET";
 
         const tombolQty = qty > 0 ? `
-            <div class="absolute right-2 bottom-2 flex items-center gap-1 bg-orange-50 border border-orange-100 rounded-full px-1 py-1 shadow-sm">
+            <div onclick="event.stopPropagation()" class="absolute right-2 bottom-2 flex items-center gap-1 bg-orange-50 border border-orange-100 rounded-full px-1 py-1 shadow-sm">
                 <button onclick="event.stopPropagation(); ubahQty('${namaAman}', -1)"
                     class="w-7 h-7 rounded-full bg-white text-orange-500 text-lg font-black shadow-sm flex items-center justify-center">
                     −
@@ -754,15 +761,33 @@ listKategoriTetap = ["SEMUA", ...kategoriUrut];
 
         // 5. KERANJANG & CROSS-SELLING (UX OPTIMIZED)
         function munculkanPopup(e) {
-    if(e) e.preventDefault();
-    const arr = Object.values(dataKeranjang);
-    let h = ""; let t = 0;
-    let jMinum = 0; let jMakan = 0;
+    if (e) e.preventDefault();
 
-    // 1. Loop Item (Padding & Margin diperketat agar lebih slim)
+    const arr = Object.values(dataKeranjang);
+
+    if (arr.length === 0) {
+        hilangkanPopup();
+        updateBar();
+        return;
+    }
+
+    let h = "";
+    let t = 0;
+    let jMinum = 0;
+    let jMakan = 0;
+
     arr.forEach((i) => {
-        const s = i.harga * i.qty; t += s;
-        if(i.kategori.includes("DRINK") || i.kategori.includes("MINUMAN")) jMinum += i.qty; else jMakan += i.qty;
+        const s = i.harga * i.qty;
+        t += s;
+
+        if (i.kategori.includes("DRINK") || i.kategori.includes("MINUMAN")) {
+            jMinum += i.qty;
+        } else {
+            jMakan += i.qty;
+        }
+
+        const namaAman = i.nama.replace(/\\/g, "\\\\").replace(/'/g, "\\'").replace(/"/g, "&quot;");
+
         h += `
 <div class="bg-white p-3 rounded-[22px] border border-orange-50 flex flex-col gap-2 mb-2 shadow-sm">
     <div class="flex justify-between items-start gap-3">
@@ -772,62 +797,62 @@ listKategoriTetap = ["SEMUA", ...kategoriUrut];
         </div>
 
         <div class="flex items-center gap-2 bg-orange-50 rounded-full px-2 py-1">
-            <button onclick="ubahQty('${i.nama.replace(/'/g, "\\'")}', -1); munculkanPopup()" class="w-7 h-7 rounded-full bg-white text-orange-500 font-black shadow-sm">−</button>
+            <button onclick="ubahQty('${namaAman}', -1); munculkanPopup()" class="w-7 h-7 rounded-full bg-white text-orange-500 font-black shadow-sm">−</button>
             <span class="text-[11px] font-black w-4 text-center">${i.qty}</span>
-            <button onclick="ubahQty('${i.nama.replace(/'/g, "\\'")}', 1); munculkanPopup()" class="w-7 h-7 rounded-full bg-orange-500 text-white font-black shadow-sm">+</button>
+            <button onclick="ubahQty('${namaAman}', 1); munculkanPopup()" class="w-7 h-7 rounded-full bg-orange-500 text-white font-black shadow-sm">+</button>
         </div>
     </div>
 
     <input type="text"
-        onchange="updateCatatanItem('${i.nama.replace(/'/g, "\\'")}', this.value)"
+        onchange="updateCatatanItem('${namaAman}', this.value)"
         value="${i.catatan || ''}"
         placeholder="Catatan opsional, contoh: jangan pedas..."
         class="w-full bg-orange-50/50 border border-orange-100 rounded-[14px] py-2 px-3 text-[10px] italic focus:border-orange-500 outline-none">
 </div>`;
     });
 
-    // 2. LOGIKA CROSS SELLING DENGAN KALIMAT DINAMIS
     let crossHtml = "";
-    
-    // Tentukan target kategori dan kalimat ajakan
     let targetKat = [];
     let teksAjakan = "";
 
     if (jMinum > jMakan) {
-        // Jika lebih banyak minum, tawarkan snack/makanan
         targetKat = ["SNACK", "FOOD", "MAKANAN"];
         teksAjakan = "Gak snack sekalian kak? Biar makin seru nyanyinya! 🔥";
     } else {
-        // Jika lebih banyak makanan, tawarkan minuman
         targetKat = ["DRINK", "MINUMAN", "JUICE"];
         teksAjakan = "Minuman yg segar gak sekalian kak? Biar makin asyik! 🔥";
     }
 
-    let saran = databaseMenu.filter(m => !dataKeranjang[m.nama] && targetKat.some(k => m.kategori.includes(k))).sort(() => 0.5 - Math.random()).slice(0, 3);
-    
+    let saran = databaseMenu
+        .filter(m => !dataKeranjang[m.nama] && targetKat.some(k => m.kategori.includes(k)))
+        .sort(() => 0.5 - Math.random())
+        .slice(0, 3);
+
     if (saran.length > 0) {
         crossHtml = `
         <div class="sticky top-0 z-20 bg-white pb-3 mb-3 border-b border-slate-50">
             <p class="text-[9px] font-black text-orange-600 uppercase tracking-widest mb-2 px-1 italic">${teksAjakan}</p>
             <div class="flex gap-3 overflow-x-auto no-scrollbar pb-1">
-                ${saran.map(s => `
-                    <div onclick="ubahQty('${s.nama.replace(/'/g, "\\'")}', 1); munculkanPopup()" class="min-w-[145px] bg-orange-50/50 p-2.5 rounded-[20px] border-2 border-orange-100 flex items-center gap-3 cursor-pointer shadow-sm transition-transform duration-200 active:scale-[0.98]">
+                ${saran.map(s => {
+                    const namaSaran = s.nama.replace(/\\/g, "\\\\").replace(/'/g, "\\'").replace(/"/g, "&quot;");
+                    return `
+                    <div onclick="ubahQty('${namaSaran}', 1); munculkanPopup()" class="min-w-[145px] bg-orange-50/50 p-2.5 rounded-[20px] border-2 border-orange-100 flex items-center gap-3 cursor-pointer shadow-sm transition-transform duration-200 active:scale-[0.98]">
                         <img src="${s.foto || 'https://placehold.co/80x80'}" class="w-10 h-10 object-cover rounded-xl shadow-inner">
                         <div class="min-w-0">
                             <p class="font-black text-slate-700 text-[9px] uppercase truncate italic leading-tight">${s.nama}</p>
                             <p class="text-orange-600 text-[9px] font-black mt-0.5">+ Tambah</p>
                         </div>
-                    </div>
-                `).join('')}
+                    </div>`;
+                }).join('')}
             </div>
         </div>`;
     }
 
-    // Tampilkan ke layar
     document.getElementById('list-checkout').innerHTML = crossHtml + `<div>${h}</div>`;
     document.getElementById('harga-akhir').innerText = `Rp ${t.toLocaleString('id-ID')}`;
     document.getElementById('subtotal-angka').innerText = `Rp ${t.toLocaleString('id-ID')}`;
     document.getElementById('layar-hitam').classList.add('tampil');
+
     cekRoomStatus();
 }
 
