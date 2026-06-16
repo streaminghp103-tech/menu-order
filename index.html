@@ -191,7 +191,6 @@
         </div>
     </div>
 </div>
-       </div>
 
 <div id="widget-pesanan-saya" class="mx-2 mt-2 hidden animate-fadeIn">
     <div class="bg-slate-900/70 border border-orange-500/40 rounded-[24px] p-4">
@@ -548,16 +547,46 @@ listKategoriTetap = ["SEMUA", ...kategoriUrut];
     section.style.display = "block";
 
     let htmlBest = "";
+
     bestSellerList.slice(0, 8).forEach(m => {
         const img = m.foto || 'https://placehold.co/400x400?text=Menu';
+        const qty = dataKeranjang[m.nama]?.qty || 0;
+        const namaAman = m.nama.replace(/'/g, "\\'");
+
         let badge = m.promo ? "🔥 PROMO" : m.kategori === "PAKET" ? "🎁 PAKET" : "⭐ BEST SELLER";
 
+        const tombolQty = qty > 0 ? `
+            <div class="absolute right-2 bottom-2 flex items-center gap-1 bg-orange-50 border border-orange-100 rounded-full px-1 py-1 shadow-sm">
+                <button onclick="event.stopPropagation(); ubahQty('${namaAman}', -1)"
+                    class="w-7 h-7 rounded-full bg-white text-orange-500 text-lg font-black shadow-sm flex items-center justify-center">
+                    −
+                </button>
+
+                <span class="min-w-[18px] text-center text-[12px] font-black text-slate-800">
+                    ${qty}
+                </span>
+
+                <button onclick="event.stopPropagation(); ubahQty('${namaAman}', 1)"
+                    class="w-7 h-7 rounded-full bg-orange-500 text-white text-lg font-black shadow-sm flex items-center justify-center">
+                    +
+                </button>
+            </div>
+        ` : `
+            <button onclick="event.stopPropagation(); ubahQty('${namaAman}', 1)"
+                class="absolute right-2 bottom-2 w-8 h-8 rounded-full bg-orange-500 text-white text-xl font-black shadow-md flex items-center justify-center">
+                +
+            </button>
+        `;
+
         htmlBest += `
-        <div onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)"
+        <div onclick="ubahQty('${namaAman}', 1)"
             class="min-w-[38%] bg-white rounded-[20px] overflow-hidden shadow-sm border border-orange-50 relative active:scale-[0.98] transition-transform">
 
             <div class="relative h-[88px] bg-slate-100">
-                <img src="${img}" class="w-full h-full object-cover">
+                <img src="${img}"
+                    onerror="this.src='https://placehold.co/400x400?text=Menu'"
+                    class="w-full h-full object-cover">
+
                 <span class="absolute top-2 left-2 bg-orange-500 text-white text-[8px] font-black px-2 py-1 rounded-full">
                     ${badge}
                 </span>
@@ -567,10 +596,7 @@ listKategoriTetap = ["SEMUA", ...kategoriUrut];
                 <p class="font-black text-slate-900 text-[11px] uppercase truncate pr-8">${m.nama}</p>
                 <p class="font-black text-orange-600 text-[13px] mt-1">Rp ${m.harga.toLocaleString('id-ID')}</p>
 
-                <button onclick="event.stopPropagation(); ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)"
-                    class="absolute right-2 bottom-2 w-8 h-8 rounded-full bg-orange-500 text-white text-xl font-black shadow-md">
-                    +
-                </button>
+                ${tombolQty}
             </div>
         </div>`;
     });
@@ -588,20 +614,46 @@ listKategoriTetap = ["SEMUA", ...kategoriUrut];
 
     filtered.forEach(m => {
         const img = m.foto || 'https://placehold.co/300x300?text=Menu';
+        const qty = dataKeranjang[m.nama]?.qty || 0;
+        const namaAman = m.nama.replace(/'/g, "\\'");
 
         let label = "";
         if (m.promo) label = "🔥 PROMO";
         else if (m.best_seller) label = "⭐ BEST SELLER";
         else if (m.kategori === "PAKET") label = "🎁 PAKET";
 
+        const tombolQty = qty > 0 ? `
+            <div class="absolute right-2 bottom-2 flex items-center gap-1 bg-orange-50 border border-orange-100 rounded-full px-1 py-1 shadow-sm">
+                <button onclick="event.stopPropagation(); ubahQty('${namaAman}', -1)"
+                    class="w-7 h-7 rounded-full bg-white text-orange-500 text-lg font-black shadow-sm flex items-center justify-center">
+                    −
+                </button>
+
+                <span class="min-w-[18px] text-center text-[12px] font-black text-slate-800">
+                    ${qty}
+                </span>
+
+                <button onclick="event.stopPropagation(); ubahQty('${namaAman}', 1)"
+                    class="w-7 h-7 rounded-full bg-orange-500 text-white text-lg font-black shadow-sm flex items-center justify-center">
+                    +
+                </button>
+            </div>
+        ` : `
+            <button onclick="event.stopPropagation(); ubahQty('${namaAman}', 1)"
+                class="absolute right-3 bottom-2.5 w-8 h-8 rounded-full bg-orange-500 text-white text-xl font-black shadow-md flex items-center justify-center">
+                +
+            </button>
+        `;
+
         html += `
-        <div onclick="ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)"
+        <div onclick="ubahQty('${namaAman}', 1)"
             class="bg-white rounded-[20px] p-2 shadow-sm border border-orange-50 min-h-[124px] relative overflow-hidden active:scale-[0.98] transition-transform">
 
             <div class="flex gap-2">
 
                 <div class="w-[64px] flex-shrink-0">
                     <img src="${img}"
+                        onerror="this.src='https://placehold.co/300x300?text=Menu'"
                         class="w-[64px] h-[64px] object-cover rounded-[16px] bg-slate-100">
 
                     ${label ? `
@@ -628,10 +680,7 @@ listKategoriTetap = ["SEMUA", ...kategoriUrut];
                 Rp ${m.harga.toLocaleString('id-ID')}
             </p>
 
-            <button onclick="event.stopPropagation(); ubahQty('${m.nama.replace(/'/g, "\\'")}', 1)"
-                class="absolute right-3 bottom-2.5 w-8 h-8 rounded-full bg-orange-500 text-white text-xl font-black shadow-md">
-                +
-            </button>
+            ${tombolQty}
         </div>`;
     });
 
@@ -664,8 +713,14 @@ listKategoriTetap = ["SEMUA", ...kategoriUrut];
     cart.classList.add('cart-bounce');
 }
         function ubahQty(nama, d) {
+    const item = databaseMenu.find(x => x.nama === nama);
+
+    if (!item) {
+        console.warn("Item tidak ditemukan:", nama);
+        return;
+    }
+
     if (!dataKeranjang[nama]) {
-        const item = databaseMenu.find(x => x.nama === nama);
         dataKeranjang[nama] = { ...item, qty: 0, catatan: "" };
     }
 
@@ -682,12 +737,8 @@ listKategoriTetap = ["SEMUA", ...kategoriUrut];
 
     updateBar();
 
-    clearTimeout(window.renderTimer);
-
-    window.renderTimer = setTimeout(() => {
-        renderMenu();
-        renderBestSeller();
-    }, 50);
+    renderMenu();
+    renderBestSeller();
 }
 
         function updateBar() {
@@ -918,7 +969,12 @@ function resetCariSticky() {
     document.querySelectorAll('.bottom-nav button').forEach(btn => {
         btn.classList.remove('active');
     });
-            function bukaRiwayatPesanan() {
+
+    const aktif = document.getElementById('nav-' + menu);
+    if (aktif) aktif.classList.add('active');
+}
+
+function bukaRiwayatPesanan() {
     setActiveNav('pesanan');
 
     const widget = document.getElementById('widget-pesanan-saya');
@@ -930,10 +986,6 @@ function resetCariSticky() {
 
     widget.classList.remove('hidden');
     widget.scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
-    const aktif = document.getElementById('nav-' + menu);
-    if (aktif) aktif.classList.add('active');
 }
         // INIT EXECUTION
         window.onload = () => {
