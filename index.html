@@ -80,12 +80,17 @@
         #layar-hitam.tampil, #layar-bantuan.tampil, #notif-sukses.tampil { display: flex; }
         
         .konten-putih {
-            position: relative;
-            background: white; width: 100%; border-radius: 32px 32px 0 0;
-            padding: 24px; transform: translateY(100%);
-            transition: transform 0.25s ease;
-            max-height: 90vh; display: flex; flex-direction: column;
-        }
+    position: relative;
+    background: white;
+    width: 100%;
+    height: 100vh;
+    border-radius: 0;
+    padding: 18px;
+    transform: translateY(100%);
+    transition: transform 0.25s ease;
+    display: flex;
+    flex-direction: column;
+}
         #layar-hitam.tampil .konten-putih, #layar-bantuan.tampil .konten-putih, #notif-sukses.tampil .konten-putih { transform: translateY(0); }
         
         #wifi-activation-bar { 
@@ -254,7 +259,7 @@
     </div>
 </div>
         
-        <div id="list-checkout" class="overflow-y-auto mb-2 flex-1 no-scrollbar pr-1">
+        <div id="list-checkout" class="overflow-y-auto mb-2 flex-1 pr-1 pb-8">
             </div>
         
         <div class="mt-2 pt-3 border-t border-slate-50">
@@ -838,8 +843,8 @@ function escapeJS(value) {
                 ${saran.map(s => {
                     const namaSaran = s.nama.replace(/\\/g, "\\\\").replace(/'/g, "\\'").replace(/"/g, '\\"');
                     return `
-                    <div onclick="ubahQty('${namaSaran}', 1); munculkanPopup()" class="min-w-[145px] bg-orange-50/50 p-2.5 rounded-[20px] border-2 border-orange-100 flex items-center gap-3 cursor-pointer shadow-sm transition-transform duration-200 active:scale-[0.98]">
-                        <img src="${s.foto || 'https://placehold.co/80x80'}" class="w-10 h-10 object-cover rounded-xl shadow-inner">
+                    <div onclick="ubahQty('${namaSaran}', 1); munculkanPopup()" class="min-w-[210px] bg-orange-50/70 p-3 rounded-[24px] border-2 border-orange-100 flex items-center gap-3 cursor-pointer shadow-sm transition-transform duration-200 active:scale-[0.98]">
+                        <img src="${s.foto || 'https://placehold.co/80x80'}" class="w-16 h-16 object-cover rounded-[18px] shadow-inner">
                         <div class="min-w-0">
                             <p class="font-black text-slate-700 text-[9px] uppercase truncate italic leading-tight">${s.nama}</p>
                             <p class="text-orange-600 text-[9px] font-black mt-0.5">+ Tambah</p>
@@ -850,7 +855,16 @@ function escapeJS(value) {
         </div>`;
     }
 
-    document.getElementById('list-checkout').innerHTML = crossHtml + `<div>${h}</div>`;
+    document.getElementById('list-checkout').innerHTML = crossHtml + `
+<div>${h}</div>
+${arr.length >= 3 ? `
+<div class="sticky bottom-0 bg-gradient-to-t from-white via-white to-transparent pt-6 pb-2 text-center">
+    <p class="text-[10px] font-black text-orange-500 uppercase tracking-widest animate-bounce">
+        Geser ke bawah untuk lihat semua pesanan ↓
+    </p>
+</div>
+` : ''}
+`;
     document.getElementById('harga-akhir').innerText = `Rp ${t.toLocaleString('id-ID')}`;
     document.getElementById('subtotal-angka').innerText = `Rp ${t.toLocaleString('id-ID')}`;
     document.getElementById('layar-hitam').classList.add('tampil');
