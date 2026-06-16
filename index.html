@@ -73,23 +73,29 @@
         }
         
         #layar-hitam, #layar-bantuan, #notif-sukses {
-            display: none; position: fixed; inset: 0;
-            background: rgba(15,23,42,0.85); 
-            z-index: 9999; align-items: flex-end;
-        }
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(15,23,42,0.85);
+    z-index: 9999;
+    align-items: stretch;
+    overflow: hidden;
+}
         #layar-hitam.tampil, #layar-bantuan.tampil, #notif-sukses.tampil { display: flex; }
         
         .konten-putih {
     position: relative;
     background: white;
     width: 100%;
-    height: 100vh;
+    height: 100dvh;
+    max-height: 100dvh;
     border-radius: 0;
     padding: 18px;
     transform: translateY(100%);
     transition: transform 0.25s ease;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
 }
         #layar-hitam.tampil .konten-putih, #layar-bantuan.tampil .konten-putih, #notif-sukses.tampil .konten-putih { transform: translateY(0); }
         
@@ -859,6 +865,7 @@ function escapeJS(value) {
     document.getElementById('harga-akhir').innerText = `Rp ${t.toLocaleString('id-ID')}`;
     document.getElementById('subtotal-angka').innerText = `Rp ${t.toLocaleString('id-ID')}`;
     document.getElementById('layar-hitam').classList.add('tampil');
+    document.body.style.overflow = "hidden";
 
     cekRoomStatus();
 }
@@ -906,7 +913,10 @@ function escapeJS(value) {
 
         // 7. FUNGSI UTILITAS
         function updateCatatanItem(nama, val) { if (dataKeranjang[nama]) dataKeranjang[nama].catatan = val; }
-        function hilangkanPopup() { document.getElementById('layar-hitam').classList.remove('tampil'); }
+        function hilangkanPopup() {
+    document.getElementById('layar-hitam').classList.remove('tampil');
+    document.body.style.overflow = "";
+}
         function resetKeranjang() { if (confirm("Hapus semua item di keranjang?")) { dataKeranjang = {}; hilangkanPopup(); renderMenu(); renderBestSeller(); updateBar(); } }
         function gantiKat(k) {
     katAktif = k;
